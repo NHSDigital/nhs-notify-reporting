@@ -1,0 +1,20 @@
+{
+  "autoOpenWorkspace.enableAutoOpenIfSingleWorkspace": true,
+  "files.exclude": {
+    "**/.DS_Store": true,
+    "**/.git": true,
+    "**/.hg": true,
+    "**/.ruby-lsp": true,
+    "**/.svn": true,
+    "**/CVS": true,
+    "**/Thumbs.db": true,
+    ".devcontainer": false,
+    ".github": false,
+    ".vscode": false,
+    "docs": false,
+    "infrastructure": false,
+    "scripts": false,
+    "terraform": false,
+    "tests": false
+  }
+}
