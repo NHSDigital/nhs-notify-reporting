@@ -1,1 +1,1 @@
-project                   = "nhs-notify"
+project = "nhs-notify"
