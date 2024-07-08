@@ -1,6 +1,9 @@
-# Specific to whole project / AWS Account
-# CHANGEME: these should be set for the project you are working on
-#  project should ideally be as short as possible whilst being meaningful as it will be used in resource naming!
-#  aws_account_id should be set to the AWS account ID you are running Terraform in the context of - you will get errors otherwise...
-project        = "myproject"
-aws_account_id = "012345678901"
+project                   = "notify-reporting"
+superuser_role_name       = "NOTIFYDeployRole"
+app_deployer_role_name    = "NOTIFYDeployRole"
+cloudtrail_log_group_name = "NHSDAudit_trail_log_group"
+
+account_ids = {
+  notify-reporting-dev  = "381492132479"
+  notify-reporting-prod = "211125615884"
+}
