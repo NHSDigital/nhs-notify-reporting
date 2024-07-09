@@ -25,11 +25,6 @@ variable "app_deployer_role_name" {
   description = "Name of the app deployer role that is allowed to deploy Comms Mgr applications but not create other IAM roles"
 }
 
-variable "account_name" {
-  type        = string
-  description = "The name of the AWS Account to deploy into (see globals.tfvars)"
-}
-
 variable "region" {
   type        = string
   description = "The AWS Region"
