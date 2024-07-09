@@ -52,11 +52,6 @@ variable "cloudtrail_log_group_name" {
   description = "The name of the Cloudtrail log group name on the account (see globals.tfvars)"
 }
 
-variable "terraform_root_dir" {
-  type        = string
-  description = "Absolute path to Terraform directory"
-}
-
 variable "module" {
   type        = string
   description = "The variable encapsulating the name of this module"
