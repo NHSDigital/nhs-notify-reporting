@@ -47,11 +47,6 @@ variable "group" {
   default     = "n/a"
 }
 
-variable "pipeline_overrides" {
-  type        = string
-  description = "All ENV variables from the deployment pipeline that start with OVR_"
-}
-
 variable "cloudtrail_log_group_name" {
   type        = string
   description = "The name of the Cloudtrail log group name on the account (see globals.tfvars)"

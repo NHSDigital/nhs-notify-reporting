@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
 
 function get_colour() {
   echo "$(git config --get-color "" "${1:-white} bold")"
