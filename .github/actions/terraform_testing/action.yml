@@ -15,7 +15,7 @@ inputs:
     required: true
   environment:
     description: The terraform environment name to use for terraform planning
-    default: dev
+    default: main
     required: true
   group:
     description: The terraform group name to use for terraform planning
