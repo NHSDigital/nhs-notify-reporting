@@ -1,2 +1,5 @@
-project = "nhs-notify"
-aws_account_id = "1234567890"
+project                   = "nhs-notify"
+aws_account_id            = "1234567890"
+superuser_role_name       = "NOTIFYDeployRole"
+app_deployer_role_name    = "NOTIFYDeployRole"
+cloudtrail_log_group_name = "NHSDAudit_trail_log_group"

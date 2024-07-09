@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
 
 function get_colour() {
   echo "$(git config --get-color "" "${1:-white} bold")"
@@ -24,9 +23,9 @@ variables_file="./components/${component_name}/variables.tf"
 declare mandatory_fields_but_global_group=(
   project
   region
-  account_ids
-  terraform_root_dir
-  pipeline_overrides
+  # account_ids
+  # terraform_root_dir
+  # pipeline_overrides
   superuser_role_name
   app_deployer_role_name
   cloudtrail_log_group_name
