@@ -7,6 +7,8 @@
 /.github/CODEOWNERS @NHSDigital/nhs-notify-code-owners
 /CODEOWNERS @NHSDigital/nhs-notify-code-owners
 
+* @NHSDigital/nhs-notify-platform
+
 
 # Each NHS Notify repository should have clear code owners set.
 # Do not use GitHub team names, instead use the GitHub usernames
