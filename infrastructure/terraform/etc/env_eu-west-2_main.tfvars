@@ -1,2 +1,2 @@
 environment  = "main"
-account_name = "nhs-notify-reporting-dev"
+account_name = "notify-reporting-dev"
