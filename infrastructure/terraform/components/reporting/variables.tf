@@ -9,6 +9,11 @@ variable "account_ids" {
   default     = {}
 }
 
+variable "account_name" {
+  type        = string
+  description = "The name of the AWS Account to deploy into (see globals.tfvars)"
+}
+
 variable "app_deployer_role_permission_account_ids" {
   type        = map(string)
   description = "All AWS Account IDs for this project that have the AppDeployer role created"
