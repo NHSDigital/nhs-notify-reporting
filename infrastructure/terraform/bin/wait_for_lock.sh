@@ -21,7 +21,7 @@ aws_account_id="$(aws sts get-caller-identity --query 'Account' --output text)"
 # If there is no record (empty result) then the environment state is not locked.
 function check_lock_status(){
   state_lock_content="$(aws dynamodb get-item \
-    --table-name ${wait_for_project}-terraform-statelock \
+    --table-name ${wait_for_project}-tfscaffold-${aws_account_id}-eu-west-2 \
     --key '{"LockID":{"S": "${wait_for_project}-tfscaffold-${aws_account_id}-eu-west-2/${wait_for_project}/${aws_account_id}/eu-west-2/${wait_for_env}/${wait_for_component}.tfstate"}}' \
     --output text)"
 
