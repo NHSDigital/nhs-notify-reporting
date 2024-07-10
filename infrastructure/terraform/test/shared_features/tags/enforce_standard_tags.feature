@@ -15,4 +15,4 @@ Feature: Tag Compliance
       | Environment       | [a-z0-9\-]{3,15}       |
       | Group             | .+                     |
       | Module            | .+                     |
-      | Project           | notify-reporting       |
+      | Project           | nhs-notify             |
