@@ -3,8 +3,4 @@ resource "aws_ssm_parameter" "example" {
   description = "example param"
   type        = "SecureString"
   value       = "example_value"
-
-  tags = {
-    environment = "main"
-  }
 }
