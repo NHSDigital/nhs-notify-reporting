@@ -10,7 +10,7 @@ Feature: Tag Compliance
     Examples:
       | tags              | value                  |
       | AccountId         | [0-9]{12}              |
-      | AccountName       | notify\-[a-z]\-[a-z]+  |
+      | AccountName       | notify\-[a-z]+\-[a-z]+ |
       | Component         | .+                     |
       | Environment       | [a-z0-9\-]{3,15}       |
       | Group             | .+                     |
