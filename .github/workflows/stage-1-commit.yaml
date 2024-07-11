@@ -94,8 +94,8 @@ jobs:
         uses: actions/checkout@v4
       - name: "Lint Terraform"
         uses: ./.github/actions/lint-terraform
-  terraform-compliance:
-    name: "Terraform Compliance"
+  terraform-testing:
+    name: "Terraform Testing"
     runs-on: ubuntu-latest
     timeout-minutes: 2
     environment: dev
