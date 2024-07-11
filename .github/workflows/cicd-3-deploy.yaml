@@ -1,25 +1,42 @@
-name: "2. Deploy docs to GitHub Pages"
+name: "CI/CD deploy"
+run-name: CI/CD Deploy ${{ inputs.deployEnvironment }} << ${{ github.ref_name }}
 
 on:
   workflow_dispatch:
     inputs:
-      include_prereleases:
-        type: choice
-        description: "Include pre-releases"
-        default: "true"
-        options:
-          - "true"
-          - "false"
-      version:
-          type: string
-          default: latest
-          description: "Install specific version"
+      deployEnvironment:
+        description: Name of the environment to deploy
+        required: true
+        default: main
+        type: string
+      terraformAction:
+        description: Terraform Action
+        required: true
+        default: apply
+        type: string
+      tag:
+        description: "This is the tag that is oging to be deployed"
+        required: true
+        default: "latest"
 
-run-name: "Include prerelease: ${{ inputs.include_prereleases }} Version: ${{ inputs.version }} by @${{ github.actor }}"
+env:
+  PROJECT_DIR: infrastructure
+  PROJECT_NAME: notify-reporting
+  DEFAULT_ENVIRONMENT: main
+  CI_PIPELINE_IID: ${{ github.run_number }}
+  CI_COMMIT_REF_NAME: ${{ github.ref_name }}
+  CI_COMMIT_BRANCH: ${{ github.ref_name }}
+  AWS_REGION: eu-west-2
+  DEPLOY_ENVIRONMENT: ${{ inputs.deployEnvironment }}
+  TERRAFORM_ACTION: ${{ inputs.terraformAction }}
+
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  id-token: write # This is required for requesting the JWT
+  contents: read  # This is required for actions/checkout
+
+concurrency:
+  group: notify-reporting-${{ github.workflow }}-${{ github.event.inputs.deployEnvironment }}
+  cancel-in-progress: false
 
 jobs:
   metadata:
@@ -34,7 +51,11 @@ jobs:
       python_version: ${{ steps.variables.outputs.python_version }}
       terraform_version: ${{ steps.variables.outputs.terraform_version }}
       version: ${{ steps.variables.outputs.version }}
-      # tag: ${{ steps.variables.outputs.tag }}
+      tag: ${{ steps.variables.outputs.tag }}
+      aws_region: ${{ steps.variables.outputs.aws_region }}
+      terraform_action: ${{ steps.variables.outputs.terraform_action }}
+      ci_pipeline_iid: ${{ steps.variables.outputs.ci_pipeline_iid }}
+      deploy_environment: ${{ steps.variables.outputs.deploy_environment }}
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -50,7 +71,19 @@ jobs:
           echo "terraform_version=$(grep "^terraform" .tool-versions | cut -f2 -d' ')" >> $GITHUB_OUTPUT
           # TODO: Get the version, but it may not be the .version file as this should come from the CI/CD Pull Request Workflow
           echo "version=$(head -n 1 .version 2> /dev/null || echo unknown)" >> $GITHUB_OUTPUT
-          # echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          echo "project_dir=infrastructure" >> $GITHUB_OUTPUT
+          echo "default_environment=main" >> $GITHUB_OUTPUT
+          echo "ci_pipeline_iid=${{ github.run_number }}" >> $GITHUB_OUTPUT
+          echo "ci_commit_ref_name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "ci_commit_branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          echo "aws_region=eu-west-2"  >> $GITHUB_OUTPUT
+          echo "terraform_action=${{ inputs.terraformAction }}" >> $GITHUB_OUTPUT
+          deploy_environment=${{ inputs.deployEnvironment }}
+          if [[ $deploy_environment == de-*  ]]; then
+            deploy_environment="dynamic"
+          fi
+          echo "deploy_environment=$deploy_environment" >> $GITHUB_OUTPUT
       - name: "List variables"
         run: |
           export BUILD_DATETIME="${{ steps.variables.outputs.build_datetime }}"
@@ -60,57 +93,44 @@ jobs:
           export PYTHON_VERSION="${{ steps.variables.outputs.python_version }}"
           export TERRAFORM_VERSION="${{ steps.variables.outputs.terraform_version }}"
           export VERSION="${{ steps.variables.outputs.version }}"
-          # export TAG="${{ steps.variables.outputs.tag }}"
+          export TAG="${{ steps.variables.outputs.tag }}"
+          export PROJECT_DIR="${{ steps.variables.outputs.project_dir }}"
+          export PROJECT_NAME="${{ steps.variables.outputs.project_name }}"
+          export DEFAULT_ENVIRONMENT="${{ steps.variables.outputs.default_environment }}"
+          export CI_PIPELINE_IID="${{ steps.variables.outputs.ci_pipeline_iid }}"
+          export CI_COMMIT_REF_NAME="${{ steps.variables.outputs.ci_commit_ref_name }}"
+          export CI_COMMIT_BRANCH="${{ steps.variables.outputs.ci_commit_branch }}"
+          export AWS_REGION="${{ steps.variables.outputs.aws_region }}"
+          export DEPLOY_ENVIRONMENT="${{ steps.variables.outputs.deploy_environment }}"
+          export TERRAFORM_ACTION="${{ steps.variables.outputs.terraform_action }}"
           make list-variables
-
-  deploy-jekyll:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  deploy:
+    name: "Deploy to an environment"
+    environment: ${{ needs.metadata.outputs.deploy_environment }}
     runs-on: ubuntu-latest
-    needs: metadata
+    needs: [metadata]
+    timeout-minutes: 10
+    env:
+      TERRAFORM_ACTION: ${{ needs.metadata.outputs.terraform_action }}
+      CI_PIPELINE_IID: ${{ needs.metadata.outputs.ci_pipeline_iid }}
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
-
-      - name: "Get version"
-        id: get-asset-version
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          if [[ ${{inputs.include_prereleases}} == true ]]; then
-            json=$(gh release list --json tagName --limit 1 --exclude-drafts)
-          else
-            json=$(gh release list --json tagName --limit 1 --exclude-drafts --exclude-pre-releases)
-          fi
-
-          echo $json
-
-          release_version=$(echo $json | (jq -r '.[0].tagName'))
-          if [[ $release_version == null ]]; then exit 1; else echo $release_version; fi
-
-          if [[ ${{inputs.version}} == latest ]]; then
-            echo release_version=$(echo $release_version) >> $GITHUB_OUTPUT
-          else
-            echo release_version=$(echo ${{inputs.version}}) >> $GITHUB_OUTPUT
-          fi
-
-      - name: "Get release version"
-        id: download-asset
-        shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release download ${{steps.get-asset-version.outputs.release_version}} -p jekyll-docs-*.tar --output artifact.tar
-
-      - uses: actions/upload-artifact@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          name: jekyll-docs-${{steps.get-asset-version.outputs.release_version}}
-          path: artifact.tar
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-        with:
-          artifact_name: jekyll-docs-${{steps.get-asset-version.outputs.release_version}}
+          role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ASSUME_ROLE_NAME }}"
+          role-session-name: deployInfra
+          aws-region: ${{ needs.metadata.outputs.aws_region }}
+      - name:  Terraform Plan
+        if: >-
+          always() &&
+          !cancelled()
+        run: |
+          cd infrastructure/terraform && ./deploy.sh plan
+      - name:  Terraform Apply
+        if: >-
+          always() &&
+          !cancelled()
+        run: |
+          cd infrastructure/terraform && ./deploy.sh ${TERRAFORM_ACTION}
