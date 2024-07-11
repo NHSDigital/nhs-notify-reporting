@@ -65,3 +65,6 @@ Temporary Items
 
 # js
 node_modules
+
+#sql
+**/sql/create_updated.sql

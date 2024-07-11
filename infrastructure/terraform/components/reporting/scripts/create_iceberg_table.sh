@@ -1,70 +1,47 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Creates Iceberg table for reporting if it doesn't exist already
 
 ENV=${1:-"no_env"}
+account_id=${2:-"no_account"}
 
-if [[ ${ENV} == "no_env" ]]; then
-    echo "Environment name not provided as first argument"
+if [[ ${ENV} == "no_env" ]] || [[ ${account_id} == "no_account" ]] ; then
+    echo "Environment name or Account ID not provided as first argument"
     exit 1
 fi
 
-table_exists=$(aws glue get-tables --database-name nhs-notify-${ENV}-reporting-database | jq 'any(.TableList[].Name == "'nhs_notify_${ENV}_item_status_iceberg'"; .)')
+glue_database="nhs-notify-${ENV}-reporting-database"
+glue_table_name="nhs_notify_${ENV}_item_status_iceberg"
+
+table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${glue_table_name}'"; .)')
 
 if [[ ${table_exists} == "true" ]]; then
     echo "Table already exists for this environment in the database, hence exiting gracefully"
     exit 0
 fi
 
+ls -al
 
-account_id=""
+sql_file="./components/reporting/scripts/sql/create.sql"
+sql_file_updated="./components/reporting/scripts/sql/create_updated.sql"
 
-if [[ ${ENV} == "prod" ]]; then
-    account_id="211125615884"
-else
-    account_id="381492132479"
-fi
+#Substituting placeholders with actual values and piping to a new sql file to be used as query string
+sed "s/\${ENV}/${ENV}/g; s/\${account_id}/${account_id}/g" $sql_file > $sql_file_updated
+
+query_string=$(cat "$sql_file_updated")
 
 execution_id=$( aws athena start-query-execution \
-  --query-string "CREATE TABLE IF NOT EXISTS nhs_notify_${ENV}_item_status_iceberg (
-    clientid string,
-    campaignid string,
-    sendinggroupid string,
-    requestitemid string,
-    requestrefid string,
-    requestid string,
-    nhsnumberhash string,
-    createddate date,
-    completeddate date,
-    nhsapp_success boolean,
-    email_success boolean,
-    sms_success boolean,
-    letter_success boolean,
-    nhsapp_failed boolean,
-    email_failed boolean,
-    sms_failed boolean,
-    letter_failed boolean,
-    enriched boolean,
-    sending boolean,
-    delivered boolean,
-    failed boolean)
-  PARTITIONED BY (clientid, month(createddate), month(completeddate))
-  LOCATION 's3://nhs-notify-${account_id}-eu-west-2-${ENV}-daily-report/powerbi/nhs_notify_${ENV}_item_status_iceberg'
-  TBLPROPERTIES (
-    'table_type'='ICEBERG',
-    'format'='PARQUET',
-    'write_compression'='ZSTD'
-  );" \
+  --query-string "$query_string" \
   --work-group nhs-notify-${ENV}-reporting \
-  --query-execution-context Database=nhs-notify-${ENV}-reporting-database \
-  --result-configuration OutputLocation="s3://nhs-notify-${account_id}-eu-west-2-${ENV}-daily-report/execution_results/nhs_notify_${ENV}_item_status_iceberg/" | jq -r '.QueryExecutionId')
+  --query-execution-context Database=${glue_database} \
+  --result-configuration OutputLocation="s3://nhs-notify-${account_id}-eu-west-2-${ENV}-daily-report/execution_results/${glue_table_name}/" | jq -r '.QueryExecutionId')
 
 echo "Execution ID is: ${execution_id}"
 
 status=$(aws athena get-query-execution --query-execution-id $execution_id | jq -r '.QueryExecution.Status.State')
 
 if [[ $? == 0 ]] && [[ $status != "FAILED" ]]; then
-    echo "Table 'nhs_notify_${ENV}_item_status_iceberg' created!!"
+    echo "Table '${glue_table_name}' created!!"
 else
     echo "Table creation failed"
     exit 1

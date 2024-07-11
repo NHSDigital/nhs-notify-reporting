@@ -1,4 +1,4 @@
-resource "aws_athena_workgroup" "daily_report" {
+resource "aws_athena_workgroup" "reporting" {
   name          = local.csi
   description   = "Athena Workgroup for ${local.parameter_bundle.environment}"
   force_destroy = true
@@ -8,7 +8,7 @@ resource "aws_athena_workgroup" "daily_report" {
 
     result_configuration {
       expected_bucket_owner = local.this_account
-      output_location       = "s3://${aws_s3_bucket.daily_report.bucket}/athena-output/"
+      output_location       = "s3://${aws_s3_bucket.reporting.bucket}/athena-output/"
 
       encryption_configuration {
         encryption_option = "SSE_KMS"
