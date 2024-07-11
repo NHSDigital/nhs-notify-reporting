@@ -98,7 +98,7 @@ jobs:
     name: "Terraform Testing"
     runs-on: ubuntu-latest
     timeout-minutes: 2
-    environment: dev
+    environment: main
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
