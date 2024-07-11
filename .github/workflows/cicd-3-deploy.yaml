@@ -7,7 +7,7 @@ on:
       deployEnvironment:
         description: Name of the environment to deploy
         required: true
-        default: dev
+        default: main
         type: string
       terraformAction:
         description: Terraform Action
@@ -21,8 +21,8 @@ on:
 
 env:
   PROJECT_DIR: infrastructure
-  PROJECT_NAME: notify-web-gateway
-  DEFAULT_ENVIRONMENT: dev
+  PROJECT_NAME: notify-reporting
+  DEFAULT_ENVIRONMENT: main
   CI_PIPELINE_IID: ${{ github.run_number }}
   CI_COMMIT_REF_NAME: ${{ github.ref_name }}
   CI_COMMIT_BRANCH: ${{ github.ref_name }}
@@ -35,7 +35,7 @@ permissions:
   contents: read  # This is required for actions/checkout
 
 concurrency:
-  group: notify-web-ui-${{ github.workflow }}-${{ github.event.inputs.deployEnvironment }}
+  group: notify-reporting-${{ github.workflow }}-${{ github.event.inputs.deployEnvironment }}
   cancel-in-progress: false
 
 jobs:
@@ -73,7 +73,7 @@ jobs:
           echo "version=$(head -n 1 .version 2> /dev/null || echo unknown)" >> $GITHUB_OUTPUT
           echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
           echo "project_dir=infrastructure" >> $GITHUB_OUTPUT
-          echo "default_environment=dev" >> $GITHUB_OUTPUT
+          echo "default_environment=main" >> $GITHUB_OUTPUT
           echo "ci_pipeline_iid=${{ github.run_number }}" >> $GITHUB_OUTPUT
           echo "ci_commit_ref_name=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           echo "ci_commit_branch=${{ github.ref_name }}" >> $GITHUB_OUTPUT
