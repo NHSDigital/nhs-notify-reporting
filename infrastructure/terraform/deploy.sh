@@ -15,7 +15,7 @@ color_reset="$(git config --get-color "" "reset")"
 # Set variables for later use
 basedir="."
 original_dir=$(pwd);
-terraform_project="notify-reporting"
+terraform_project="nhs-notify"
 terraform_command=${1:-plan}
 
 # shellcheck disable=SC1091
