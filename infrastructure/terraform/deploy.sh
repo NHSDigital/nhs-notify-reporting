@@ -15,7 +15,7 @@ color_reset="$(git config --get-color "" "reset")"
 # Set variables for later use
 basedir="."
 original_dir=$(pwd);
-terraform_project="notify-web-gateway"
+terraform_project="notify-reporting"
 terraform_command=${1:-plan}
 
 # shellcheck disable=SC1091
@@ -32,10 +32,10 @@ terraform_environment="${DEPLOY_ENVIRONMENT}";
 
 # determine the order of components to process
 if [[ "${TERRAFORM_ACTION}" == "destroy" ]]; then
-  component_list="web-ui";
+  component_list="reporting";
   plan_action="plan-destroy";
 else
-  component_list="web-ui";
+  component_list="reporting";
   plan_action="plan";
 fi;
 
