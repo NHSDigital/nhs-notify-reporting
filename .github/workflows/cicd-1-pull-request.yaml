@@ -1,4 +1,4 @@
-name: "1. CI/CD pull request"
+name: "CI/CD pull request"
 
 # The total recommended execution time for the "CI/CD Pull Request" workflow is around 20 minutes.
 
@@ -8,8 +8,10 @@ on:
       - "**"
   pull_request:
     types: [opened, reopened]
-    branches:
-      - main
+
+concurrency:
+  group: notify-reporting-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   metadata:
@@ -25,7 +27,6 @@ jobs:
       python_version: ${{ steps.variables.outputs.python_version }}
       terraform_version: ${{ steps.variables.outputs.terraform_version }}
       version: ${{ steps.variables.outputs.version }}
-      is_version_prerelease: ${{ steps.variables.outputs.is_version_prerelease }}
       does_pull_request_exist: ${{ steps.pr_exists.outputs.does_pull_request_exist }}
     steps:
       - name: "Checkout code"
@@ -34,8 +35,7 @@ jobs:
         id: variables
         run: |
           datetime=$(date -u +'%Y-%m-%dT%H:%M:%S%z')
-          BUILD_DATETIME=$datetime make version-create-effective-file dir=.
-          version=$(head -n 1 .version 2> /dev/null || echo unknown)
+          BUILD_DATETIME=$datetime make version-create-effective-file
           echo "build_datetime_london=$(TZ=Europe/London date --date=$datetime +'%Y-%m-%dT%H:%M:%S%z')" >> $GITHUB_OUTPUT
           echo "build_datetime=$datetime" >> $GITHUB_OUTPUT
           echo "build_timestamp=$(date --date=$datetime -u +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
@@ -43,9 +43,7 @@ jobs:
           echo "nodejs_version=$(grep "^nodejs" .tool-versions | cut -f2 -d' ')" >> $GITHUB_OUTPUT
           echo "python_version=$(grep "^nodejs" .tool-versions | cut -f2 -d' ')" >> $GITHUB_OUTPUT
           echo "terraform_version=$(grep "^terraform" .tool-versions | cut -f2 -d' ')" >> $GITHUB_OUTPUT
-          echo "version=$(echo $version)" >> $GITHUB_OUTPUT
-          echo "is_version_prerelease=$(if [[ $version == *-* ]]; then echo "true"; else echo "false"; fi)" >> $GITHUB_OUTPUT
-
+          echo "version=$(head -n 1 .version 2> /dev/null || echo unknown)" >> $GITHUB_OUTPUT
       - name: "Check if pull request exists for this branch"
         id: pr_exists
         env:
@@ -71,7 +69,6 @@ jobs:
           export TERRAFORM_VERSION="${{ steps.variables.outputs.terraform_version }}"
           export VERSION="${{ steps.variables.outputs.version }}"
           export DOES_PULL_REQUEST_EXIST="${{ steps.pr_exists.outputs.does_pull_request_exist }}"
-          export IS_VERSION_PRERELEASE="${{ steps.variables.outputs.is_version_prerelease }}"
           make list-variables
   commit-stage: # Recommended maximum execution time is 2 minutes
     name: "Commit stage"
@@ -103,7 +100,7 @@ jobs:
     name: "Build stage"
     needs: [metadata, test-stage]
     uses: ./.github/workflows/stage-3-build.yaml
-    if: needs.metadata.outputs.does_pull_request_exist == 'true' || (github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')) || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: needs.metadata.outputs.does_pull_request_exist == 'true' || (github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened'))
     with:
       build_datetime: "${{ needs.metadata.outputs.build_datetime }}"
       build_timestamp: "${{ needs.metadata.outputs.build_timestamp }}"
@@ -117,7 +114,7 @@ jobs:
     name: "Acceptance stage"
     needs: [metadata, build-stage]
     uses: ./.github/workflows/stage-4-acceptance.yaml
-    if: needs.metadata.outputs.does_pull_request_exist == 'true' || (github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened')) || (github.event_name == 'push' && github.ref == 'refs/heads/main')
+    if: needs.metadata.outputs.does_pull_request_exist == 'true' || (github.event_name == 'pull_request' && (github.event.action == 'opened' || github.event.action == 'reopened'))
     with:
       build_datetime: "${{ needs.metadata.outputs.build_datetime }}"
       build_timestamp: "${{ needs.metadata.outputs.build_timestamp }}"
@@ -126,19 +123,4 @@ jobs:
       python_version: "${{ needs.metadata.outputs.python_version }}"
       terraform_version: "${{ needs.metadata.outputs.terraform_version }}"
       version: "${{ needs.metadata.outputs.version }}"
-    secrets: inherit
-  publish-stage: # Recommended maximum execution time is 10 minutes
-    name: "Publish stage"
-    needs: [metadata, acceptance-stage]
-    uses: ./.github/workflows/stage-5-publish.yaml
-    if: (github.event_name == 'push' && github.ref == 'refs/heads/main')
-    with:
-      build_datetime: "${{ needs.metadata.outputs.build_datetime }}"
-      build_timestamp: "${{ needs.metadata.outputs.build_timestamp }}"
-      build_epoch: "${{ needs.metadata.outputs.build_epoch }}"
-      nodejs_version: "${{ needs.metadata.outputs.nodejs_version }}"
-      python_version: "${{ needs.metadata.outputs.python_version }}"
-      terraform_version: "${{ needs.metadata.outputs.terraform_version }}"
-      version: "${{ needs.metadata.outputs.version }}"
-      is_version_prerelease: "${{ needs.metadata.outputs.is_version_prerelease }}"
     secrets: inherit
