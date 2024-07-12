@@ -27,4 +27,3 @@ CREATE TABLE IF NOT EXISTS nhs_notify_${ENV}_item_status_iceberg (
     'format'='PARQUET',
     'write_compression'='ZSTD'
   );
-  
