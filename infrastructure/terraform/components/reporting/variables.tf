@@ -29,7 +29,6 @@ variable "app_deployer_role_name" {
   type        = string
   description = "Name of the app deployer role that is allowed to deploy Comms Mgr applications but not create other IAM roles"
 }
-
 variable "region" {
   type        = string
   description = "The AWS Region"
