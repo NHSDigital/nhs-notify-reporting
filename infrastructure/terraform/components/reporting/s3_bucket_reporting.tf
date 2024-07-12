@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "reporting" {
-  bucket        = "${local.csi_global}-daily-report"
+  bucket        = "${local.csi_global}-reporting"
   force_destroy = "true"
 }
 

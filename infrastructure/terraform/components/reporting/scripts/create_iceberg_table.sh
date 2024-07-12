@@ -34,7 +34,7 @@ execution_id=$( aws athena start-query-execution \
   --query-string "$query_string" \
   --work-group nhs-notify-${ENV}-reporting \
   --query-execution-context Database=${glue_database} \
-  --result-configuration OutputLocation="s3://nhs-notify-${account_id}-eu-west-2-${ENV}-daily-report/execution_results/${glue_table_name}/" | jq -r '.QueryExecutionId')
+  --result-configuration OutputLocation="s3://nhs-notify-${account_id}-eu-west-2-${ENV}-reporting/execution_results/${glue_table_name}/" | jq -r '.QueryExecutionId')
 
 echo "Execution ID is: ${execution_id}"
 
