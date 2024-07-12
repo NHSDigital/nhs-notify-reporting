@@ -20,10 +20,8 @@ if [[ ${table_exists} == "true" ]]; then
     exit 0
 fi
 
-ls -al
-
-sql_file="./components/reporting/scripts/sql/create.sql"
-sql_file_updated="./components/reporting/scripts/sql/create_updated.sql"
+sql_file="./scripts/sql/create.sql"
+sql_file_updated="./scripts/sql/create_updated.sql"
 
 #Substituting placeholders with actual values and piping to a new sql file to be used as query string
 sed "s/\${ENV}/${ENV}/g; s/\${account_id}/${account_id}/g" $sql_file > $sql_file_updated
