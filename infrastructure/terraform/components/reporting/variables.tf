@@ -67,3 +67,9 @@ variable "default_kms_deletion_window_in_days" {
   description = "Default number of days to set KMS key deletion window"
   default     = 14
 }
+
+variable "core_account_id" {
+  type        = string
+  description = "The core account that contains the corresponding Glue Catalog"
+  default     = 1234567890
+}
