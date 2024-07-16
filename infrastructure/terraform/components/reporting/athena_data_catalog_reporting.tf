@@ -4,6 +4,6 @@ resource "aws_athena_data_catalog" "reporting" {
   type        = "GLUE"
 
   parameters = {
-    "catalog-id" = var.core_account_id
+    "catalog-id" = "${var.core_account_id}"
   }
 }
