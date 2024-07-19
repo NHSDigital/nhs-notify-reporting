@@ -1,5 +1,6 @@
 resource "aws_scheduler_schedule" "sf_scheduler" {
   name       = "${local.csi}-scheduler"
+  description = "Schduler to trigger Step function to query Athena"
   group_name = "default"
 
   flexible_time_window {
