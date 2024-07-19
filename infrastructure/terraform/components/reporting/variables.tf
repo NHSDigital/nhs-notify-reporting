@@ -73,3 +73,9 @@ variable "core_account_id" {
   description = "The core account that contains the corresponding Glue Catalog"
   default     = 1234567890
 }
+
+variable "core_env" {
+  type        = string
+  description = "The core account that contains the corresponding Glue Catalog"
+  default     = "internal-dev"
+}
