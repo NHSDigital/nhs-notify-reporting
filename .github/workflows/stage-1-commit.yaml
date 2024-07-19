@@ -115,6 +115,7 @@ jobs:
           terraform_project: nhs-notify
           component: reporting
           environment: main
+          group: nhs-notify-reporting-dev
   count-lines-of-code:
     name: "Count lines of code"
     runs-on: ubuntu-latest
