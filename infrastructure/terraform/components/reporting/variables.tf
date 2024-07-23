@@ -76,6 +76,6 @@ variable "core_account_id" {
 
 variable "core_env" {
   type        = string
-  description = "The core account that contains the corresponding Glue Catalog"
+  description = "The core environment that contains the corresponding Glue table/S3 buckets etc."
   default     = "internal-dev"
 }
