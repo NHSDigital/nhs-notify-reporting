@@ -31,7 +31,8 @@ data "aws_iam_policy_document" "s3" {
       "kms:CancelKeyDeletion",
       "kms:Decrypt",
       "kms:Encrypt",
-      "kms:GenerateDataKey"
+      "kms:GenerateDataKey",
+      "kms:TagResource"
     ]
 
     resources = [
@@ -42,12 +43,13 @@ data "aws_iam_policy_document" "s3" {
       type = "AWS"
       identifiers = [
         local.parameter_bundle.iam_resource_arns.any_authorised_user_in_this_account,
+
       ]
     }
   }
 
   statement {
-    sid    = "AllowCIAccess"
+    sid    = "AllowUsageAccess"
     effect = "Allow"
 
     actions = [

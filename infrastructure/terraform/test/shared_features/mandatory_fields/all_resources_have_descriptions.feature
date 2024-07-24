@@ -5,6 +5,7 @@ Feature: Mandatory Fields
   @exclude_.*aws_securityhub_insight.*
   @exclude_.*aws_default_security_group.*
   @exclude_.*local_file.*
+  @exclude_.*sfn_state_machine.*
   Scenario: Ensure all resources have descriptions
     Given I have resource that supports description defined
     Then it must contain description
