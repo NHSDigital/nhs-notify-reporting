@@ -7,6 +7,12 @@ resource "aws_sfn_state_machine" "athena" {
     S3_OUTPUT_LOCATION = "${aws_s3_bucket.reporting.bucket}/execution_results/nhs_notify_${var.environment}_item_status_iceberg",
     QUERY_STRING       = replace(aws_athena_named_query.reporting.query, "\"", "\\\"")
   })
+
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.reporting.arn}:*"
+    include_execution_data = true
+    level                  = "ALL" # For testing purposes. To be set to ERROR before merge.
+  }
 }
 
 resource "aws_iam_role" "sfn_athena" {
@@ -169,4 +175,25 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
   }
 
+  statement {
+    sid    = "AllowCloudwatchLogging"
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:CreateLogStream",
+      "logs:GetLogDelivery",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "logs:PutLogEvents",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+      "logs:DescribeLogGroups"
+    ]
+
+    resources = [
+      "*", ## https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
+    ]
+  }
 }
