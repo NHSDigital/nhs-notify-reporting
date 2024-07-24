@@ -11,7 +11,7 @@ resource "aws_sfn_state_machine" "athena" {
   logging_configuration {
     log_destination        = "${aws_cloudwatch_log_group.reporting.arn}:*"
     include_execution_data = true
-    level                  = "ALL" # For testing purposes. To be set to ERROR before merge.
+    level                  = "ERROR"
   }
 }
 
