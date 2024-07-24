@@ -7,6 +7,12 @@ resource "aws_sfn_state_machine" "athena" {
     S3_OUTPUT_LOCATION = "${aws_s3_bucket.reporting.bucket}/execution_results/nhs_notify_${var.environment}_item_status_iceberg",
     QUERY_STRING       = replace(aws_athena_named_query.reporting.query, "\"", "\\\"")
   })
+
+  logging_configuration {
+    log_destination        = "${aws_cloudwatch_log_group.reporting.arn}:*"
+    include_execution_data = true
+    level                  = "ERROR"
+  }
 }
 
 resource "aws_iam_role" "sfn_athena" {
@@ -169,4 +175,54 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
   }
 
+  statement {
+    sid    = "AllowCloudwatchLogging1"
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:GetLogDelivery",
+      "logs:UpdateLogDelivery",
+      "logs:DeleteLogDelivery",
+      "logs:ListLogDeliveries",
+      "logs:PutResourcePolicy",
+      "logs:DescribeResourcePolicies",
+      "logs:DescribeLogGroups"
+    ]
+
+    resources = [
+      "*",
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Environment"
+      values   = [
+        var.environment
+      ]
+    }
+  }
+
+  statement {
+    sid    = "AllowCloudwatchLogging2"
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+
+    resources = [
+      aws_cloudwatch_log_group.reporting.arn,
+      "${aws_cloudwatch_log_group.reporting.arn}:*"
+    ]
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Environment"
+      values   = [
+        var.environment
+      ]
+    }
+  }
 }

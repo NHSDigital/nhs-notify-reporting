@@ -1,53 +1,53 @@
 {
-    "Comment": "An example of using Athena to query transaction history in core and store in iceberg table in this account.",
-    "StartAt": "Parallel Queries",
-    "States": {
-      "Parallel Queries": {
-        "Type": "Parallel",
-        "Branches": [
-          {
-            "StartAt": "Transaction Query",
-            "States": {
-              "Transaction Query": {
-                "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
-                "Parameters": {
-                  "QueryString": "${QUERY_STRING}",
-                  "WorkGroup": "${ATHENA_WORKGROUP}",
-                  "ResultConfiguration": {
-                    "OutputLocation": "${S3_OUTPUT_LOCATION}"
-                  }
-                },
-                "Type": "Task",
-                "Next": "Transaction Success",
-                "Catch": [
-                  {
-                    "ErrorEquals": [
-                      "States.ALL"
-                    ],
-                    "ResultPath": "$.error-info",
-                    "Next": "Transaction Failed"
-                  }
-                ]
+  "Comment": "An example of using Athena to query transaction history in core and store in iceberg table in this account.",
+  "StartAt": "Parallel Queries",
+  "States": {
+    "Parallel Queries": {
+      "Type": "Parallel",
+      "Branches": [
+        {
+          "StartAt": "Transaction Query",
+          "States": {
+            "Transaction Query": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString": "${QUERY_STRING}",
+                "WorkGroup": "${ATHENA_WORKGROUP}",
+                "ResultConfiguration": {
+                  "OutputLocation": "${S3_OUTPUT_LOCATION}"
+                }
               },
-              "Transaction Success": {
-                "Type": "Pass",
-                "Result": "Query of Transaction History succeeded",
-                "End": true
-              },
-              "Transaction Failed": {
-                "Type": "Fail",
-                "Error": "QueryFailed",
-                "Cause": "The Athena query execution failed for transaction history table."
-              }
+              "Type": "Task",
+              "Next": "Transaction Success",
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.error-info",
+                  "Next": "Transaction Failed"
+                }
+              ]
+            },
+            "Transaction Success": {
+              "Type": "Pass",
+              "Result": "Query of Transaction History succeeded",
+              "End": true
+            },
+            "Transaction Failed": {
+              "Type": "Fail",
+              "Error": "QueryFailed",
+              "Cause": "The Athena query execution failed for transaction history table."
             }
           }
-        ],
-        "Next": "Check Results"
-      },
-      "Check Results": {
-        "Type": "Pass",
-        "Result": "All queries finished",
-        "End": true
-      }
+        }
+      ],
+      "Next": "Check Results"
+    },
+    "Check Results": {
+      "Type": "Pass",
+      "Result": "All queries finished",
+      "End": true
     }
   }
+}
