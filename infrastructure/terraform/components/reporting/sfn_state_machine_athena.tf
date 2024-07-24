@@ -176,24 +176,37 @@ data "aws_iam_policy_document" "sfn_athena" {
   }
 
   statement {
-    sid    = "AllowCloudwatchLogging"
+    sid    = "AllowCloudwatchLogging1"
     effect = "Allow"
 
     actions = [
       "logs:CreateLogDelivery",
-      "logs:CreateLogStream",
       "logs:GetLogDelivery",
       "logs:UpdateLogDelivery",
       "logs:DeleteLogDelivery",
       "logs:ListLogDeliveries",
-      "logs:PutLogEvents",
       "logs:PutResourcePolicy",
       "logs:DescribeResourcePolicies",
       "logs:DescribeLogGroups"
     ]
 
     resources = [
-      "*", ## https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html
+      "*",
+    ]
+  }
+
+  statement {
+    sid    = "AllowCloudwatchLogging2"
+    effect = "Allow"
+
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+
+    resources = [
+      aws_cloudwatch_log_group.reporting.arn,
+      "${aws_cloudwatch_log_group.reporting.arn}:*"
     ]
   }
 }
