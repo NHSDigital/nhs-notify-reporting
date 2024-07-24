@@ -50,4 +50,8 @@
         "End": true
       }
     }
+<<<<<<< HEAD
   }
+=======
+  }
+>>>>>>> 89077c0 (CCM-5357: Step function template for athena, scheduler to trigger, update query)
