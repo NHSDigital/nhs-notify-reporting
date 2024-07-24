@@ -193,6 +193,14 @@ data "aws_iam_policy_document" "sfn_athena" {
     resources = [
       "*",
     ]
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:ResourceTag/Environment"
+      values   = [
+        var.environment
+      ]
+    }
   }
 
   statement {
@@ -208,5 +216,13 @@ data "aws_iam_policy_document" "sfn_athena" {
       aws_cloudwatch_log_group.reporting.arn,
       "${aws_cloudwatch_log_group.reporting.arn}:*"
     ]
+
+    condition {
+      test     = "StringLike"
+      variable = "aws:ResourceTag/Environment"
+      values   = [
+        var.environment
+      ]
+    }
   }
 }
