@@ -195,8 +195,8 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     condition {
-      test     = "StringLike"
-      variable = "aws:ResourceTag/Environment"
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Environment"
       values   = [
         var.environment
       ]
@@ -218,8 +218,8 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     condition {
-      test     = "StringLike"
-      variable = "aws:ResourceTag/Environment"
+      test     = "StringEquals"
+      variable = "aws:RequestTag/Environment"
       values   = [
         var.environment
       ]
