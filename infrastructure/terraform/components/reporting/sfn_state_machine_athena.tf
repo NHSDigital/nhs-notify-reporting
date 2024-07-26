@@ -195,13 +195,5 @@ data "aws_iam_policy_document" "sfn_athena" {
     resources = [
       "*",
     ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Environment"
-      values   = [
-        var.environment
-      ]
-    }
   }
 }
