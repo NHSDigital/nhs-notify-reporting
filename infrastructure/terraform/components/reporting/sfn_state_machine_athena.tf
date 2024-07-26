@@ -193,7 +193,7 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     resources = [
-      "*",
+      "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
     ]
   }
 }
