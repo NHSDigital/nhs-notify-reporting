@@ -176,7 +176,7 @@ data "aws_iam_policy_document" "sfn_athena" {
   }
 
   statement {
-    sid    = "AllowCloudwatchLogging1"
+    sid    = "AllowCloudwatchLogging"
     effect = "Allow"
 
     actions = [
@@ -187,34 +187,13 @@ data "aws_iam_policy_document" "sfn_athena" {
       "logs:ListLogDeliveries",
       "logs:PutResourcePolicy",
       "logs:DescribeResourcePolicies",
-      "logs:DescribeLogGroups"
-    ]
-
-    resources = [
-      "*",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Environment"
-      values   = [
-        var.environment
-      ]
-    }
-  }
-
-  statement {
-    sid    = "AllowCloudwatchLogging2"
-    effect = "Allow"
-
-    actions = [
+      "logs:DescribeLogGroups",
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
 
     resources = [
-      aws_cloudwatch_log_group.reporting.arn,
-      "${aws_cloudwatch_log_group.reporting.arn}:*"
+      "*",
     ]
 
     condition {
