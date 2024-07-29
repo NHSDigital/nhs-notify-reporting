@@ -25,7 +25,7 @@ sql_file_updated="./scripts/sql/${table_name}_updated.sql"
 s3_url="s3://nhs-notify-${account_id}-eu-west-2-${ENV}-reporting"
 
 #Substituting placeholders with actual values and piping to a new sql file to be used as query string
-sed "s/\${s3_url}/${s3_url}/g; s/\${table_name}/${table_name}/g" $sql_file > $sql_file_updated
+sed "s#\${s3_url}#${s3_url}#g; s#\${table_name}#${table_name}#g" $sql_file > $sql_file_updated
 
 query_string=$(cat "$sql_file_updated")
 

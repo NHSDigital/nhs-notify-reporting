@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     failedreason string,
     requestitemcount int
 )
-PARTITIONED BY (clientid, month(createddate), month(completeddate))
+PARTITIONED BY (month(createddate), month(completeddate))
 LOCATION '${s3_url}/data/${table_name}'
 TBLPROPERTIES (
   'table_type'='ICEBERG',
