@@ -3,7 +3,7 @@ resource "aws_sfn_state_machine" "athena" {
   role_arn = aws_iam_role.sfn_athena.arn
 
   definition = templatefile("${path.module}/files/state.tmpl.json", {
-    ATHENA_WORKGROUP   = aws_athena_workgroup.reporting.name,
+    ATHENA_WORKGROUP   = aws_athena_workgroup.ingestion.name,
     S3_OUTPUT_LOCATION = "${aws_s3_bucket.reporting.bucket}/execution_results/nhs_notify_${var.environment}_item_status_iceberg",
     QUERY_STRING       = replace(aws_athena_named_query.reporting.query, "\"", "\\\"")
   })
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     resources = [
-      aws_athena_workgroup.reporting.arn,
+      aws_athena_workgroup.ingestion.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }
