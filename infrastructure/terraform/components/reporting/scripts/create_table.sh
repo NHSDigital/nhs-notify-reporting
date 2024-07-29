@@ -3,16 +3,16 @@
 # Creates table if it doesn't exist already
 
 ENV=${1:-"no_env"}
-s3_root=$2
+s3_bucket=$2
 table_name=$3
 
 if [[ ${ENV} == "no_env" ]]; then
-    echo "Environment name or Account ID not provided"
+    echo "Environment name not provided"
     exit 1
 fi
 
-if [[ -z "${s3_root}" ]]; then
-    echo "S3 root url not specified"
+if [[ -z "${s3_bucket}" ]]; then
+    echo "S3 bucket not specified"
     exit 1
 fi
 
@@ -32,6 +32,7 @@ fi
 
 sql_file="./scripts/sql/${table_name}.sql"
 sql_file_updated="./scripts/sql/${table_name}_updated.sql"
+s3_root="s3://${s3_bucket}"
 s3_location="${s3_root}/data/${table_name}"
 
 #Substituting placeholders with actual values and piping to a new sql file to be used as query string
