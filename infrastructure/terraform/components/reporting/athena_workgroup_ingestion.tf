@@ -1,6 +1,6 @@
 resource "aws_athena_workgroup" "ingestion" {
   name          = "${local.csi}-ingestion"
-  description   = "Athena Workgroup for ${local.parameter_bundle.environment} data ingestion"
+  description   = "Athena Workgroup for data ingestion into ${local.parameter_bundle.environment} environment"
   force_destroy = true
 
   configuration {
