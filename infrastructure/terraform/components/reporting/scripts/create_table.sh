@@ -1,17 +1,22 @@
 #!/usr/bin/env bash
 
-# Creates Iceberg table for reporting if it doesn't exist already
+# Creates table if it doesn't exist already
 
 ENV=${1:-"no_env"}
 account_id=${2:-"no_account"}
+table_name=$3
 
 if [[ ${ENV} == "no_env" ]] || [[ ${account_id} == "no_account" ]] ; then
     echo "Environment name or Account ID not provided"
     exit 1
 fi
 
+if [[ -z "${table_name}" ]]; then
+    echo "Table name not specified"
+    exit 1
+fi
+
 glue_database="nhs-notify-${ENV}-reporting-database"
-table_name="request_item_plan_summary"
 
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
