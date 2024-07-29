@@ -11,7 +11,7 @@ USING (
 		status,
 		failedreason,
 		count(distinct requestitemid) AS requestitemcount
-		FROM ${source_table}
+  FROM ${source_table}
 	WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
     ( 
       /* Moving 1-month ingestion window */
@@ -63,5 +63,5 @@ VALUES (
 	source.completeddate,
 	source.status,
 	source.failedreason,
-	MAX(source.requestitemcount, target.requestitemcount)
+	source.requestitemcount
 )
