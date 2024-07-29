@@ -30,8 +30,8 @@ if [[ ${table_exists} == "true" ]]; then
     exit 0
 fi
 
-sql_file="./scripts/sql/${table_name}.sql"
-sql_file_updated="./scripts/sql/${table_name}_updated.sql"
+sql_file="./scripts/sql/tables/${table_name}.sql"
+sql_file_updated="./scripts/sql/tables/${table_name}_updated.sql"
 s3_root="s3://${s3_bucket}"
 s3_location="${s3_root}/data/${table_name}"
 
