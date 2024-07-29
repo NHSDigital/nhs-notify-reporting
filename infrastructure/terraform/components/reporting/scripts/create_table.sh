@@ -31,7 +31,7 @@ query_string=$(cat "$sql_file_updated")
 
 execution_id=$( aws athena start-query-execution \
   --query-string "$query_string" \
-  --work-group nhs-notify-${ENV}-reporting-setupx \
+  --work-group nhs-notify-${ENV}-reporting-setup \
   --query-execution-context Database=${glue_database} \
   --result-configuration OutputLocation="${s3_url}/query_results/setup/${table_name}/" | jq -r '.QueryExecutionId')
 
