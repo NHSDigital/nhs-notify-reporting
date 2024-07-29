@@ -5,7 +5,7 @@ resource "aws_sfn_state_machine" "athena" {
   definition = templatefile("${path.module}/files/state.tmpl.json", {
     ATHENA_WORKGROUP   = aws_athena_workgroup.ingestion.name,
     S3_OUTPUT_LOCATION = "${aws_s3_bucket.reporting.bucket}/execution_results/nhs_notify_${var.environment}_item_status_iceberg",
-    QUERY_STRING       = replace(aws_athena_named_query.reporting.query, "\"", "\\\"")
+    QUERY_STRING       = replace(aws_athena_named_query.request_item_plan_summary_ingestion.query, "\"", "\\\"")
   })
 
   logging_configuration {
