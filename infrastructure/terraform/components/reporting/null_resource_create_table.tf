@@ -1,10 +1,10 @@
-resource "null_resource" "create_table" {
+resource "null_resource" "request_item_plan_summary_table" {
   triggers = {
     always_run = timestamp()
   }
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create_table.sh ${var.environment} ${local.this_account} request_item_plan_summary"
+    command = "${path.module}/scripts/create_table.sh ${var.environment} ${aws_s3_bucket.reporting.bucket} request_item_plan_summary"
   }
 
-  depends_on = [aws_athena_workgroup.setup, aws_athena_workgroup.ingestion]
+  depends_on = [aws_athena_workgroup.setup]
 }

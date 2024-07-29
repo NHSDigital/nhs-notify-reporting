@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     requestitemcount int
 )
 PARTITIONED BY (month(createddate), month(completeddate))
-LOCATION '${s3_url}/data/${table_name}'
+LOCATION '${s3_location}'
 TBLPROPERTIES (
   'table_type'='ICEBERG',
   'format'='PARQUET',
