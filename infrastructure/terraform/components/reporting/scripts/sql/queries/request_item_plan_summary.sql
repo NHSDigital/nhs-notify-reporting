@@ -40,7 +40,7 @@ ON
 	COALESCE(CAST(source.completeddate AS varchar), '') = COALESCE(CAST(target.completeddate AS varchar), '') AND
 	COALESCE(source.status, '') = COALESCE(target.status, '') AND
 	COALESCE(source.failedreason, '') = COALESCE(target.failedreason, '')
-WHEN MATCHED THEN UPDATE SET requestitemcount = source.requestitemcount
+WHEN MATCHED AND (source.requestitemcount > target.requestitemcount) THEN UPDATE SET requestitemcount = source.requestitemcount
 WHEN NOT MATCHED THEN INSERT (
 	clientid,
 	campaignid,
