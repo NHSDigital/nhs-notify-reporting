@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "sfn_athena" {
       "athena:stopQueryExecution",
       "athena:getQueryExecution",
       "athena:getDataCatalog",
-      "athena:GetNamedQuery"
+      "athena:getNamedQuery"
     ]
 
     resources = [
@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "sfn_athena" {
     resources = [
       "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/nhs_notify_${var.environment}_item_status_iceberg",
+      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_request_item_plan_summary",
     ]
   }
 
