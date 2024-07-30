@@ -50,11 +50,6 @@
           }
         }
       ],
-      "Next": "Check Results"
-    },
-    "Check Results": {
-      "Type": "Pass",
-      "Result": "All queries finished",
       "End": true
     }
   }
