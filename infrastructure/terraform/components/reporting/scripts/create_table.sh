@@ -43,8 +43,7 @@ query_string=$(cat "$sql_file_updated")
 execution_id=$( aws athena start-query-execution \
   --query-string "$query_string" \
   --work-group nhs-notify-${ENV}-reporting-setup \
-  --query-execution-context Database=${glue_database} \
-  --result-configuration OutputLocation="${s3_root}/query_results/setup/${table_name}/" | jq -r '.QueryExecutionId')
+  --query-execution-context Database=${glue_database} | jq -r '.QueryExecutionId')
 
 if [[ -z "${execution_id}" ]]; then
     echo "Table creation failed"
