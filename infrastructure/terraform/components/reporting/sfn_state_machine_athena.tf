@@ -60,9 +60,7 @@ data "aws_iam_policy_document" "sfn_athena" {
       "athena:stopQueryExecution",
       "athena:getQueryExecution",
       "athena:getDataCatalog",
-      "athena:GetNamedQuery",
-      "athena:*",
-      "glue:*"
+      "athena:GetNamedQuery"
     ]
 
     resources = [
