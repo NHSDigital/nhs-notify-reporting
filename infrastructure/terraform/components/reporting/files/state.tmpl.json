@@ -44,8 +44,8 @@
             },
             "Transaction Failed": {
               "Type": "Fail",
-              "Error": "QueryFailed",
-              "CausePath": "States.JsonToString($.Cause)"
+              "ErrorPath": "States.JsonToString($.error-info.Error)",
+              "CausePath": "States.JsonToString($.error-info.Cause)"
             }
           }
         }
