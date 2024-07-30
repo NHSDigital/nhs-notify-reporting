@@ -46,7 +46,7 @@
             "Transaction Failed": {
               "Type": "Fail",
               "Error": "QueryFailed",
-              "Cause": "Athena query failed."
+              "Cause": "$.error-info.Cause"
             }
           }
         }
