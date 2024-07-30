@@ -17,7 +17,7 @@
               "Next": "Execute Query"
             },
             "Execute Query": {
-              "Resource": "arn:aws:states:::athena:startQueryExecution",
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Parameters": {
                 "QueryString.$": "$.NamedQuery.QueryString",
                 "WorkGroup.$": "$.NamedQuery.WorkGroup"
