@@ -11,7 +11,7 @@
             "Get Query": {
               "Type": "Task",
               "Parameters": {
-                "NamedQueryId": "98432993-3b7e-4398-9015-ef29e2186428"
+                "NamedQueryId": "${NAMED_QUERY_ID}"
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
               "Next": "Execute Query"
@@ -20,7 +20,10 @@
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Parameters": {
                 "QueryString.$": "$.NamedQuery.QueryString",
-                "WorkGroup.$": "$.NamedQuery.WorkGroup"
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
               },
               "Type": "Task",
               "Next": "Transaction Success",
