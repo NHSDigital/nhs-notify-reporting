@@ -14,7 +14,7 @@ USING (
   FROM ${source_table}
   WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
     (
-      /* Moving 1-month ingestion window */
+      -- Moving 1-month ingestion window
       (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
       (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
     )
@@ -30,7 +30,7 @@ USING (
     failedreason
 ) as source
 ON
-  /* Allow aggregation of null dimensions */
+  -- Allow aggregation of null dimensions
   COALESCE(source.clientid, '') = COALESCE(target.clientid, '') AND
   COALESCE(source.campaignid, '') = COALESCE(target.campaignid, '') AND
   COALESCE(source.sendinggroupid, '') = COALESCE(target.sendinggroupid, '') AND
