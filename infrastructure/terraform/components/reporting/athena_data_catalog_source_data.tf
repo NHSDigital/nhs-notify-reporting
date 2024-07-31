@@ -1,6 +1,6 @@
-resource "aws_athena_data_catalog" "reporting" {
+resource "aws_athena_data_catalog" "source_data" {
   name        = "${local.csi}-core-glue-data-catalog"
-  description = "Glue based Data Catalog for the ${local.csi} Environment"
+  description = "Source Data Catalog for the ${local.csi} environment"
   type        = "GLUE"
 
   parameters = {

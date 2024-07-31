@@ -3,9 +3,7 @@ resource "aws_sfn_state_machine" "athena" {
   role_arn = aws_iam_role.sfn_athena.arn
 
   definition = templatefile("${path.module}/files/state.tmpl.json", {
-    ATHENA_WORKGROUP   = aws_athena_workgroup.reporting.name,
-    S3_OUTPUT_LOCATION = "${aws_s3_bucket.reporting.bucket}/execution_results/nhs_notify_${var.environment}_item_status_iceberg",
-    QUERY_STRING       = replace(aws_athena_named_query.reporting.query, "\"", "\\\"")
+    NAMED_QUERY_ID = "${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"
   })
 
   logging_configuration {
@@ -61,11 +59,12 @@ data "aws_iam_policy_document" "sfn_athena" {
       "athena:startQueryExecution",
       "athena:stopQueryExecution",
       "athena:getQueryExecution",
-      "athena:getDataCatalog"
+      "athena:getDataCatalog",
+      "athena:getNamedQuery"
     ]
 
     resources = [
-      aws_athena_workgroup.reporting.arn,
+      aws_athena_workgroup.ingestion.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }
@@ -82,7 +81,7 @@ data "aws_iam_policy_document" "sfn_athena" {
     resources = [
       "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/nhs_notify_${var.environment}_item_status_iceberg",
+      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
     ]
   }
 
@@ -176,7 +175,7 @@ data "aws_iam_policy_document" "sfn_athena" {
   }
 
   statement {
-    sid    = "AllowCloudwatchLogging1"
+    sid    = "AllowCloudwatchLogging"
     effect = "Allow"
 
     actions = [
@@ -187,42 +186,13 @@ data "aws_iam_policy_document" "sfn_athena" {
       "logs:ListLogDeliveries",
       "logs:PutResourcePolicy",
       "logs:DescribeResourcePolicies",
-      "logs:DescribeLogGroups"
-    ]
-
-    resources = [
-      "*",
-    ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Environment"
-      values   = [
-        var.environment
-      ]
-    }
-  }
-
-  statement {
-    sid    = "AllowCloudwatchLogging2"
-    effect = "Allow"
-
-    actions = [
+      "logs:DescribeLogGroups",
       "logs:CreateLogStream",
       "logs:PutLogEvents"
     ]
 
     resources = [
-      aws_cloudwatch_log_group.reporting.arn,
-      "${aws_cloudwatch_log_group.reporting.arn}:*"
+      "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
     ]
-
-    condition {
-      test     = "StringEquals"
-      variable = "aws:RequestTag/Environment"
-      values   = [
-        var.environment
-      ]
-    }
   }
 }

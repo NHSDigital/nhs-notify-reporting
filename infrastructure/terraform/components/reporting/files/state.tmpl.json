@@ -1,20 +1,28 @@
 {
-  "Comment": "An example of using Athena to query transaction history in core and store in iceberg table in this account.",
+  "Comment": "Workflow to run ingestion queries to populate reporting tables from the underlying transaction_history table in the core account.",
   "StartAt": "Parallel Queries",
   "States": {
     "Parallel Queries": {
       "Type": "Parallel",
       "Branches": [
         {
-          "StartAt": "Transaction Query",
+          "StartAt": "Get Query",
           "States": {
-            "Transaction Query": {
+            "Get Query": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${NAMED_QUERY_ID}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query"
+            },
+            "Execute Query": {
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Parameters": {
-                "QueryString": "${QUERY_STRING}",
-                "WorkGroup": "${ATHENA_WORKGROUP}",
-                "ResultConfiguration": {
-                  "OutputLocation": "${S3_OUTPUT_LOCATION}"
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
                 }
               },
               "Type": "Task",
@@ -24,29 +32,24 @@
                   "ErrorEquals": [
                     "States.ALL"
                   ],
-                  "ResultPath": "$.error-info",
+                  "ResultPath": "$.error",
                   "Next": "Transaction Failed"
                 }
               ]
             },
             "Transaction Success": {
               "Type": "Pass",
-              "Result": "Query of Transaction History succeeded",
+              "Result": "Athena query succeeded.",
               "End": true
             },
             "Transaction Failed": {
               "Type": "Fail",
-              "Error": "QueryFailed",
-              "Cause": "The Athena query execution failed for transaction history table."
+              "CausePath": "$.error.Cause",
+              "ErrorPath": "$.error.Error"
             }
           }
         }
       ],
-      "Next": "Check Results"
-    },
-    "Check Results": {
-      "Type": "Pass",
-      "Result": "All queries finished",
       "End": true
     }
   }
