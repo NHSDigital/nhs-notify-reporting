@@ -7,17 +7,17 @@
       "Branches": ${jsonencode([
         for query_id in query_ids:
         {
-          "StartAt": "Get Query",
+          "StartAt": "Get Query ${query_id}",
           "States": {
-            "Get Query": {
+            "Get Query ${query_id}": {
               "Type": "Task",
               "Parameters": {
                 "NamedQueryId": "${query_id}"
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-              "Next": "Execute Query"
+              "Next": "Execute Query ${query_id}"
             },
-            "Execute Query": {
+            "Execute Query ${query_id}": {
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Parameters": {
                 "QueryString.$": "$.NamedQuery.QueryString",
@@ -27,23 +27,23 @@
                 }
               },
               "Type": "Task",
-              "Next": "Transaction Success",
+              "Next": "Transaction Success ${query_id}",
               "Catch": [
                 {
                   "ErrorEquals": [
                     "States.ALL"
                   ],
                   "ResultPath": "$.error",
-                  "Next": "Transaction Failed"
+                  "Next": "Transaction Failed ${query_id}"
                 }
               ]
             },
-            "Transaction Success": {
+            "Transaction Success ${query_id}": {
               "Type": "Pass",
               "Result": "Athena query succeeded.",
               "End": true
             },
-            "Transaction Failed": {
+            "Transaction Failed ${query_id}": {
               "Type": "Fail",
               "CausePath": "$.error.Cause",
               "ErrorPath": "$.error.Error"
