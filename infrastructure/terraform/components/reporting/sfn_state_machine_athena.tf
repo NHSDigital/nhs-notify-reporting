@@ -2,7 +2,7 @@ resource "aws_sfn_state_machine" "athena" {
   name     = "${local.csi}-state-machine-athena"
   role_arn = aws_iam_role.sfn_athena.arn
 
-  definition = templatefile("${path.module}/files/state.tmpl.json", {
+  definition = templatefile("${path.module}/files/state.json.tmpl", {
     query_ids = ["${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"]
   })
 
