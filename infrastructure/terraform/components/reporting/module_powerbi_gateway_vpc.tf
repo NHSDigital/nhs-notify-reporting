@@ -18,29 +18,6 @@ module "powerbi_gateway_vpc" {
   enable_dns_hostnames = true
   create_igw = true
 
-  tags = {
-    Name = "${local.csi}-powerbi-gateway-vpc"
-  }
-
-  public_subnet_tags = {
-    Name = "${local.csi}-powerbi-gateway-public-subnet"
-  }
-
-  private_subnet_tags = {
-    Name = "${local.csi}-powerbi-gateway-private-subnet"
-  }
-
-  nat_gateway_tags = {
-    Name = "${local.csi}-powerbi-gateway-ngw"
-  }
-
-  public_route_table_tags = {
-    Name = "${local.csi}-powerbi-gateway-public-route-table"
-  }
-
-  private_route_table_tags = {
-    Name = "${local.csi}-powerbi-gateway-private-route-table"
-  }
 }
 
 resource "aws_security_group" "powerbi_gateway" {
