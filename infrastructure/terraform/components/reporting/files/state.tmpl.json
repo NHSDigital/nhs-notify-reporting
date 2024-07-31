@@ -5,13 +5,14 @@
     "Parallel Queries": {
       "Type": "Parallel",
       "Branches": [
+        %{ for query_id in query_ids }
         {
           "StartAt": "Get Query",
           "States": {
             "Get Query": {
               "Type": "Task",
               "Parameters": {
-                "NamedQueryId": "${NAMED_QUERY_ID}"
+                "NamedQueryId": "${query_id}"
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
               "Next": "Execute Query"
@@ -48,7 +49,8 @@
               "ErrorPath": "$.error.Error"
             }
           }
-        }
+        },
+        %{ endfor }
       ],
       "End": true
     }
