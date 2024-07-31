@@ -1,3 +1,4 @@
+${jsonencode(
 {
   "Comment": "Workflow to run ingestion queries to populate reporting tables from the underlying transaction_history table in the core account.",
   "StartAt": "Parallel Queries",
@@ -56,3 +57,4 @@
     }
   }
 }
+)}
