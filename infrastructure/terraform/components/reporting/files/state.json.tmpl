@@ -5,9 +5,10 @@
     "Parallel Queries": {
       "Type": "Parallel",
       "Branches": [
-        ${jsonencode([for query_id in query_ids : 
-        <<-EOT
-        "{
+        ${jsonencode(
+        %{ for query_id in query_ids }
+        ${jsondecode()
+        {
           "StartAt": "Get Query",
           "States": {
             "Get Query": {
@@ -50,9 +51,10 @@
               "ErrorPath": "$.error.Error"
             }
           }
-        }"
-        EOT
-        ])}
+        },
+        )
+        %{ endfor }
+        )
       ],
       "End": true
     }
