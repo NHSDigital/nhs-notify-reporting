@@ -67,5 +67,5 @@ resource "aws_launch_template" "powerbi_gateway" {
 }
 
 data "aws_ssm_parameter" "latest_windows_server_2022" {
-  name = "/aws/service/ami-windows-latest/Windows_Server-2022-English-Core-Base"
+  name = "/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
 }
