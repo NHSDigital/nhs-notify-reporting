@@ -1,5 +1,5 @@
 resource "random_bytes" "hash_key" {
-  length = 64
+  length = 32
 }
 
 resource "aws_ssm_parameter" "hash_key" {
