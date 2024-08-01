@@ -54,6 +54,20 @@ resource "aws_iam_policy" "sfn_athena" {
 }
 
 data "aws_iam_policy_document" "sfn_athena" {
+
+  statement {
+    sid    = "AllowSSM"
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter"
+    ]
+
+    resources = [
+      aws_ssm_parameter.hash_key.arn
+    ]
+  }
+
   statement {
     sid    = "AllowAthena"
     effect = "Allow"
