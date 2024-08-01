@@ -19,7 +19,6 @@ private_subnet_cidrs = [
   "10.0.6.0/24"
 ]
 
-windows_ami_id   = "ami-04d55999748c1974a"
 instance_type    = "t3.medium"
 root_volume_size = 30
 desired_capacity = 1

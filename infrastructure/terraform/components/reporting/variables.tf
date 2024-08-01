@@ -104,12 +104,6 @@ variable "private_subnet_cidrs" {
   default     = []
 }
 
-variable "windows_ami_id" {
-  description = "The AMI ID for the Windows image."
-  type        = string
-  default     = "ami-04d55999748c1974a"
-}
-
 variable "instance_type" {
   description = "The EC2 instance type."
   type        = string
