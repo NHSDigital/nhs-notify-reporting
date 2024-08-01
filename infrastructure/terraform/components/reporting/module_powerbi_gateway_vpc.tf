@@ -8,7 +8,7 @@ module "powerbi_gateway_vpc" {
   name = "${local.csi}-powerbi-gateway-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = var.availability_zones
+  azs             = data.aws_availability_zones.available[0].name
   public_subnets  = var.public_subnet_cidrs
   private_subnets = var.private_subnet_cidrs
 
@@ -17,7 +17,12 @@ module "powerbi_gateway_vpc" {
   enable_dns_support = true
   enable_dns_hostnames = true
   create_igw = true
+}
 
+data "aws_availability_zones" "available" {
+  count = var.enable_powerbi_gateway ? 1 : 0
+
+  state = "available"
 }
 
 resource "aws_security_group" "powerbi_gateway" {
