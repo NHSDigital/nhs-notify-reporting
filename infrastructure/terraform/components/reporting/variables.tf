@@ -92,12 +92,6 @@ variable "enable_powerbi_gateway" {
   default     = true
 }
 
-variable "availability_zones" {
-  description = "List of availability zones to deploy resources across."
-  type        = list(string)
-  default     = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
-}
-
 variable "public_subnet_cidrs" {
   description = "List of CIDR blocks for public subnets."
   type        = list(string)
