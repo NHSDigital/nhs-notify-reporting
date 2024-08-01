@@ -4,7 +4,7 @@ resource "aws_launch_template" "powerbi_gateway" {
   name                                 = local.csi
   description                          = "Template for the Power BI On-Premises Gateway"
   update_default_version               = true
-  image_id                             = data.aws_ssm_parameter.latest_windows_server_2022.value
+  image_id                             = "resolve:ssm:/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
   instance_type                        = var.instance_type
   user_data                            = data.cloudinit_config.powerbi_gateway.rendered
   instance_initiated_shutdown_behavior = var.enable_spot ? "terminate" : "stop"
@@ -64,8 +64,4 @@ resource "aws_launch_template" "powerbi_gateway" {
     resource_type = "volume"
     tags          = local.deployment_default_tags
   }
-}
-
-data "aws_ssm_parameter" "latest_windows_server_2022" {
-  name = "/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
 }
