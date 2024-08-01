@@ -21,5 +21,5 @@ resource "aws_autoscaling_group" "powerbi_gateway" {
 
   health_check_type          = "EC2"
   health_check_grace_period  = 300
-  wait_for_capacity_timeout   = "0"
+  wait_for_capacity_timeout  = "0"
 }
