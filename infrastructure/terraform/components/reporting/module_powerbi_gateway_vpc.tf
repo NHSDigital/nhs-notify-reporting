@@ -8,7 +8,7 @@ module "powerbi_gateway_vpc" {
   name = "${local.csi}-powerbi-gateway-vpc"
   cidr = "10.0.0.0/16"
 
-  azs             = data.aws_availability_zones.available[0].name
+  azs             = data.aws_availability_zones.available[0].names
   public_subnets  = var.public_subnet_cidrs
   private_subnets = var.private_subnet_cidrs
 
