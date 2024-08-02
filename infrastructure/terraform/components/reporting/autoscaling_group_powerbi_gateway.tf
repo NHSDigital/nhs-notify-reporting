@@ -8,7 +8,7 @@ resource "aws_autoscaling_group" "powerbi_gateway" {
     version = "$Latest"
   }
 
-  vpc_zone_identifier   = module.powerbi_gateway_vpc.private_subnets
+  vpc_zone_identifier   = module.powerbi_gateway_vpc[0].private_subnets
   desired_capacity      = var.desired_capacity
   min_size              = var.min_size
   max_size              = var.max_size

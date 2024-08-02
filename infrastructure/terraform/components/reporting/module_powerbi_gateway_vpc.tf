@@ -1,4 +1,5 @@
 module "powerbi_gateway_vpc" {
+  count = var.enable_powerbi_gateway ? 1 : 0
 
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.5.1"  # Adjust to the latest version
@@ -29,7 +30,7 @@ resource "aws_security_group" "powerbi_gateway" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
   name   = "${local.csi}-powerbi-gateway-security-group"
-  vpc_id = module.powerbi_gateway_vpc.vpc_id
+  vpc_id = module.powerbi_gateway_vpc[0].vpc_id
 
   egress {
     from_port   = 80

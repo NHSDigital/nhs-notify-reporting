@@ -46,7 +46,7 @@ resource "aws_launch_template" "powerbi_gateway" {
     security_groups = [
       aws_security_group.powerbi_gateway[0].id
     ]
-    subnet_id = element(module.powerbi_gateway_vpc.private_subnets, count.index)
+    subnet_id = element(module.powerbi_gateway_vpc[0].private_subnets, count.index)
   }
 
   metadata_options {

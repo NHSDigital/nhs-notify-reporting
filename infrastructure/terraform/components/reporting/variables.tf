@@ -145,3 +145,15 @@ variable "root_volume_size" {
   description = "Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server"
   default     = 30
 }
+
+variable "scale_out_recurrence_schedule" {
+  description = "The cron expression for the scale out schedule. Set to null if no recurrence is needed."
+  type        = string
+  default     = null
+}
+
+variable "scale_in_recurrence_schedule" {
+  description = "The cron expression for the scale in schedule. Set to null if no recurrence is needed."
+  type        = string
+  default     = null
+}

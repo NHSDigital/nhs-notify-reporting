@@ -88,4 +88,43 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
       "${aws_s3_bucket.reporting.arn}/*"
     ]
   }
+
+  statement {
+    sid    = "AllowAthenaAccess"
+    effect = "Allow"
+
+    actions = [
+      "athena:*"
+    ]
+
+    resources = [ "*" ] # Needs scoping
+  }
+
+  statement {
+    sid    = "AllowGlueAccess"
+    effect = "Allow"
+
+    actions = [
+      "glue:*"
+    ]
+
+    resources = [ "*" ] # Needs scoping
+  }
+  statement {
+    sid    = "AllowS3KMSAccess"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:ReEncrypt",
+      "kms:DescribeKey"
+    ]
+
+    resources = [
+      aws_kms_key.s3.arn
+    ]
+  }
 }

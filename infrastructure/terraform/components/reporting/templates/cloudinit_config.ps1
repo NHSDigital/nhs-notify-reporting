@@ -18,8 +18,19 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
 }
 
-# Install PowerBI On-Premises Gatewat via Choco
+# Install PowerBI On-Premises Gateway via Choco
 choco install -y powerbigateway --version=3000.230.14 --checksum=7F46E578E1D07B5DC66D1FB3D245E069E00D66CA8A571454A50871925C011CC0
+
+# Install AWSCLI
+choco install -y awscli
+
+# Install Amazon Athena ODBC 2.x Driver
+`$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
+`$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
+Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
+
+# Silent installation of Amazon Athena ODBC driver
+Start-Process -FilePath `$athenaDriverInstaller -ArgumentList "/quiet" -Wait
 
 # Optional: Configuration of the gateway (requires gateway recovery key and registration details)
 # Uncomment and fill in the necessary details if you want to configure the gateway after installation
@@ -34,7 +45,7 @@ choco install -y powerbigateway --version=3000.230.14 --checksum=7F46E578E1D07B5
 # Register the gateway
 # & "C:\Program Files\On-premises data gateway\EnterpriseGatewayConfigurator.exe" /configuregateway `$gatewayName `$credentials `$recoveryKey
 
-Write-Output "Power BI on-premises data gateway installation completed."
+Write-Output "Power BI on-premises data gateway and Amazon Athena ODBC driver installation completed."
 "@
 Set-Content -Path "C:\scripts\install_powerbi_gateway.ps1" -Value $installPowerBiGatewayScript
 
