@@ -6,7 +6,7 @@ resource "aws_launch_template" "powerbi_gateway" {
   update_default_version               = true
   image_id                             = "resolve:ssm:/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
   instance_type                        = var.instance_type
-  user_data                            = data.cloudinit_config.powerbi_gateway.rendered
+  user_data                            = data.cloudinit_config.powerbi_gateway[0].rendered
   instance_initiated_shutdown_behavior = var.enable_spot ? "terminate" : "stop"
   ebs_optimized                        = true
 
@@ -57,7 +57,11 @@ resource "aws_launch_template" "powerbi_gateway" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = local.deployment_default_tags
+    tags          = merge(local.deployment_default_tags,
+      {
+        "Patch Group" = "${local.csi}-windows-group"
+      }
+    )
   }
 
   tag_specifications {
