@@ -6,4 +6,4 @@ FROM ${source_table}
 WHERE (sk LIKE 'REQUEST_ITEM#%')
 LIMIT 10;
 */
-SELECT $ FROM ${source_table} LIMIT 1; 
+SELECT ? FROM ${source_table} LIMIT 1; 
