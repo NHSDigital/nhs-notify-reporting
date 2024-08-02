@@ -2,8 +2,14 @@ resource "aws_sfn_state_machine" "athena" {
   name     = "${local.csi}-state-machine-athena"
   role_arn = aws_iam_role.sfn_athena.arn
 
-  definition = templatefile("${path.module}/files/state.tmpl.json", {
-    NAMED_QUERY_ID = "${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"
+  definition = templatefile("${path.module}/files/state.json.tmpl", {
+    query_ids = [
+      "${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"
+    ]
+    hash_query_ids = [
+      "${aws_athena_named_query.temp_query.id}"
+    ]
+    environment = "${local.csi}"
   })
 
   logging_configuration {
@@ -51,6 +57,20 @@ resource "aws_iam_policy" "sfn_athena" {
 }
 
 data "aws_iam_policy_document" "sfn_athena" {
+
+  statement {
+    sid    = "AllowSSM"
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter"
+    ]
+
+    resources = [
+      aws_ssm_parameter.hash_key.arn
+    ]
+  }
+
   statement {
     sid    = "AllowAthena"
     effect = "Allow"
