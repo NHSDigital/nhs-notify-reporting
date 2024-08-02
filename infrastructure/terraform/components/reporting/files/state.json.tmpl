@@ -85,9 +85,7 @@
               ],
               "Next": "Transaction Success ${query_id}",
               "Parameters": {
-                "ExecutionParameters": [
-                  "$.Parameter.Value"
-                ],
+                "ExecutionParameters.$": "States.Array($.Parameter.Value)",
                 "QueryExecutionContext": {
                   "Database.$": "$.Retrieved.NamedQuery.Database"
                 },
