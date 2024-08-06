@@ -24,6 +24,9 @@ choco install -y powerbigateway --version=3000.230.14 --checksum=7F46E578E1D07B5
 # Install AWSCLI
 choco install -y awscli
 
+# Install vim
+choco install -y vim
+
 # Install Amazon Athena ODBC 2.x Driver
 `$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
 `$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
@@ -31,6 +34,33 @@ Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
 
 # Silent installation of Amazon Athena ODBC driver
 Start-Process -FilePath `$athenaDriverInstaller -ArgumentList "/quiet" -Wait
+
+# Configure the ODBC Connection:
+`$odbcDsnName = "${odbc_dsn_name}"
+`$odbcDescription = "${odbc_description}"
+`$region = "${region}"
+`$catalog = "${catalog}"
+`$database = "${database}"
+`$workgroup = "${workgroup}"
+`$authenticationType = "${authentication_type}"
+
+# Path to the ODBC DSN registry key
+`$odbcDsnPath = "HKLM:HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\`$odbcDsnName"
+`$odbcDsnListPath = "HKLM:\HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources"
+
+# Create the DSN key and set values
+New-Item -Path `$odbcDsnPath -Force
+Set-ItemProperty -Path `$odbcDsnPath -Name "Description" -Value `$odbcDescription
+Set-ItemProperty -Path `$odbcDsnPath -Name "AwsRegion" -Value `$region
+Set-ItemProperty -Path `$odbcDsnPath -Name "Catalog" -Value `$catalog
+Set-ItemProperty -Path `$odbcDsnPath -Name "Schema" -Value `$database
+Set-ItemProperty -Path `$odbcDsnPath -Name "Workgroup" -Value `$workgroup
+Set-ItemProperty -Path `$odbcDsnPath -Name "AuthenticationType" -Value `$authenticationType
+
+# Add the DSN to the list of ODBC Data Sources
+Set-ItemProperty -Path `$odbcDsnListPath -Name `$odbcDsnName -Value "Amazon Athena ODBC (x64)"
+
+Write-Output "ODBC DSN '`$odbcDsnName' created successfully."
 
 # Optional: Configuration of the gateway (requires gateway recovery key and registration details)
 # Uncomment and fill in the necessary details if you want to configure the gateway after installation
