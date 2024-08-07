@@ -21,6 +21,9 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 # Install PowerBI On-Premises Gateway via Choco
 choco install -y powerbigateway --version=3000.230.14 --checksum=7F46E578E1D07B5DC66D1FB3D245E069E00D66CA8A571454A50871925C011CC0
 
+# Install PowerBI Desktop
+choco install -y powerbi
+
 # Install AWSCLI
 choco install -y awscli
 

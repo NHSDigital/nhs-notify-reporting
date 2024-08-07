@@ -90,19 +90,62 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
   }
 
   statement {
-    sid    = "AllowAthenaAccess"
+    sid    = "AllowAthenaAccess1"
     effect = "Allow"
 
     actions = [
-        "athena:StartQueryExecution",
-        "athena:GetQueryExecution",
         "athena:GetQueryResults",
-        "athena:GetQueryResultsStream",
-        "athena:ListQueryExecutions",
-        "athena:BatchGetQueryExecution"
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:GetWorkGroup"
     ]
 
-    resources = [ "*" ] # Needs scoping
+    resources = [
+      aws_athena_workgroup.user.arn
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess2"
+    effect = "Allow"
+
+    actions = [
+        "athena:ListDatabases",
+        "athena:ListTableMetadata"
+    ]
+
+    resources = [
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog"
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess3"
+    effect = "Allow"
+
+    actions = [
+        "athena:ListDataCatalogs"
+    ]
+
+    resources = [ "*" ] # https://docs.aws.amazon.com/athena/latest/APIReference/API_ListDataCatalogs.html
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Environment"
+    #   values   = [ var.environment ]
+    # }
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Component"
+    #   values   = [ var.component ]
+    # }
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Project"
+    #   values   = [ var.project ]
+    # }
   }
 
   statement {
@@ -110,7 +153,9 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-      "glue:*"
+      "glue:GetTable",
+      "glue:GetTables",
+      "glue:GetDatabases"
     ]
 
     resources = [ "*" ] # Needs scoping
@@ -124,7 +169,6 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
       "kms:Encrypt",
       "kms:GenerateDataKey",
       "kms:GenerateDataKeyWithoutPlaintext",
-      "kms:ReEncrypt",
       "kms:DescribeKey"
     ]
 
