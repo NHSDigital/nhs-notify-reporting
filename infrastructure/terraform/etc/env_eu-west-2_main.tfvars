@@ -26,3 +26,6 @@ min_size         = 1
 max_size         = 1
 enable_spot      = false
 spot_max_price   = "0.3"
+
+scale_in_recurrence_schedule  = "0 18 * * 1-5"
+scale_out_recurrence_schedule = "0 8 * * 1-5"

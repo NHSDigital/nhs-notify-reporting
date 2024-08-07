@@ -94,7 +94,12 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-      "athena:*"
+        "athena:StartQueryExecution",
+        "athena:GetQueryExecution",
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
+        "athena:ListQueryExecutions",
+        "athena:BatchGetQueryExecution"
     ]
 
     resources = [ "*" ] # Needs scoping
