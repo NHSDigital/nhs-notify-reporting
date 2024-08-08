@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
 
     resources = [
       aws_s3_bucket.reporting.arn,
-      "${aws_s3_bucket.reporting.arn}/*"
+      "${aws_s3_bucket.reporting.arn}/*" # Question here: should we have another per env bucket for writing reports back?
     ]
   }
 
@@ -111,11 +111,14 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
 
     actions = [
         "athena:ListDatabases",
-        "athena:ListTableMetadata"
+        "athena:GetDatabases",
+        "athena:ListTableMetadata",
+        "athena:GetTableMetadata"
+
     ]
 
     resources = [
-      "arn:aws:glue:${var.region}:${local.this_account}:catalog"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/AWSDataCatalog"
     ]
   }
 
@@ -124,7 +127,9 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-        "athena:ListDataCatalogs"
+        "athena:ListDataCatalogs",
+        "athena:GetTables",
+        "athena:GetTable",
     ]
 
     resources = [ "*" ] # https://docs.aws.amazon.com/athena/latest/APIReference/API_ListDataCatalogs.html
@@ -158,7 +163,11 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
       "glue:GetDatabases"
     ]
 
-    resources = [ "*" ] # Needs scoping
+    resources = [
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_request_item_plan_summary",
+      aws_glue_catalog_database.reporting.arn
+     ]
   }
   statement {
     sid    = "AllowS3KMSAccess"
