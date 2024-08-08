@@ -95,6 +95,7 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
 
     actions = [
         "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
         "athena:GetQueryExecution",
         "athena:StartQueryExecution",
         "athena:GetWorkGroup"
