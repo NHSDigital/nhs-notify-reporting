@@ -85,7 +85,105 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
 
     resources = [
       aws_s3_bucket.reporting.arn,
-      "${aws_s3_bucket.reporting.arn}/*"
+      "${aws_s3_bucket.reporting.arn}/*" # Question here: should we have another per env bucket for writing reports back?
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess1"
+    effect = "Allow"
+
+    actions = [
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:GetWorkGroup"
+    ]
+
+    resources = [
+      aws_athena_workgroup.user.arn
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess2"
+    effect = "Allow"
+
+    actions = [
+        "athena:ListDatabases",
+        "athena:GetDatabases",
+        "athena:ListTableMetadata",
+        "athena:GetTableMetadata"
+
+    ]
+
+    resources = [
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/AWSDataCatalog"
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess3"
+    effect = "Allow"
+
+    actions = [
+        "athena:ListDataCatalogs",
+        "athena:GetTables",
+        "athena:GetTable",
+    ]
+
+    resources = [ "*" ] # https://docs.aws.amazon.com/athena/latest/APIReference/API_ListDataCatalogs.html
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Environment"
+    #   values   = [ var.environment ]
+    # }
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Component"
+    #   values   = [ var.component ]
+    # }
+
+    # condition {
+    #   test     = "StringLike"
+    #   variable = "aws:RequestTag/Project"
+    #   values   = [ var.project ]
+    # }
+  }
+
+  statement {
+    sid    = "AllowGlueAccess"
+    effect = "Allow"
+
+    actions = [
+      "glue:GetTable",
+      "glue:GetTables",
+      "glue:GetDatabases"
+    ]
+
+    resources = [
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_request_item_plan_summary",
+      aws_glue_catalog_database.reporting.arn
+    ]
+  }
+  statement {
+    sid    = "AllowS3KMSAccess"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:DescribeKey"
+    ]
+
+    resources = [
+      aws_kms_key.s3.arn
     ]
   }
 }

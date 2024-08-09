@@ -1,0 +1,93 @@
+<powershell>
+
+# Create scripts directory if it doesn't exist
+if (!(Test-Path -Path "C:\scripts")) {
+    New-Item -ItemType Directory -Path "C:\scripts"
+}
+
+# Create the install_powerbi_gateway.ps1 script
+$installPowerBiGatewayScript = @"
+# Set execution policy to bypass
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+# Enable TLS 1.2
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+
+# Download and install Chocolatey (if not already installed)
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+}
+
+# Install PowerBI On-Premises Gateway via Choco
+choco install -y powerbigateway --version=3000.230.14 --checksum=7F46E578E1D07B5DC66D1FB3D245E069E00D66CA8A571454A50871925C011CC0
+
+# Install AWSCLI
+choco install -y awscli
+
+# Install vim
+choco install -y vim
+
+# Install Powershell 7
+choco install -y powershell-core
+
+# Install Amazon Athena ODBC 2.x Driver
+`$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
+`$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
+Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
+
+# Silent installation of Amazon Athena ODBC driver
+Start-Process -FilePath `$athenaDriverInstaller -ArgumentList "/quiet" -Wait
+
+# Configure the ODBC Connection:
+`$odbcDsnName = "${odbc_dsn_name}"
+`$odbcDescription = "${odbc_description}"
+`$region = "${region}"
+`$catalog = "${catalog}"
+`$database = "${database}"
+`$workgroup = "${workgroup}"
+`$authenticationType = "${authentication_type}"
+
+# Path to the ODBC DSN registry key
+`$odbcDsnPath = "HKLM:HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\`$odbcDsnName"
+`$odbcDsnListPath = "HKLM:\HKEY_LOCAL_MACHINE\SOFTWARE\ODBC\ODBC.INI\ODBC Data Sources"
+
+# Create the DSN key and set values
+New-Item -Path `$odbcDsnPath -Force
+Set-ItemProperty -Path `$odbcDsnPath -Name "Description" -Value `$odbcDescription
+Set-ItemProperty -Path `$odbcDsnPath -Name "AwsRegion" -Value `$region
+Set-ItemProperty -Path `$odbcDsnPath -Name "Catalog" -Value `$catalog
+Set-ItemProperty -Path `$odbcDsnPath -Name "Schema" -Value `$database
+Set-ItemProperty -Path `$odbcDsnPath -Name "Workgroup" -Value `$workgroup
+Set-ItemProperty -Path `$odbcDsnPath -Name "AuthenticationType" -Value `$authenticationType
+
+# Add the DSN to the list of ODBC Data Sources
+Set-ItemProperty -Path `$odbcDsnListPath -Name `$odbcDsnName -Value "Amazon Athena ODBC (x64)"
+
+Write-Output "ODBC DSN '`$odbcDsnName' created successfully."
+
+Write-Output "Power BI on-premises data gateway and Amazon Athena ODBC driver installation completed."
+
+# Check if PowerShell 7 (pwsh) is installed and available
+`$pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
+if (Test-Path `$pwshPath) {
+    # Invoke PowerShell 7 to run the remaining commands
+    & `$pwshPath -ExecutionPolicy Bypass -Command {
+        # Set execution policy to bypass
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+
+        # Install DataGateway CMDLets
+        Install-Module -Name DataGateway -Force -AllowClobber -Scope AllUsers
+        # Once we have a service principal use https://www.serverlessnotes.com/docs/automating-on-premises-gateways-using-powershell
+        # as a reference to register the gateway without manual intervention
+    }
+}
+else {
+    Write-Output "PowerShell 7 installation failed or path not found."
+}
+
+"@
+Set-Content -Path "C:\scripts\install_powerbi_gateway.ps1" -Value $installPowerBiGatewayScript
+
+# Execute the script
+powershell.exe -ExecutionPolicy Bypass -File "C:\scripts\install_powerbi_gateway.ps1"
+</powershell>
