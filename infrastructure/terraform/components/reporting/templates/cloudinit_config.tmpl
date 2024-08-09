@@ -27,6 +27,9 @@ choco install -y awscli
 # Install vim
 choco install -y vim
 
+# Install Powershell 7
+choco install -y powershell-core
+
 # Install Amazon Athena ODBC 2.x Driver
 `$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
 `$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
@@ -63,6 +66,25 @@ Set-ItemProperty -Path `$odbcDsnListPath -Name `$odbcDsnName -Value "Amazon Athe
 Write-Output "ODBC DSN '`$odbcDsnName' created successfully."
 
 Write-Output "Power BI on-premises data gateway and Amazon Athena ODBC driver installation completed."
+
+# Check if PowerShell 7 (pwsh) is installed and available
+`$pwshPath = "C:\Program Files\PowerShell\7\pwsh.exe"
+if (Test-Path `$pwshPath) {
+    # Invoke PowerShell 7 to run the remaining commands
+    & `$pwshPath -ExecutionPolicy Bypass -Command {
+        # Set execution policy to bypass
+        Set-ExecutionPolicy Bypass -Scope Process -Force
+
+        # Install DataGateway CMDLets
+        Install-Module -Name DataGateway -Force -AllowClobber -Scope AllUsers
+        # Once we have a service principal use https://www.serverlessnotes.com/docs/automating-on-premises-gateways-using-powershell
+        # as a reference to register the gateway without manual intervention
+    }
+}
+else {
+    Write-Output "PowerShell 7 installation failed or path not found."
+}
+
 "@
 Set-Content -Path "C:\scripts\install_powerbi_gateway.ps1" -Value $installPowerBiGatewayScript
 
