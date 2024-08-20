@@ -1,11 +1,11 @@
-resource "aws_athena_named_query" "temp_query" {
-  name        = "temp_query"
-  description = "Temporary query to test step function"
+resource "aws_athena_named_query" "request_item_status" {
+  name        = "request_item_status"
+  description = "Updates request_item_status table based upon a moving time window"
   workgroup   = aws_athena_workgroup.ingestion.id
   database    = aws_glue_catalog_database.reporting.name
-  query       = templatefile("${path.module}/scripts/sql/queries/temp_query.sql", {
+  query       = templatefile("${path.module}/scripts/sql/queries/request_item_status.sql", {
     source_table= "\"${aws_athena_data_catalog.source_data.name}\".\"comms-${var.core_env}-api-rpt-reporting\".\"transaction_history\""
   })
 
-  /*depends_on = [null_resource.completed_request_item_plan_summary_table]*/
+  depends_on = [null_resource.request_item_status_table]
 }
