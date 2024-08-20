@@ -1,4 +1,4 @@
-resource "aws_athena_named_query" "request_item_status" {
+resource "aws_athena_named_query" "request_item_status_ingestion" {
   name        = "request_item_status"
   description = "Updates request_item_status table based upon a moving time window"
   workgroup   = aws_athena_workgroup.ingestion.id
