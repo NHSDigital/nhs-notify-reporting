@@ -30,7 +30,7 @@ USING (
     failedreason
 ) as source
 ON
-  -- Allow aggregation of null dimensions
+  -- Allow match on null dimensions
   COALESCE(source.clientid, '') = COALESCE(target.clientid, '') AND
   COALESCE(source.campaignid, '') = COALESCE(target.campaignid, '') AND
   COALESCE(source.sendinggroupid, '') = COALESCE(target.sendinggroupid, '') AND
