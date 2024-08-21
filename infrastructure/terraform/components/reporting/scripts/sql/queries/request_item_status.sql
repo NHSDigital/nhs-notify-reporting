@@ -38,9 +38,9 @@ ON
   COALESCE(source.requestrefid, '') = COALESCE(target.requestrefid, '') AND
   COALESCE(source.requestid, '') = COALESCE(target.requestid, '')
 WHEN MATCHED THEN UPDATE SET 
-  nhsnumberhash = source.nhsnumberhash,
-  createddate = source.createddate,
-  completeddate = source.completeddate,
+  nhsnumberhash = COALESCE(source.nhsnumberhash, target.nhsnumberhash),
+  createddate = COALESCE(source.createddate, target.createddate),
+  completeddate = COALESCE(source.completeddate, target.completeddate),
   completedcommunicationtypes = array_union(source.completedcommunicationtypes, target.completedcommunicationtypes),
   failedcommunicationtypes = array_union(source.failedcommunicationtypes, target.failedcommunicationtypes),
   delivered = source.delivered OR target.delivered,
