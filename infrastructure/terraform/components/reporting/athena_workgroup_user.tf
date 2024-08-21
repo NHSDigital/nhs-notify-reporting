@@ -1,6 +1,6 @@
 resource "aws_athena_workgroup" "user" {
   name          = "${local.csi}-user"
-  description   = "Athena Workgroup for user queries in ${local.parameter_bundle.environment} environment"
+  description   = "Athena Workgroup for user queries in ${local.parameter_bundle.environment} environment blah"
   force_destroy = true
 
   configuration {
