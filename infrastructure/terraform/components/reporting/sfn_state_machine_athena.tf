@@ -117,8 +117,10 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     resources = [
-      aws_s3_bucket.reporting.arn,
-      "${aws_s3_bucket.reporting.arn}/*"
+      aws_s3_bucket.data.arn,
+      "${aws_s3_bucket.data.arn}/*",
+      aws_s3_bucket.results.arn,
+      "${aws_s3_bucket.results.arn}/*"
     ]
   }
 

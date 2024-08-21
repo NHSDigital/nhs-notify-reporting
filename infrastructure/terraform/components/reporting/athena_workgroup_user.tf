@@ -8,7 +8,7 @@ resource "aws_athena_workgroup" "user" {
 
     result_configuration {
       expected_bucket_owner = local.this_account
-      output_location       = "s3://${aws_s3_bucket.reporting.bucket}/output/user/"
+      output_location       = "s3://${aws_s3_bucket.results.bucket}/user/"
 
       encryption_configuration {
         encryption_option = "SSE_KMS"
