@@ -5,6 +5,7 @@ pre-commit 3.6.0
 nodejs 18.18.2
 gitleaks 8.18.4
 jq 1.6
+tfsec 1.28.10
 
 # ==============================================================================
 # The section below is reserved for Docker image versions.
