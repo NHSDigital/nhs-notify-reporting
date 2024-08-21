@@ -6,14 +6,15 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     requestrefid string,
     requestid string,
     nhsnumberhash string,
-    createddate date,
-    completeddate date,
+    createdtime time,
+    completedtime time,
     completedcommunicationtypes array<string>,
     failedcommunicationtypes array<string>,
     delivered boolean,
-    failed boolean
+    failed boolean,
+    failedreason string
 )
-PARTITIONED BY (bucket(32, clientid), month(createddate), month(completeddate))
+PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
 LOCATION '${s3_location}'
 TBLPROPERTIES (
   'table_type'='ICEBERG',

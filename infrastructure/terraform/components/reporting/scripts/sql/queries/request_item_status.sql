@@ -8,12 +8,13 @@ USING (
     requestrefid,
     requestid,
     any_value(to_base64(sha256(cast(? || '.' || nhsnumber AS varbinary)))) AS nhsnumberhash,
-    any_value(DATE(SUBSTRING(createddate,1,10))) AS createddate,
-    any_value(DATE(SUBSTRING(completeddate,1,10))) AS completeddate,
+    any_value(TIME(createddate)) AS createdtime,
+    any_value(TIME(completeddate)) AS completedtime,
     array_distinct(flatten(array_agg(completedcommunicationtypes))) AS completedcommunicationtypes,
     array_distinct(flatten(array_agg(failedcommunicationtypes))) AS failedcommunicationtypes,
     bool_or(case status when 'DELIVERED' then true else false end) AS delivered,
-    bool_or(case status when 'FAILED' then true else false end) AS failed
+    bool_or(case status when 'FAILED' then true else false end) AS failed,
+    any_value(failedreason) AS failedreason
   FROM ${source_table}
   WHERE (sk LIKE 'REQUEST_ITEM#%') AND
     (
@@ -39,12 +40,13 @@ ON
   COALESCE(source.requestid, '') = COALESCE(target.requestid, '')
 WHEN MATCHED THEN UPDATE SET 
   nhsnumberhash = COALESCE(source.nhsnumberhash, target.nhsnumberhash),
-  createddate = COALESCE(source.createddate, target.createddate),
-  completeddate = COALESCE(source.completeddate, target.completeddate),
+  createdtime = COALESCE(source.createdtime, target.createdtime),
+  completedtime = COALESCE(source.completedtime, target.completedtime),
   completedcommunicationtypes = array_union(source.completedcommunicationtypes, target.completedcommunicationtypes),
   failedcommunicationtypes = array_union(source.failedcommunicationtypes, target.failedcommunicationtypes),
   delivered = source.delivered OR target.delivered,
-  failed = source.failed OR target.failed
+  failed = source.failed OR target.failed,
+  completedtime = COALESCE(source.failedreason, target.failedreason)
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
@@ -53,12 +55,13 @@ WHEN NOT MATCHED THEN INSERT (
   requestrefid,
   requestid,
   nhsnumberhash,
-  createddate,
-  completeddate,
+  createdtime,
+  completedtime,
   completedcommunicationtypes,
   failedcommunicationtypes,
   delivered,
-  failed
+  failed,
+  failedreason
 )
 VALUES (
   source.clientid,
@@ -68,10 +71,11 @@ VALUES (
   source.requestrefid,
   source.requestid,
   source.nhsnumberhash,
-  source.createddate,
-  source.completeddate,
+  source.createdtime,
+  source.completedtime,
   source.completedcommunicationtypes,
   source.failedcommunicationtypes,
   source.delivered,
-  source.failed
+  source.failed,
+  source.failedreason
 )
