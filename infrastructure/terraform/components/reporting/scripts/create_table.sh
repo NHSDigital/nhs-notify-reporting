@@ -32,8 +32,7 @@ fi
 
 sql_file="./scripts/sql/tables/${table_name}.sql"
 sql_file_updated="./scripts/sql/tables/${table_name}_updated.sql"
-s3_root="s3://${s3_bucket}"
-s3_location="${s3_root}/data/${table_name}"
+s3_location="s3://${s3_bucket}/${table_name}"
 
 #Substituting placeholders with actual values and piping to a new sql file to be used as query string
 sed "s#\${s3_location}#${s3_location}#g; s#\${table_name}#${table_name}#g" $sql_file > $sql_file_updated
