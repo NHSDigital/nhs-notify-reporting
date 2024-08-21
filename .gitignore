@@ -9,5 +9,7 @@
 version.json
 *.code-workspace
 !project.code-workspace
+*.rej
+*.porig
 
 # Please, add your custom content below!
