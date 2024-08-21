@@ -73,7 +73,23 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
   }
 
   statement {
-    sid    = "AllowS3ReportingBucket"
+    sid    = "AllowS3DataBucket"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      aws_s3_bucket.data.arn,
+      "${aws_s3_bucket.data.arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowS3ResultsBucket"
     effect = "Allow"
 
     actions = [
@@ -84,8 +100,8 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     ]
 
     resources = [
-      aws_s3_bucket.reporting.arn,
-      "${aws_s3_bucket.reporting.arn}/*"
+      aws_s3_bucket.results.arn,
+      "${aws_s3_bucket.results.arn}/*"
     ]
   }
 }

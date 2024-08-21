@@ -7,7 +7,7 @@ resource "aws_scheduler_schedule" "sf_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(0 9-22 ? * MON-FRI *)"
+  schedule_expression          = "cron(0 1,8-18 ? * MON-FRI *)"
   schedule_expression_timezone = "Europe/London"
 
   target {

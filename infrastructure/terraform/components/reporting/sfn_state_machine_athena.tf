@@ -7,7 +7,7 @@ resource "aws_sfn_state_machine" "athena" {
       "${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"
     ]
     hash_query_ids = [
-      "${aws_athena_named_query.temp_query.id}"
+      "${aws_athena_named_query.request_item_status_ingestion.id}"
     ]
     environment = "${local.csi}"
   })
@@ -117,8 +117,10 @@ data "aws_iam_policy_document" "sfn_athena" {
     ]
 
     resources = [
-      aws_s3_bucket.reporting.arn,
-      "${aws_s3_bucket.reporting.arn}/*"
+      aws_s3_bucket.data.arn,
+      "${aws_s3_bucket.data.arn}/*",
+      aws_s3_bucket.results.arn,
+      "${aws_s3_bucket.results.arn}/*"
     ]
   }
 
