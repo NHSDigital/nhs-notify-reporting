@@ -1,18 +1,18 @@
-resource "aws_s3_bucket" "reporting" {
-  bucket        = "${local.csi_global}-reporting"
+resource "aws_s3_bucket" "data" {
+  bucket        = "${local.csi_global}-data"
   force_destroy = "true"
 }
 
-resource "aws_s3_bucket_ownership_controls" "reporting" {
-  bucket = aws_s3_bucket.reporting.id
+resource "aws_s3_bucket_ownership_controls" "data" {
+  bucket = aws_s3_bucket.data.id
 
   rule {
     object_ownership = "BucketOwnerPreferred"
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "reporting" {
-  bucket = aws_s3_bucket.reporting.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "data" {
+  bucket = aws_s3_bucket.data.id
 
   rule {
     apply_server_side_encryption_by_default {
@@ -22,20 +22,20 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "reporting" {
   }
 }
 
-resource "aws_s3_bucket_versioning" "reporting" {
-  bucket = aws_s3_bucket.reporting.id
+resource "aws_s3_bucket_versioning" "data" {
+  bucket = aws_s3_bucket.data.id
 
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "reporting" {
+resource "aws_s3_bucket_public_access_block" "data" {
   depends_on = [
-    aws_s3_bucket_policy.reporting
+    aws_s3_bucket_policy.data
   ]
 
-  bucket = aws_s3_bucket.reporting.id
+  bucket = aws_s3_bucket.data.id
 
   block_public_acls       = true
   block_public_policy     = true
@@ -43,9 +43,9 @@ resource "aws_s3_bucket_public_access_block" "reporting" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_logging" "reporting" {
-  bucket = aws_s3_bucket.reporting.id
+resource "aws_s3_bucket_logging" "data" {
+  bucket = aws_s3_bucket.data.id
 
   target_bucket = aws_s3_bucket.access_logs.bucket
-  target_prefix = "nhs-notify/${aws_s3_bucket.reporting.bucket}/"
+  target_prefix = "nhs-notify/${aws_s3_bucket.data.bucket}/"
 }
