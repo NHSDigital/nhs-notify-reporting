@@ -1,6 +1,6 @@
 MERGE INTO request_item_status as target
 USING (
-	SELECT
+  SELECT
     clientid,
     campaignid,
     sendinggroupid,
@@ -38,7 +38,7 @@ ON
   COALESCE(source.requestitemid, '') = COALESCE(target.requestitemid, '') AND
   COALESCE(source.requestrefid, '') = COALESCE(target.requestrefid, '') AND
   COALESCE(source.requestid, '') = COALESCE(target.requestid, '')
-WHEN MATCHED THEN UPDATE SET 
+WHEN MATCHED THEN UPDATE SET
   nhsnumberhash = COALESCE(source.nhsnumberhash, target.nhsnumberhash),
   createdtime = COALESCE(source.createdtime, target.createdtime),
   completedtime = COALESCE(source.completedtime, target.completedtime),
