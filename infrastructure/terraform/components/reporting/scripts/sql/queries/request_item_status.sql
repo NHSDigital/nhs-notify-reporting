@@ -46,7 +46,7 @@ WHEN MATCHED THEN UPDATE SET
   failedcommunicationtypes = array_union(source.failedcommunicationtypes, target.failedcommunicationtypes),
   delivered = source.delivered OR target.delivered,
   failed = source.failed OR target.failed,
-  completedtime = COALESCE(source.failedreason, target.failedreason)
+  failedreason = COALESCE(source.failedreason, target.failedreason)
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
