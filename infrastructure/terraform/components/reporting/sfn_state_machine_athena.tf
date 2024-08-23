@@ -4,7 +4,7 @@ resource "aws_sfn_state_machine" "athena" {
 
   definition = templatefile("${path.module}/files/state.json.tmpl", {
     query_ids = [
-      "${aws_athena_named_query.completed_request_item_plan_summary_ingestion.id}"
+      "${aws_athena_named_query.request_item_plan_completed_summary_ingestion.id}"
     ]
     hash_query_ids = [
       "${aws_athena_named_query.request_item_status_ingestion.id}"

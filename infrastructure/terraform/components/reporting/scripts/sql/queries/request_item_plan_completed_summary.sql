@@ -1,4 +1,4 @@
-MERGE INTO completed_request_item_plan_summary as target
+MERGE INTO request_item_plan_completed_summary as target
 USING (
   SELECT
     clientid,
