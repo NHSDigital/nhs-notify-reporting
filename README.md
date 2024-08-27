@@ -1,22 +1,25 @@
-# NHS Notify Repository Template
+# NHS Notify Reporting
 
-[![CI/CD Pull Request](https://github.com/nhs-england-tools/repository-template/actions/workflows/cicd-1-pull-request.yaml/badge.svg)](https://github.com/nhs-england-tools/repository-template/actions/workflows/cicd-1-pull-request.yaml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=repository-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=repository-template)
+[![CI/CD Pull Request](https://github.com/NHSDigital/nhs-notify-reporting/actions/workflows/cicd-1-pull-request.yaml/badge.svg)](https://github.com/NHSDigital/nhs-notify-reporting/actions/workflows/cicd-1-pull-request.yaml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=NHSDigital_nhs-notify-reporting&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=NHSDigital_nhs-notify-reporting)
 
-Start with an overview or a brief description of what the project is about and what it does. For example -
+This repository contains code for the reporting domain of the NHS Notify system.
 
-Welcome to our repository template designed to streamline your project setup! This robust template provides a reliable starting point for your new projects, covering an essential tech stack and encouraging best practices in documenting.
+The reporting domain provides an isolated environment for staging data used for reporting purposes, such as exposure of data to Power BI.
 
-This repository template aims to foster a user-friendly development environment by ensuring that every included file is concise and adequately self-documented. By adhering to this standard, we can promote increased clarity and maintainability throughout your project's lifecycle. Bundled within this template are resources that pave the way for seamless repository creation. Currently supported technologies are:
+This allows appropriate views of data to be safely exposed without sharing the full contents of the underlying transactional database.
 
-- Terraform
-- Docker
+This domain does not contain any application code. The reporting domain is built exclusively through AWS services, incorporating the following technologies:
 
-Make use of this repository template to expedite your project setup and enhance your productivity right from the get-go. Enjoy the advantage of having a well-structured, self-documented project that reduces overhead and increases focus on what truly matters - coding!
+- [AWS Step Functions](https://docs.aws.amazon.com/step-functions/latest/dg/welcome.html)
+- [AWS Glue](https://docs.aws.amazon.com/glue/latest/dg/what-is-glue.html)
+- [AWS Athena](https://docs.aws.amazon.com/athena/latest/ug/what-is.html)
+- [AWS S3](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Welcome.html)
+- [Apache Iceberg](https://iceberg.apache.org/)
 
 ## Table of Contents
 
-- [NHS Notify Repository Template](#nhs-notify-repository-template)
+- [NHS Notify Repository Template](#nhs-notify-reporting)
   - [Table of Contents](#table-of-contents)
   - [Documentation](#documentation)
   - [Setup](#setup)
@@ -38,13 +41,11 @@ Make use of this repository template to expedite your project setup and enhance 
 
 ## Setup
 
-By including preferably a one-liner or if necessary a set of clear CLI instructions we improve user experience. This should be a frictionless installation process that works on various operating systems (macOS, Linux, Windows WSL) and handles all the dependencies.
-
 Clone the repository
 
 ```shell
-git clone https://github.com/nhs-england-tools/repository-template.git
-cd nhs-england-tools/repository-template
+git clone https://github.com/NHSDigital/nhs-notify-reporting.git
+cd nhs-notify-reporting
 ```
 
 ### Prerequisites
@@ -129,8 +130,6 @@ Provide a way to contact the owners of this project. It can be a team, an indivi
 
 ## Licence
 
-> The [LICENCE.md](./LICENCE.md) file will need to be updated with the correct year and owner
-
-Unless stated otherwise, the codebase is released under the MIT License. This covers both the codebase and any sample code in the documentation.
+See [LICENCE.md](./LICENCE.md)
 
 Any HTML or Markdown documentation is [© Crown Copyright](https://www.nationalarchives.gov.uk/information-management/re-using-public-sector-information/uk-government-licensing-framework/crown-copyright/) and available under the terms of the [Open Government Licence v3.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/).
