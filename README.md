@@ -71,7 +71,7 @@ As there is no application code, testing of ingestion queries is currently perfo
 
 ### Diagrams
 
-*TODO*
+*TODO.*
 
 ### Staging Table Design
 
