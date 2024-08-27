@@ -55,9 +55,9 @@ In order to facilitate cross-account export of data, the reporting domain requir
 
 After successful deployment, the following will be available:
 
-  - Staging tables for each data view/projection.
-  - Athena saved queries to incrementally populate the staging tables from the core account.
-  - A step function to periodically execute the saved ingestion queries.
+- Staging tables for each data view/projection.
+- Athena saved queries to incrementally populate the staging tables from the core account.
+- A step function to periodically execute the saved ingestion queries.
 
 The step function and saved queries can be executed manually as required. They are idempotent, so can be executed outside of the scheduled execution without harm.
 
@@ -83,26 +83,26 @@ Staging tables are AWS Glue tables created in the [Apache Iceberg](https://icebe
 
 The underlying transaction_history table is a Glue representation of the change capture log from DynamoDB. It has a number of characteristics that make it more difficult to query than a "traditional" RDBMS table:
 
-  - It contains a mixture of different object types due to the single table design used in DynamoDB.
-  - It has dynamically evolving schema, with new fields appearing over time as the NHS Notify application changes.
-  - It contains multiple records for the same object, with one record for each change.
-  - It has no guarantee of ordering, so record changes may be captured out-of-sequence.
-  - It is subject to data retention policies. Older records will be deleted from the table automatically/without notice.
+- It contains a mixture of different object types due to the single table design used in DynamoDB.
+- It has dynamically evolving schema, with new fields appearing over time as the NHS Notify application changes.
+- It contains multiple records for the same object, with one record for each change.
+- It has no guarantee of ordering, so record changes may be captured out-of-sequence.
+- It is subject to data retention policies. Older records will be deleted from the table automatically/without notice.
 
 Ingestion queries must be specifically designed to take account of these characteristics in order to produce a consistent output for reporting. In addition:
 
-  - Ingestion queries must be idempotent
-  - Ingestion queries must operate on a moving time window (typically pulling transactional data from the last month into the staging tables)
-  - Ingestion queries must be one-way only (data should not be removed or unwound), specifically:
-    - Ingestion queries should not change the contents of the staging table when data is expired from the underlying transaction_history table
-    - Ingestion queries should not change the contents of the staging table when records leave the incremental ingestion window
-  - Ingestion queries should perform an upsert operation via the [MERGE INTO](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) SQL statement
-  - Ingestion queries should safely handle the introduction of new fields over time (e.g. via the [COALESCE](https://trino.io/docs/current/functions/conditional.html#coalesce) function)
-  - Ingestion queries should yield the same result irrespective of the order of records in the source data
-  - Ingestion queries should safely handle a partial view of updates to a record (i.e. where some updates are within the ingestion window and others are outside)
-  - Ingestion queries should safely handle mutable data, returning the content that corresponds to the latest record
-    - Data that is present in some source record versions but NULL in others
-    - Data that changes between record versions
+- Ingestion queries must be idempotent
+- Ingestion queries must operate on a moving time window (typically pulling transactional data from the last month into the staging tables)
+- Ingestion queries must be one-way only (data should not be removed or unwound), specifically:
+  - Ingestion queries should not change the contents of the staging table when data is expired from the underlying transaction_history table
+  - Ingestion queries should not change the contents of the staging table when records leave the incremental ingestion window
+- Ingestion queries should perform an upsert operation via the [MERGE INTO](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) SQL statement
+- Ingestion queries should safely handle the introduction of new fields over time (e.g. via the [COALESCE](https://trino.io/docs/current/functions/conditional.html#coalesce) function)
+- Ingestion queries should yield the same result irrespective of the order of records in the source data
+- Ingestion queries should safely handle a partial view of updates to a record (i.e. where some updates are within the ingestion window and others are outside)
+- Ingestion queries should safely handle mutable data, returning the content that corresponds to the latest record
+  - Data that is present in some source record versions but NULL in others
+  - Data that changes between record versions
 
 ### Handling PID
 
@@ -110,7 +110,7 @@ Staging tables exposed to Power BI should not contain any PID.
 
 Pseudonymisation of PID is approved via the use of a SHA256 hash together with a secret environment key held in AWS Parameter Store.
 
-The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids` collection in the [step function terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
+The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
 
 ## Contacts
 
