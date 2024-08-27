@@ -1,5 +1,5 @@
-resource "aws_athena_named_query" "request_item_plan_completed_summary_ingestion" {
-  name        = "request_item_plan_completed_summary_ingestion"
+resource "aws_athena_named_query" "request_item_plan_completed_summary" {
+  name        = "request_item_plan_completed_summary"
   description = "Updates request_item_plan_completed_summary table based upon a moving time window"
   workgroup   = aws_athena_workgroup.ingestion.id
   database    = aws_glue_catalog_database.reporting.name
