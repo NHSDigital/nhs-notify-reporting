@@ -42,10 +42,10 @@ WHEN MATCHED THEN UPDATE SET
   nhsnumberhash = COALESCE(source.nhsnumberhash, target.nhsnumberhash),
   createdtime = COALESCE(source.createdtime, target.createdtime),
   completedtime = COALESCE(source.completedtime, target.completedtime),
-  completedcommunicationtypes = array_union(source.completedcommunicationtypes, target.completedcommunicationtypes),
-  failedcommunicationtypes = array_union(source.failedcommunicationtypes, target.failedcommunicationtypes),
-  delivered = source.delivered OR target.delivered,
-  failed = source.failed OR target.failed,
+  completedcommunicationtypes = array_union(COALESCE(source.completedcommunicationtypes, ARRAY[]), COALESCE(target.completedcommunicationtypes, ARRAY[])),
+  failedcommunicationtypes = array_union(COALESCE(source.failedcommunicationtypes, ARRAY[]), COALESCE(target.failedcommunicationtypes, ARRAY[])),
+  delivered = COALESCE(source.delivered, false) OR COALESCE(target.delivered, false),
+  failed = COALESCE(source.failed, false) OR COALESCE(target.failed, false),
   failedreason = COALESCE(source.failedreason, target.failedreason)
 WHEN NOT MATCHED THEN INSERT (
   clientid,
