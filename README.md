@@ -63,6 +63,14 @@ The step function and saved queries can be executed manually as required. They a
 
 Access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment.
 
+The following Athena workgroups are available:
+
+- `setup` for DDL execution and initial data migration.
+- `ingestion` for execution of the ingestion queries used to populate staging tables.
+- `user` for execution of queries that read from staging tables, including external consumers like Power BI.
+
+Ad-hoc queries should be executed using the `user` workgroup
+
 ## Testing
 
 As there is no application code, testing of ingestion queries is currently performed manually.
@@ -76,6 +84,8 @@ As there is no application code, testing of ingestion queries is currently perfo
 ### Staging Table Design
 
 Staging tables are AWS Glue tables created in the [Apache Iceberg](https://iceberg.apache.org/) format, since these support mutation of existing staging rows via the [MERGE INTO](https://docs.aws.amazon.com/athena/latest/ug/merge-into-statement.html) operation. This means that information in the staging tables can be incrementally updated over time.
+
+The initial staging tables are partitioned by creation month and completion month in order to efficiently support date-range queries.
 
 **Note: Partitions in Iceberg tables are not visible via the AWS Glue Console, but can be seen instead using a "SHOW CREATE TABLE" query in Athena (and verified by inspecting the underlying S3 storage**)
 
