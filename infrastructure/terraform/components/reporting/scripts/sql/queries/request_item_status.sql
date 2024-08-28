@@ -3,7 +3,7 @@ USING (
   SELECT * FROM (
     SELECT *, ROW_NUMBER() OVER (partition BY requestitemid ORDER BY timestamp DESC) AS rownumber
     FROM (
-      SELECT 
+      SELECT
         clientid,
         campaignid,
         sendinggroupid,
