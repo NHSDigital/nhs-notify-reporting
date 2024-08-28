@@ -10,9 +10,9 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     completedtime timestamp,
     completedcommunicationtypes array<string>,
     failedcommunicationtypes array<string>,
-    delivered boolean,
-    failed boolean,
-    failedreason string
+    status string,
+    failedreason string,
+    timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
 LOCATION '${s3_location}'

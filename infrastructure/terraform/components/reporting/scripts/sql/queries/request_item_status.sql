@@ -1,52 +1,50 @@
 MERGE INTO request_item_status as target
 USING (
-  SELECT
-    clientid,
-    campaignid,
-    sendinggroupid,
-    requestitemid,
-    requestrefid,
-    requestid,
-    any_value(to_base64(sha256(cast(? || '.' || nhsnumber AS varbinary)))) AS nhsnumberhash,
-    any_value(from_iso8601_timestamp(createddate)) AS createdtime,
-    any_value(from_iso8601_timestamp(completeddate)) AS completedtime,
-    array_distinct(flatten(array_agg(completedcommunicationtypes))) AS completedcommunicationtypes,
-    array_distinct(flatten(array_agg(failedcommunicationtypes))) AS failedcommunicationtypes,
-    bool_or(case status when 'DELIVERED' then true else false end) AS delivered,
-    bool_or(case status when 'FAILED' then true else false end) AS failed,
-    any_value(failedreason) AS failedreason
-  FROM ${source_table}
-  WHERE (sk LIKE 'REQUEST_ITEM#%') AND
-    (
-      -- Moving 1-month ingestion window
-      (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-      (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+  SELECT * FROM (
+    SELECT *, ROW_NUMBER() OVER (partition BY requestitemid ORDER BY timestamp DESC) AS rownumber
+    FROM (
+      SELECT
+        clientid,
+        campaignid,
+        sendinggroupid,
+        requestitemid,
+        requestrefid,
+        requestid,
+        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
+        from_iso8601_timestamp(createddate) AS createdtime,
+        from_iso8601_timestamp(completeddate) AS completedtime,
+        completedcommunicationtypes,
+        failedcommunicationtypes,
+        status,
+        failedreason,
+        CAST("$classification".timestamp AS BIGINT) AS timestamp
+      FROM ${source_table}
+      WHERE (sk LIKE 'REQUEST_ITEM#%') AND
+      (
+        -- Moving 1-month ingestion window
+        (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
+        (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+      )
     )
-  GROUP BY
-    clientid,
-    campaignid,
-    sendinggroupid,
-    requestitemid,
-    requestrefid,
-    requestid
+  )
+  WHERE rownumber = 1
 ) as source
 ON
-  -- Allow match on null dimensions
-  COALESCE(source.clientid, '') = COALESCE(target.clientid, '') AND
-  COALESCE(source.campaignid, '') = COALESCE(target.campaignid, '') AND
-  COALESCE(source.sendinggroupid, '') = COALESCE(target.sendinggroupid, '') AND
-  COALESCE(source.requestitemid, '') = COALESCE(target.requestitemid, '') AND
-  COALESCE(source.requestrefid, '') = COALESCE(target.requestrefid, '') AND
-  COALESCE(source.requestid, '') = COALESCE(target.requestid, '')
-WHEN MATCHED THEN UPDATE SET
-  nhsnumberhash = COALESCE(source.nhsnumberhash, target.nhsnumberhash),
-  createdtime = COALESCE(source.createdtime, target.createdtime),
-  completedtime = COALESCE(source.completedtime, target.completedtime),
-  completedcommunicationtypes = array_union(COALESCE(source.completedcommunicationtypes, ARRAY[]), COALESCE(target.completedcommunicationtypes, ARRAY[])),
-  failedcommunicationtypes = array_union(COALESCE(source.failedcommunicationtypes, ARRAY[]), COALESCE(target.failedcommunicationtypes, ARRAY[])),
-  delivered = COALESCE(source.delivered, false) OR COALESCE(target.delivered, false),
-  failed = COALESCE(source.failed, false) OR COALESCE(target.failed, false),
-  failedreason = COALESCE(source.failedreason, target.failedreason)
+  source.requestitemid = target.requestitemid
+WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
+  clientid = source.clientid,
+  campaignid = source.campaignid,
+  sendinggroupid = source.sendinggroupid,
+  requestrefid = source.requestrefid,
+  requestid = source.requestid,
+  nhsnumberhash = source.nhsnumberhash,
+  createdtime = source.createdtime,
+  completedtime = source.completedtime,
+  completedcommunicationtypes = source.completedcommunicationtypes,
+  failedcommunicationtypes = source.failedcommunicationtypes,
+  status = source.status,
+  failedreason = source.failedreason,
+  timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
@@ -59,9 +57,9 @@ WHEN NOT MATCHED THEN INSERT (
   completedtime,
   completedcommunicationtypes,
   failedcommunicationtypes,
-  delivered,
-  failed,
-  failedreason
+  status,
+  failedreason,
+  timestamp
 )
 VALUES (
   source.clientid,
@@ -75,7 +73,7 @@ VALUES (
   source.completedtime,
   source.completedcommunicationtypes,
   source.failedcommunicationtypes,
-  source.delivered,
-  source.failed,
-  source.failedreason
+  source.status,
+  source.failedreason,
+  source.timestamp
 )
