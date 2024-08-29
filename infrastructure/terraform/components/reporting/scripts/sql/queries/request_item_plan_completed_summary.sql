@@ -1,6 +1,6 @@
 MERGE INTO request_item_plan_completed_summary as target
 USING (
-  SELECT 
+  SELECT
     clientid,
     campaignid,
     sendinggroupid,
