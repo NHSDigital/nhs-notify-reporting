@@ -58,7 +58,7 @@
             "Get Hash Key ${query_id}": {
               "Type": "Task",
               "Parameters": {
-                "Name": "/${environment}/hash_key",
+                "Name": "/${environment}/hash-key",
                 "WithDecryption": true
               },
               "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
