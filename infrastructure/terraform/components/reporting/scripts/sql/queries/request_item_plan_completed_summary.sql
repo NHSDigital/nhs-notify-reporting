@@ -1,31 +1,50 @@
 MERGE INTO request_item_plan_completed_summary as target
 USING (
-  SELECT
+  SELECT 
     clientid,
     campaignid,
     sendinggroupid,
     communicationtype,
     supplier,
-    DATE(SUBSTRING(createddate,1,10)) as createddate,
-    DATE(SUBSTRING(completeddate,1,10)) as completeddate,
+    createddate,
+    completeddate,
     status,
     failedreason,
     count(distinct requestitemid) AS requestitemcount
-  FROM ${source_table}
-  WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
-    (
-      -- Moving 1-month ingestion window
-      (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-      (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+  FROM (
+    SELECT *, ROW_NUMBER() OVER (partition BY sk ORDER BY timestamp DESC) AS rownumber
+    FROM (
+      SELECT
+        requestitemid,
+        sk,
+        clientid,
+        campaignid,
+        sendinggroupid,
+        communicationtype,
+        supplier,
+        DATE(SUBSTRING(createddate,1,10)) as createddate,
+        DATE(SUBSTRING(completeddate,1,10)) as completeddate,
+        status,
+        failedreason,
+        CAST("$classification".timestamp AS BIGINT) AS timestamp
+      FROM ${source_table}
+      WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
+      (
+        -- Moving 1-month ingestion window
+        (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
+        (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+      )
     )
+  )
+  WHERE rownumber = 1
   GROUP BY
     clientid,
     campaignid,
     sendinggroupid,
     communicationtype,
     supplier,
-    DATE(SUBSTRING(createddate,1,10)),
-    DATE(SUBSTRING(completeddate,1,10)),
+    createddate,
+    completeddate,
     status,
     failedreason
 ) as source
