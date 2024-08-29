@@ -1,5 +1,5 @@
 resource "aws_ssm_parameter" "hash_key" {
-  name        = "/${local.csi}/hash_key"
+  name        = "/${local.csi}/hash-key"
   description = "Random key used to generate distinct environment-specific hash values"
   type        = "SecureString"
   value       = random_bytes.hash_key.base64
