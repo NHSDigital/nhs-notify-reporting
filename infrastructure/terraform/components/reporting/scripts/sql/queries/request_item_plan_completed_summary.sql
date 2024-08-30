@@ -17,7 +17,7 @@ USING (
       ROW_NUMBER() OVER (
         partition BY sk ORDER BY
         timestamp DESC,
-        length(coalesce(cast(completeddate AS string), '')) DESC
+        length(coalesce(cast(completeddate AS varchar), '')) DESC
       ) AS rownumber
     FROM (
       SELECT
