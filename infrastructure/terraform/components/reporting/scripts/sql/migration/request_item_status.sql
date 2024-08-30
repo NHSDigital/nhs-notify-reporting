@@ -11,6 +11,24 @@ USING (
     FROM (
       SELECT
         clientid,
+        NULL AS campaignid,
+        sendinggroupid,
+        requestitemid,
+        requestrefid,
+        requestid,
+        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
+        from_iso8601_timestamp(createddate) AS createdtime,
+        from_iso8601_timestamp(completeddate) AS completedtime,
+        completedcommunicationtypes,
+        failedcommunicationtypes,
+        status,
+        failedreason,
+        CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
+      FROM transaction_history_old
+      WHERE (sk LIKE 'REQUEST_ITEM#%')
+      UNION
+      SELECT
+        clientid,
         campaignid,
         sendinggroupid,
         requestitemid,
@@ -24,13 +42,27 @@ USING (
         status,
         failedreason,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
-      FROM ${source_table}
-      WHERE (sk LIKE 'REQUEST_ITEM#%') AND
-      (
-        -- Moving 1-month ingestion window
-        (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-        (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
-      )
+      FROM transaction_history
+      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NULL) OR (SUBSTRING(completeddate, 11, 1) = 'T'))
+      UNION
+      --data quality issue from invalid manual correction of soure data
+      SELECT
+        clientid,
+        campaignid,
+        sendinggroupid,
+        requestitemid,
+        requestrefid,
+        requestid,
+        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
+        from_iso8601_timestamp(createddate) AS createdtime,
+        cast(completeddate AS timestamp) AS completedtime,
+        completedcommunicationtypes,
+        failedcommunicationtypes,
+        status,
+        failedreason,
+        CAST("$classification".timestamp AS BIGINT) AS timestamp
+      FROM transaction_history
+      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NOT NULL) AND (SUBSTRING(completeddate, 11, 1) != 'T'))
     )
   )
   WHERE rownumber = 1
