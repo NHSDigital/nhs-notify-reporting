@@ -1,7 +1,7 @@
 MERGE INTO request_item_status as target
 USING (
   SELECT * FROM (
-    SELECT 
+    SELECT
       *,
       ROW_NUMBER() OVER (
         partition BY requestitemid ORDER BY
@@ -62,7 +62,7 @@ USING (
         failedreason,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM transaction_history
-      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NOT NULL) AND (SUBSTRING(completeddate, 11, 1) != 'T')) 
+      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NOT NULL) AND (SUBSTRING(completeddate, 11, 1) != 'T'))
     )
   )
   WHERE rownumber = 1

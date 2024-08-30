@@ -1,7 +1,7 @@
 MERGE INTO request_item_status as target
 USING (
   SELECT * FROM (
-    SELECT 
+    SELECT
       *,
       ROW_NUMBER() OVER (
         partition BY requestitemid ORDER BY
