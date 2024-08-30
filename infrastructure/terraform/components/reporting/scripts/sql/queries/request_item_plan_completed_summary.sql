@@ -12,7 +12,13 @@ USING (
     failedreason,
     count(distinct requestitemid) AS requestitemcount
   FROM (
-    SELECT *, ROW_NUMBER() OVER (partition BY sk ORDER BY timestamp DESC) AS rownumber
+    SELECT
+      *,
+      ROW_NUMBER() OVER (
+        partition BY sk ORDER BY
+        timestamp DESC,
+        length(coalesce(completeddate, '')) DESC
+      ) AS rownumber
     FROM (
       SELECT
         requestitemid,

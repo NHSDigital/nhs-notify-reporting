@@ -1,7 +1,13 @@
 MERGE INTO request_item_status as target
 USING (
   SELECT * FROM (
-    SELECT *, ROW_NUMBER() OVER (partition BY requestitemid ORDER BY timestamp DESC) AS rownumber
+    SELECT 
+      *,
+      ROW_NUMBER() OVER (
+        partition BY requestitemid ORDER BY
+        timestamp DESC,
+        length(coalesce(completeddate, '')) DESC
+      ) AS rownumber
     FROM (
       SELECT
         clientid,
