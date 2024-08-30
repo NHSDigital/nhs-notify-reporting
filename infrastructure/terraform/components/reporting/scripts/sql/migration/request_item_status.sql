@@ -6,7 +6,7 @@ USING (
       ROW_NUMBER() OVER (
         partition BY requestitemid ORDER BY
         timestamp DESC,
-        length(coalesce(cast(completeddate AS varchar), '')) DESC
+        length(coalesce(cast(completedtime AS varchar), '')) DESC
       ) AS rownumber
     FROM (
       SELECT
