@@ -52,13 +52,13 @@ cd nhs-notify-reporting
 
 ## Prerequisites
 
-In order to facilitate cross-account export of data, the reporting domain requires IAM permissions for the Glue Catalogue and underlying S3 storage to be setup in the NHS Notify core account.
+In order to facilitate cross-account export of data, the reporting domain requires IAM permissions for read-only access to the Glue Catalogue and underlying S3 storage in the NHS Notify core account.
 
 ## Usage
 
 After successful deployment, the following will be available:
 
-- Staging tables for each data view/projection.
+- Staging tables for each data aggregation/projection.
 - Athena saved queries to incrementally populate the staging tables from the core account.
 - A step function to periodically execute the saved ingestion queries.
 
@@ -82,9 +82,9 @@ Ad-hoc queries should be executed using the `user` workgroup
 
 #### How do I define a new projection/aggregation?
 
-- Define a new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
-- Define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
-- (Optionally) define the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
+- Specify the DDL for the new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
+- Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
+- (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
 - Add the query & table to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf)
 
 The filename should be the same in all 3 folders, and should be the same as the value added to the step function (less the sql suffix).
@@ -93,7 +93,7 @@ If your target table contains hashed NHS numbers add the step function's `hash_q
 
 ## Testing
 
-As there is no application code particularly suited to unit testing, testing of ingestion queries is currently performed manually.
+As there is no application code suited to unit testing, testing of ingestion queries is currently performed manually.
 
 ## Design
 

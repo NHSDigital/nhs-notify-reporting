@@ -19,8 +19,8 @@ Each row corresponds to the latest state of each request item in the system, wit
     completedtime
     completedcommunicationtypes
     failedcommunicationtypes
-    status,
-    failedreason,
+    status
+    failedreason
     timestamp
 
 ### request_item_plan_completed_summary
@@ -51,7 +51,7 @@ These are simplified examples of the actual ingestion queries.
 
 ### Projection Queries
 
-This query finds the latest update of each object in the ingestion window, then inserts a subset of columns into the reporting table if the primary key is not already present or updates the row if present (and a later version is available).
+This query finds the latest update  of each object in the ingestion window. It then inserts a subset of columns into the reporting table if the primary key is not already present, or updates the row if already present but a later version is available.
 
     MERGE INTO <reporting_table> as target
     USING (
@@ -63,15 +63,18 @@ This query finds the latest update of each object in the ingestion window, then 
                 --Use completedtime as indicator of terminal state as a tie-breaker on identical timestamps
                 partition BY requestitemid ORDER BY
                 timestamp DESC,
-                length(coalesce(cast(completedtime AS varchar), '')) DESC
+                length(coalesce(completedtime, '')) DESC
             ) AS rownumber
             FROM (
                 SELECT
                     --Primary key for matching
                     requestitemid,
+
                     --Data column(s)
                     status,
-                    --Timestamp
+
+                    --Timestamp partitioning/ordering columns
+                    completeddate,
                     CAST("$classification".timestamp AS BIGINT) AS timestamp
                 FROM ${source_table}
                 WHERE (sk LIKE 'REQUEST_ITEM#%') AND
@@ -114,7 +117,7 @@ If a new combination of dimensions are found an insert is performed.
 
 If an existing combination of dimensions are found an update is performed only if the total would be increased (this is to prevent totals being reduced as events expire from the sliding ingestion window)
 
-For correct results, he ingestion window must be large enough to encompass all events that correspond to a given combination of dimensions.
+For correct results, the ingestion window must be large enough to encompass all events that correspond to a given combination of dimensions.
 
     MERGE INTO <reporting_table> as target
     USING (
@@ -133,7 +136,7 @@ For correct results, he ingestion window must be large enough to encompass all e
             --Use completedtime as indicator of terminal state as a tie-breaker on identical timestamps
             partition BY sk ORDER BY
             timestamp DESC,
-            length(coalesce(cast(completeddate AS varchar), '')) DESC
+            length(coalesce(completeddate, '')) DESC
         ) AS rownumber
         FROM (
             SELECT
@@ -144,8 +147,9 @@ For correct results, he ingestion window must be large enough to encompass all e
                 --Facts
                 requestitemid,
 
-                --Timestamp partitioning columns
+                --Timestamp partitioning/ordering columns
                 sk,
+                completeddate,
                 CAST("$classification".timestamp AS BIGINT) AS timestamp
             FROM ${source_table}
             WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
