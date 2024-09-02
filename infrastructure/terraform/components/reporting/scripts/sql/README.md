@@ -60,10 +60,10 @@ This query finds the latest update  of each object in the ingestion window. It t
             *,
             ROW_NUMBER() OVER (
                 --Only select last update from sample window
-                --Use completedtime as indicator of terminal state as a tie-breaker on identical timestamps
+                --Use completeddate as indicator of terminal state as a tie-breaker on identical timestamps
                 partition BY requestitemid ORDER BY
                 timestamp DESC,
-                length(coalesce(completedtime, '')) DESC
+                length(coalesce(completeddate, '')) DESC
             ) AS rownumber
             FROM (
                 SELECT
@@ -133,7 +133,7 @@ For correct results, the ingestion window must be large enough to encompass all 
         *,
         ROW_NUMBER() OVER (
             --Only select last update from sample window
-            --Use completedtime as indicator of terminal state as a tie-breaker on identical timestamps
+            --Use completeddate as indicator of terminal state as a tie-breaker on identical timestamps
             partition BY sk ORDER BY
             timestamp DESC,
             length(coalesce(completeddate, '')) DESC
