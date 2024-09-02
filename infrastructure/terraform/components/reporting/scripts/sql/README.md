@@ -107,7 +107,7 @@ This query finds the latest update  of each object in the ingestion window. It t
         source.timestamp
     )
 
-###  Aggregation Queries
+### Aggregation Queries
 
 Aggregation queries produce much smaller result sets than the corresponding projection queries by grouping related items together.
 
@@ -141,7 +141,7 @@ For correct results, the ingestion window must be large enough to encompass all 
         FROM (
             SELECT
                 --Dimensions
-                clientid,                
+                clientid,
                 sendinggroupid,
 
                 --Facts
@@ -173,9 +173,9 @@ For correct results, the ingestion window must be large enough to encompass all 
         COALESCE(source.sendinggroupid, '') = COALESCE(target.sendinggroupid, '') AND
 
     --If matched, update the fact(s) with a one-way check
-    WHEN MATCHED AND (source.requestitemcount > target.requestitemcount) THEN UPDATE 
+    WHEN MATCHED AND (source.requestitemcount > target.requestitemcount) THEN UPDATE
         SET requestitemcount = source.requestitemcount
-    
+
     --If not matched, insert dimensions and facts
     WHEN NOT MATCHED THEN INSERT (
         clientid,
@@ -187,7 +187,6 @@ For correct results, the ingestion window must be large enough to encompass all 
         source.sendinggroupid,
         source.requestitemcount
     )
-
 
 ### Handling NHS Numbers
 
