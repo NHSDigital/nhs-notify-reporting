@@ -99,7 +99,7 @@ As there is no application code suited to unit testing, testing of ingestion que
 
 ### Diagrams
 
-*TODO.*
+![Reporting Architecture Overview](/docs/diagrams/reporting.png)
 
 ### Staging Table Design
 
