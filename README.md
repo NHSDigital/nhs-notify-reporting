@@ -33,7 +33,7 @@ This domain does not contain any application code. The reporting domain is execu
   - [How Do I?](#how-do-i)
 - [Testing](#testing)
 - [Design](#design)
-  - [Diagrams](#diagrams)
+  - [Architecture Overview](#architecture-overview)
   - [Staging Table Design](#staging-table-design)
   - [Ingestion Query Design](#ingestion-query-design)
   - [Handling PID](#handling-pid)
@@ -97,7 +97,7 @@ As there is no application code suited to unit testing, testing of ingestion que
 
 ## Design
 
-### Diagrams
+### Architecture Overview
 
 ![Reporting Architecture Overview](/docs/diagrams/reporting.png)
 
