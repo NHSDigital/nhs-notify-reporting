@@ -29,12 +29,15 @@ This domain does not contain any application code. The reporting domain is execu
 - [Setup](#setup)
 - [Prerequisites](#prerequisites)
 - [Usage](#usage)
+  - [Athena Workgroups](#athena-workgroups)
+  - [How Do I?](#how-do-i)
 - [Testing](#testing)
 - [Design](#design)
   - [Diagrams](#diagrams)
   - [Staging Table Design](#staging-table-design)
   - [Ingestion Query Design](#ingestion-query-design)
   - [Handling PID](#handling-pid)
+  - [Permissions](#permissions)
 - [Contacts](#contacts)
 - [Licence](#licence)
 
@@ -63,6 +66,10 @@ The step function and saved queries can be executed manually as required. They a
 
 Access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment.
 
+More information on the individual staging tables and associated ingestion queries is available [here](/infrastructure/terraform/components/reporting/scripts/sql/README.md)
+
+### Athena Workgroups
+
 The following Athena workgroups are available:
 
 - `setup` for DDL execution and initial data migration.
@@ -71,9 +78,22 @@ The following Athena workgroups are available:
 
 Ad-hoc queries should be executed using the `user` workgroup
 
+### How do I?
+
+#### How do I define a new projection/aggregation?
+
+- Define a new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
+- Define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
+- (Optionally) define the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
+- Add the query & table to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf)
+
+The filename should be the same in all 3 folders, and should be the same as the value added to the step function (less the sql suffix).
+
+If your target table contains hashed NHS numbers add the step function's `hash_query_ids` array, otherwise add it to the `query_ids` array.
+
 ## Testing
 
-As there is no application code, testing of ingestion queries is currently performed manually.
+As there is no application code particularly suited to unit testing, testing of ingestion queries is currently performed manually.
 
 ## Design
 
@@ -87,6 +107,8 @@ Staging tables are AWS Glue tables created in the [Apache Iceberg](https://icebe
 
 The initial staging tables are partitioned by creation month and completion month in order to efficiently support date-range queries.
 
+See also this [readme](/infrastructure/terraform/components/reporting/scripts/sql/README.md) for the individual tables and ingestion queries.
+
 **Note: Partitions in Iceberg tables are not visible via the AWS Glue Console, but can be seen instead using a "SHOW CREATE TABLE" query in Athena (and verified by inspecting the underlying S3 storage**)
 
 ### Ingestion Query Design
@@ -94,7 +116,7 @@ The initial staging tables are partitioned by creation month and completion mont
 The underlying transaction_history table is a Glue representation of the change capture log from DynamoDB. It has a number of characteristics that make it more difficult to query than a "traditional" RDBMS table:
 
 - It contains a mixture of different object types due to the single table design used in DynamoDB.
-- It has dynamically evolving schema, with new fields appearing over time as the NHS Notify application changes.
+- It has a dynamically evolving schema, with new fields appearing over time as the NHS Notify application changes.
 - It contains multiple records for the same object, with one record for each change.
 - It has no guarantee of ordering, so record changes may be captured out-of-sequence.
 - It is subject to data retention policies. Older records will be deleted from the table automatically/without notice.
@@ -114,6 +136,8 @@ Ingestion queries must be specifically designed to take account of these charact
   - Data that is present in some source record versions but NULL in others
   - Data that changes between record versions
 
+See also this [readme](/infrastructure/terraform/components/reporting/scripts/sql/README.md) for the individual tables and ingestion queries.
+
 ### Handling PID
 
 Staging tables exposed to Power BI should not contain any PID.
@@ -121,6 +145,10 @@ Staging tables exposed to Power BI should not contain any PID.
 Pseudonymisation of PID is approved via the use of a SHA256 hash together with a secret environment key held in AWS Parameter Store.
 
 The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
+
+### Permissions
+
+External access (including PowerBI) should be restricted to read-only access of the staging tables only. No external access should be provided to the underlying transaction_history table.
 
 ## Contacts
 
