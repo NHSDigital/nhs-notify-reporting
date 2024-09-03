@@ -23,3 +23,8 @@ endfor
 drawio
 rawContent
 endcapture
+precomputation
+workgroup
+readme
+sql
+SQL

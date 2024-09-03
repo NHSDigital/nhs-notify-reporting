@@ -74,7 +74,6 @@ Here are some key features built into this repository's Docker module:
   - [`Dockerfile`](../../scripts/docker/tests/Dockerfile): Image definition for the test suite
   - [`VERSION`](../../scripts/docker/tests/VERSION): Version patterns for the test suite
 - Usage example
-  - Python-based example [`hello_world`](../../scripts/docker/examples/python) app showing a multi-staged build
   - A set of [make targets](https://github.com/nhs-england-tools/repository-template/blob/main/scripts/docker/docker.mk#L18) to run the example
 
 ## Usage
