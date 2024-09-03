@@ -27,3 +27,4 @@ precomputation
 workgroup
 readme
 sql
+SQL

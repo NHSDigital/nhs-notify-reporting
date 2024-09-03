@@ -76,7 +76,7 @@ The following Athena workgroups are available:
 - `ingestion` for execution of the ingestion queries used to populate staging tables.
 - `user` for execution of queries that read from staging tables, including external consumers like Power BI.
 
-Ad-hoc queries should be executed using the `user` workgroup
+Ad-hoc queries should be executed using the `user` workgroup.
 
 ### How do I?
 
