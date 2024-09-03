@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 
-# Creates table if it doesn't already exist
+# Adds a column to an existing table if it doesn't already exist
 
 environment=$1
-s3_bucket=$2
-table_name=$3
+table_name=$2
+column_name=$3
+column_datatype=$4
 
 if [[ -z "${environment}" ]];  then
     echo "Environment name not specified"
-    exit 1
-fi
-
-if [[ -z "${s3_bucket}" ]]; then
-    echo "S3 bucket not specified"
     exit 1
 fi
 
@@ -21,15 +17,35 @@ if [[ -z "${table_name}" ]]; then
     exit 1
 fi
 
-glue_database="nhs-notify-${environment}-reporting-database"
+if [[ -z "${column_name}" ]]; then
+    echo "Column name not specified"
+    exit 1
+fi
+
+if [[ -z "${column_datatype}" ]]; then
+    echo "Column data type not specified"
+    exit 1
+fi
+
+# glue_database="nhs-notify-${environment}-reporting-database"
+glue_database="comms-${environment}-api-rpt-reporting"
 
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
-if [[ ${table_exists} == "true" ]]; then
-    echo "Table already exists for this environment in the database, no further action required"
+if [[ ${table_exists} != "true" ]]; then
+    echo "Table ${table_name} does not exist in database ${glue_database}"
+    exit 1
+fi
+
+column_exists=$(aws glue get-tables --database-name ${glue_database} | \
+    jq '.TableList[] | select (.Name=="'${table_name}'") | any(.StorageDescriptor.Columns[].Name == "'${column_name}'"; .)')
+
+if [[ ${column_exists} == "true" ]]; then
+    echo "Column already exists for this table in the database, no further action required"
     exit 0
 fi
 
+: '
 sql_file="./scripts/sql/tables/${table_name}.sql"
 sql_file_updated="./scripts/sql/tables/${table_name}_updated.sql"
 s3_location="s3://${s3_bucket}/${table_name}"
@@ -59,3 +75,4 @@ else
     echo "Table creation failed"
     exit 1
 fi
+'
