@@ -196,7 +196,7 @@ Raw NHS numbers are not to be exposed in reporting tables. Instead, the followin
 
 An environment-specific secret key is injected as an execution parameter to prevent precomputation attacks.
 
-The same format should be used in all queries to ensure that the same hash value is always generated for the same NHS number in any given enviroment.
+The same format should be used in all queries to ensure that the same hash value is always generated for the same NHS number in any given environment.
 
 ## Data Migration Queries
 
