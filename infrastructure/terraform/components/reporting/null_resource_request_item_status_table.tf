@@ -3,7 +3,13 @@ resource "null_resource" "request_item_status_table" {
     always_run = timestamp()
   }
   provisioner "local-exec" {
-    command = "${path.module}/scripts/create_table.sh ${var.environment} ${aws_s3_bucket.data.bucket} request_item_status"
+    command = <<EOT
+      ${path.module}/scripts/create_table.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        ${aws_s3_bucket.data.bucket} \
+        request_item_status"
+    EOT
   }
 
   depends_on = [aws_athena_workgroup.setup]

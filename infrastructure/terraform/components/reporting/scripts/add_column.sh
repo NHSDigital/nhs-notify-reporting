@@ -2,13 +2,19 @@
 
 # Adds a column to an existing table if it doesn't already exist
 
-environment=$1
-table_name=$2
-column_name=$3
-column_datatype=$4
+workgroup=$1
+glue_database=$2
+table_name=$3
+column_name=$4
+column_datatype=$5
 
-if [[ -z "${environment}" ]];  then
-    echo "Environment name not specified"
+if [[ -z "${workgroup}" ]]; then
+    echo "Athena workgroup not specified"
+    exit 1
+fi
+
+if [[ -z "${glue_database}" ]]; then
+    echo "Glue database not specified"
     exit 1
 fi
 
@@ -27,8 +33,6 @@ if [[ -z "${column_datatype}" ]]; then
     exit 1
 fi
 
-glue_database="nhs-notify-${environment}-reporting-database"
-
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
 if [[ ${table_exists} != "true" ]]; then
@@ -46,7 +50,7 @@ fi
 
 query_string="ALTER TABLE ${table_name} ADD COLUMNS (${column_name} ${column_datatype})"
 
-$(dirname "$0")/execute_query.sh "${query_string}" nhs-notify-${environment}-reporting-setup ${glue_database}
+$(dirname "$0")/execute_query.sh "${query_string}" ${workgroup} ${glue_database}
 
 if [[ $? == 0 ]]; then
     echo "Column ${column_name} added to table ${table_name}"

@@ -2,12 +2,18 @@
 
 # Creates table if it doesn't already exist
 
-environment=$1
-s3_bucket=$2
-table_name=$3
+workgroup=$1
+glue_database=$2
+s3_bucket=$3
+table_name=$4
 
-if [[ -z "${environment}" ]];  then
-    echo "Environment name not specified"
+if [[ -z "${workgroup}" ]]; then
+    echo "Athena workgroup not specified"
+    exit 1
+fi
+
+if [[ -z "${glue_database}" ]]; then
+    echo "Glue database not specified"
     exit 1
 fi
 
@@ -20,8 +26,6 @@ if [[ -z "${table_name}" ]]; then
     echo "Table name not specified"
     exit 1
 fi
-
-glue_database="nhs-notify-${environment}-reporting-database"
 
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
@@ -39,7 +43,7 @@ sed "s#\${s3_location}#${s3_location}#g; s#\${table_name}#${table_name}#g" $sql_
 
 query_string=$(cat "$sql_file_updated")
 
-$(dirname "$0")/execute_query.sh "${query_string}" nhs-notify-${environment}-reporting-setup ${glue_database}
+$(dirname "$0")/execute_query.sh "${query_string}" ${workgroup} ${glue_database}
 
 if [[ $? == 0 ]]; then
     echo "Table ${table_name} created successfully"
