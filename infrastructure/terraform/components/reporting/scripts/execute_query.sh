@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 
-# Executes an athena query
+# Blocking execution of an athena query
 
 query_string=$1
 workgroup=$2
 glue_database=$3
+
+echo $query_string
+echo $workgroup
 
 if [[ -z "${query_string}" ]];  then
     echo "Query string not specified"

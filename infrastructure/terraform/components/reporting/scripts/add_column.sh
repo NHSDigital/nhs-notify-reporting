@@ -27,8 +27,7 @@ if [[ -z "${column_datatype}" ]]; then
     exit 1
 fi
 
-# glue_database="nhs-notify-${environment}-reporting-database"
-glue_database="comms-${environment}-api-rpt-reporting"
+glue_database="nhs-notify-${environment}-reporting-database"
 
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
@@ -38,41 +37,21 @@ if [[ ${table_exists} != "true" ]]; then
 fi
 
 column_exists=$(aws glue get-tables --database-name ${glue_database} | \
-    jq '.TableList[] | select (.Name=="'${table_name}'") | any(.StorageDescriptor.Columns[].Name == "'${column_name}'"; .)')
+    jq 'any(.TableList[] | select (.Name=="'${table_name}'") | .StorageDescriptor.Columns[] | select (.Name=="'${column_name}'") | select (.Parameters."iceberg.field.current"=="true"); .)')
 
 if [[ ${column_exists} == "true" ]]; then
     echo "Column already exists for this table in the database, no further action required"
     exit 0
 fi
 
-: '
-sql_file="./scripts/sql/tables/${table_name}.sql"
-sql_file_updated="./scripts/sql/tables/${table_name}_updated.sql"
-s3_location="s3://${s3_bucket}/${table_name}"
+query_string="ALTER TABLE ${table_name} ADD COLUMNS (${column_name} ${column_datatype})"
 
-#Substituting placeholders with actual values and piping to a new sql file to be used as query string
-sed "s#\${s3_location}#${s3_location}#g; s#\${table_name}#${table_name}#g" $sql_file > $sql_file_updated
+$(dirname "$0")/execute_query.sh "${query_string}" nhs-notify-${environment}-reporting-setup ${glue_database}
 
-query_string=$(cat "$sql_file_updated")
-
-execution_id=$( aws athena start-query-execution \
-  --query-string "$query_string" \
-  --work-group nhs-notify-${environment}-reporting-setup \
-  --query-execution-context Database=${glue_database} | jq -r '.QueryExecutionId')
-
-if [[ -z "${execution_id}" ]]; then
-    echo "Table creation failed"
-    exit 1
-fi
-
-echo "Execution ID is: ${execution_id}"
-
-status=$(aws athena get-query-execution --query-execution-id $execution_id | jq -r '.QueryExecution.Status.State')
-
-if [[ $? == 0 ]] && [[ $status != "FAILED" ]]; then
-    echo "Table '${table_name}' created!!"
+if [[ $? == 0 ]]; then
+    echo "Column ${column_name} added to table ${table_name}"
+    exit 0
 else
-    echo "Table creation failed"
+    echo "Column failed"
     exit 1
 fi
-'

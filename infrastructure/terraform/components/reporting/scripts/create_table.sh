@@ -39,22 +39,11 @@ sed "s#\${s3_location}#${s3_location}#g; s#\${table_name}#${table_name}#g" $sql_
 
 query_string=$(cat "$sql_file_updated")
 
-execution_id=$( aws athena start-query-execution \
-  --query-string "$query_string" \
-  --work-group nhs-notify-${environment}-reporting-setup \
-  --query-execution-context Database=${glue_database} | jq -r '.QueryExecutionId')
+$(dirname "$0")/execute_query.sh "${query_string}" nhs-notify-${environment}-reporting-setup ${glue_database}
 
-if [[ -z "${execution_id}" ]]; then
-    echo "Table creation failed"
-    exit 1
-fi
-
-echo "Execution ID is: ${execution_id}"
-
-status=$(aws athena get-query-execution --query-execution-id $execution_id | jq -r '.QueryExecution.Status.State')
-
-if [[ $? == 0 ]] && [[ $status != "FAILED" ]]; then
-    echo "Table '${table_name}' created!!"
+if [[ $? == 0 ]]; then
+    echo "Table ${table_name} created successfully"
+    exit 0
 else
     echo "Table creation failed"
     exit 1
