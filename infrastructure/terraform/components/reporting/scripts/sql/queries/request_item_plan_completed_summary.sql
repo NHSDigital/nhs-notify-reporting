@@ -10,6 +10,7 @@ USING (
     completeddate,
     status,
     failedreason,
+    contactdetailsource,
     count(distinct requestitemid) AS requestitemcount
   FROM (
     SELECT
@@ -32,6 +33,7 @@ USING (
         DATE(SUBSTRING(completeddate,1,10)) as completeddate,
         status,
         failedreason,
+        contactdetailsource,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
@@ -52,7 +54,8 @@ USING (
     createddate,
     completeddate,
     status,
-    failedreason
+    failedreason,
+    contactdetailsource
 ) as source
 ON
   -- Allow match on null dimensions
@@ -64,7 +67,8 @@ ON
   COALESCE(CAST(source.createddate AS varchar), '') = COALESCE(CAST(target.createddate AS varchar), '') AND
   COALESCE(CAST(source.completeddate AS varchar), '') = COALESCE(CAST(target.completeddate AS varchar), '') AND
   COALESCE(source.status, '') = COALESCE(target.status, '') AND
-  COALESCE(source.failedreason, '') = COALESCE(target.failedreason, '')
+  COALESCE(source.failedreason, '') = COALESCE(target.failedreason, '') AND
+  COALESCE(source.contactdetailsource, '') = COALESCE(target.contactdetailsource, '')
 WHEN MATCHED AND (source.requestitemcount > target.requestitemcount) THEN UPDATE SET requestitemcount = source.requestitemcount
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -76,6 +80,7 @@ WHEN NOT MATCHED THEN INSERT (
   completeddate,
   status,
   failedreason,
+  contactdetailsource,
   requestitemcount
 )
 VALUES (
@@ -88,5 +93,6 @@ VALUES (
   source.completeddate,
   source.status,
   source.failedreason,
+  source.contactdetailsource,
   source.requestitemcount
 )
