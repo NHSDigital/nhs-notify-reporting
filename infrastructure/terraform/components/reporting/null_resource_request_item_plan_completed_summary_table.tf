@@ -8,7 +8,7 @@ resource "null_resource" "request_item_plan_completed_summary_table" {
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
         ${aws_s3_bucket.data.bucket} \
-        request_item_plan_completed_summary"
+        request_item_plan_completed_summary
     EOT
   }
 

@@ -8,7 +8,7 @@ resource "null_resource" "request_item_status_table" {
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
         ${aws_s3_bucket.data.bucket} \
-        request_item_status"
+        request_item_status
     EOT
   }
 
