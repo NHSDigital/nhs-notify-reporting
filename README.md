@@ -31,6 +31,7 @@ This domain does not contain any application code. The reporting domain is execu
 - [Usage](#usage)
   - [Athena Workgroups](#athena-workgroups)
   - [How Do I?](#how-do-i)
+  - [Workarounds / Limitations](#workarounds--limitations)
 - [Testing](#testing)
 - [Design](#design)
   - [Architecture Overview](#architecture-overview)
@@ -78,18 +79,36 @@ The following Athena workgroups are available:
 
 Ad-hoc queries should be executed using the `user` workgroup.
 
+### Workarounds / Limitations
+
+Because of a [limitation in the Terraform provider](https://github.com/hashicorp/terraform-provider-aws/issues/36531) we can't currently manage iceberg tables as a native Terraform aws_glue_catalog_table resource.
+
+As a workaround, we manage reporting tables via DDL queries executed in Athena and wrapped in Terraform null_resources for state management. See also the [shell scripts](/infrastructure/terraform/components/reporting/scripts/) invoked by the null_resources.
+
 ### How do I?
 
 #### How do I define a new projection/aggregation?
 
+- Add a new file containing a terraform null_resource that wraps the [create_table](/infrastructure/terraform/components/reporting/scripts/create_table.sh) shell script
+- Add a new file containing a terraform athena_named_query used for data ingestion
 - Specify the DDL for the new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
 - Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
 - (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
-- Add the query & table to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf)
+- Add the named query to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf)
 
-The filename should be the same in all 3 folders, and should be the same as the value added to the step function (less the sql suffix).
+The filename should be the same in all 3 sql folders.
 
 If your target table contains hashed NHS numbers add the step function's `hash_query_ids` array, otherwise add it to the `query_ids` array.
+
+#### How do I add a new column to a projection/aggregation retrospectively?
+
+Columns can be added retrospectiely by adding a terraform null_resource that wraps the [add_column](/infrastructure/terraform/components/reporting/scripts/add_column.sh) shell script.
+
+By convention, the column null_resources are defined in the same file as the associate table null_resource.
+
+The column null_resource should have a dependency on the underlying table null_resource so that they are created in the correct sequence.
+
+New columns should also be added to the underlying [table definition](/infrastructure/terraform/components/reporting/scripts/sql/tables/) so they are created as part of the initial table creation in new environments.
 
 ## Testing
 
