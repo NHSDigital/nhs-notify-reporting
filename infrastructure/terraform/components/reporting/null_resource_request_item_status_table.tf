@@ -21,7 +21,7 @@ resource "null_resource" "patientodscode_column" {
   }
   provisioner "local-exec" {
     command = <<EOT
-      ${path.module}/scripts/add_column.sh
+      ${path.module}/scripts/add_column.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
         request_item_status patientodscode string
