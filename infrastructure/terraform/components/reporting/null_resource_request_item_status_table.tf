@@ -30,3 +30,34 @@ resource "null_resource" "patientodscode_column" {
 
   depends_on = [null_resource.request_item_status_table]
 }
+
+resource "null_resource" "requestitemrefid_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_status requestitemrefid string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_status_table]
+}
+resource "null_resource" "sendinggroupidversion_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_status sendinggroupidversion string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_status_table]
+}

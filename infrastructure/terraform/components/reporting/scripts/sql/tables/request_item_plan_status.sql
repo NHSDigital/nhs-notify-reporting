@@ -7,14 +7,15 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     requestitemid string,
     requestrefid string,
     requestid string,
-    nhsnumberhash string,
+    requestitemplanid string,
+    communicationtype string,
+    supplier string,
     createdtime timestamp,
     completedtime timestamp,
-    completedcommunicationtypes array<string>,
-    failedcommunicationtypes array<string>,
     status string,
     failedreason string,
-    patientodscode string,
+    contactdetailsource string,
+    type string,
     timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))

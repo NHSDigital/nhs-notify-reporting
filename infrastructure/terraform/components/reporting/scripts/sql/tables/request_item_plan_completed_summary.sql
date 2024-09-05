@@ -2,6 +2,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     clientid string,
     campaignid string,
     sendinggroupid string,
+    sendinggroupidversion string,
     communicationtype string,
     supplier string,
     createddate date,
