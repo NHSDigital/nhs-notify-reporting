@@ -89,8 +89,8 @@ As a workaround, we manage reporting tables via DDL queries executed in Athena a
 
 #### How do I define a new projection/aggregation?
 
-- Add a new file containing a terraform null_resource that wraps the [create_table](/infrastructure/terraform/components/reporting/scripts/create_table.sh) shell script
-- Add a new file containing a terraform athena_named_query used for data ingestion
+- Add a new file containing a Terraform null_resource that wraps the [create_table](/infrastructure/terraform/components/reporting/scripts/create_table.sh) shell script
+- Add a new file containing a Terraform athena_named_query used for data ingestion
 - Specify the DDL for the new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
 - Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
 - (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
@@ -102,7 +102,7 @@ If your target table contains hashed NHS numbers add the step function's `hash_q
 
 #### How do I add a new column to a projection/aggregation retrospectively?
 
-Columns can be added retrospectiely by adding a terraform null_resource that wraps the [add_column](/infrastructure/terraform/components/reporting/scripts/add_column.sh) shell script.
+Columns can be added retrospectiely by adding a Terraform null_resource that wraps the [add_column](/infrastructure/terraform/components/reporting/scripts/add_column.sh) shell script.
 
 By convention, the column null_resources are defined in the same file as the associate table null_resource.
 
