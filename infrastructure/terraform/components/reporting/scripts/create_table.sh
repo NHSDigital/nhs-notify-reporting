@@ -1,13 +1,19 @@
 #!/usr/bin/env bash
 
-# Creates table if it doesn't exist already
+# Creates table if it doesn't already exist
 
-ENV=${1:-"no_env"}
-s3_bucket=$2
-table_name=$3
+workgroup=$1
+glue_database=$2
+s3_bucket=$3
+table_name=$4
 
-if [[ ${ENV} == "no_env" ]]; then
-    echo "Environment name not provided"
+if [[ -z "${workgroup}" ]]; then
+    echo "Athena workgroup not specified"
+    exit 1
+fi
+
+if [[ -z "${glue_database}" ]]; then
+    echo "Glue database not specified"
     exit 1
 fi
 
@@ -20,8 +26,6 @@ if [[ -z "${table_name}" ]]; then
     echo "Table name not specified"
     exit 1
 fi
-
-glue_database="nhs-notify-${ENV}-reporting-database"
 
 table_exists=$(aws glue get-tables --database-name ${glue_database} | jq 'any(.TableList[].Name == "'${table_name}'"; .)')
 
@@ -39,22 +43,11 @@ sed "s#\${s3_location}#${s3_location}#g; s#\${table_name}#${table_name}#g" $sql_
 
 query_string=$(cat "$sql_file_updated")
 
-execution_id=$( aws athena start-query-execution \
-  --query-string "$query_string" \
-  --work-group nhs-notify-${ENV}-reporting-setup \
-  --query-execution-context Database=${glue_database} | jq -r '.QueryExecutionId')
+$(dirname "$0")/execute_query.sh "${query_string}" ${workgroup} ${glue_database}
 
-if [[ -z "${execution_id}" ]]; then
-    echo "Table creation failed"
-    exit 1
-fi
-
-echo "Execution ID is: ${execution_id}"
-
-status=$(aws athena get-query-execution --query-execution-id $execution_id | jq -r '.QueryExecution.Status.State')
-
-if [[ $? == 0 ]] && [[ $status != "FAILED" ]]; then
-    echo "Table '${table_name}' created!!"
+if [[ $? == 0 ]]; then
+    echo "Table ${table_name} created successfully"
+    exit 0
 else
     echo "Table creation failed"
     exit 1

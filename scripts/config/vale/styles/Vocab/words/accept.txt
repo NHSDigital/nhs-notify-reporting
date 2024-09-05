@@ -28,3 +28,6 @@ workgroup
 readme
 sql
 SQL
+create_table
+athena_named_query
+add_column
