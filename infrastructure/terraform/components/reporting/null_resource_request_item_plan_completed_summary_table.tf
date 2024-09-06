@@ -15,7 +15,7 @@ resource "null_resource" "request_item_plan_completed_summary_table" {
   depends_on = [aws_athena_workgroup.setup]
 }
 
-resource "null_resource" "contactdetailsource_column" {
+resource "null_resource" "request_item_plan_completed_summary_contactdetailsource_column" {
   triggers = {
     always_run = timestamp()
   }
@@ -31,7 +31,7 @@ resource "null_resource" "contactdetailsource_column" {
   depends_on = [null_resource.request_item_plan_completed_summary_table]
 }
 
-resource "null_resource" "sendinggroupidversion_column" {
+resource "null_resource" "request_item_plan_completed_summary_sendinggroupidversion_column" {
   triggers = {
     always_run = timestamp()
   }

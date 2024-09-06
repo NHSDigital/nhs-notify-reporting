@@ -15,7 +15,7 @@ resource "null_resource" "request_item_status_table" {
   depends_on = [aws_athena_workgroup.setup]
 }
 
-resource "null_resource" "patientodscode_column" {
+resource "null_resource" "request_item_status_patientodscode_column" {
   triggers = {
     always_run = timestamp()
   }
@@ -31,7 +31,7 @@ resource "null_resource" "patientodscode_column" {
   depends_on = [null_resource.request_item_status_table]
 }
 
-resource "null_resource" "requestitemrefid_column" {
+resource "null_resource" "request_item_status_requestitemrefid_column" {
   triggers = {
     always_run = timestamp()
   }
@@ -47,7 +47,7 @@ resource "null_resource" "requestitemrefid_column" {
   depends_on = [null_resource.request_item_status_table]
 }
 
-resource "null_resource" "sendinggroupidversion_column" {
+resource "null_resource" "request_item_status_sendinggroupidversion_column" {
   triggers = {
     always_run = timestamp()
   }
