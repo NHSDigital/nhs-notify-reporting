@@ -4,6 +4,7 @@ USING (
     clientid,
     campaignid,
     sendinggroupid,
+    sendinggroupidversion,
     communicationtype,
     supplier,
     createddate,
@@ -27,6 +28,7 @@ USING (
         clientid,
         campaignid,
         sendinggroupid,
+        sendinggroupidversion,
         communicationtype,
         supplier,
         DATE(SUBSTRING(createddate,1,10)) as createddate,
@@ -49,6 +51,7 @@ USING (
     clientid,
     campaignid,
     sendinggroupid,
+    sendinggroupidversion,
     communicationtype,
     supplier,
     createddate,
@@ -62,6 +65,7 @@ ON
   COALESCE(source.clientid, '') = COALESCE(target.clientid, '') AND
   COALESCE(source.campaignid, '') = COALESCE(target.campaignid, '') AND
   COALESCE(source.sendinggroupid, '') = COALESCE(target.sendinggroupid, '') AND
+  COALESCE(source.sendinggroupidversion, '') = COALESCE(target.sendinggroupidversion, '') AND
   COALESCE(source.communicationtype, '') = COALESCE(target.communicationtype, '') AND
   COALESCE(source.supplier, '') = COALESCE(target.supplier, '') AND
   COALESCE(CAST(source.createddate AS varchar), '') = COALESCE(CAST(target.createddate AS varchar), '') AND
@@ -74,6 +78,7 @@ WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
   sendinggroupid,
+  sendinggroupidversion,
   communicationtype,
   supplier,
   createddate,
@@ -87,6 +92,7 @@ VALUES (
   source.clientid,
   source.campaignid,
   source.sendinggroupid,
+  source.sendinggroupidversion,
   source.communicationtype,
   source.supplier,
   source.createddate,
