@@ -46,6 +46,7 @@ resource "null_resource" "requestitemrefid_column" {
 
   depends_on = [null_resource.request_item_status_table]
 }
+
 resource "null_resource" "sendinggroupidversion_column" {
   triggers = {
     always_run = timestamp()
