@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     status string,
     failedreason string,
     contactdetailsource string,
+    channeltype string,
     requestitemcount int
 )
 PARTITIONED BY (month(createddate), month(completeddate))

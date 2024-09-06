@@ -26,7 +26,7 @@ USING (
         status,
         failedreason,
         contactdetailsource,
-        type,
+        channeltype,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
@@ -57,7 +57,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   status = source.status,
   failedreason = source.failedreason,
   contactdetailsource = source.contactdetailsource,
-  type = source.type,
+  channeltype = source.channeltype,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -76,7 +76,7 @@ WHEN NOT MATCHED THEN INSERT (
   status,
   failedreason,
   contactdetailsource,
-  type,
+  channeltype,
   timestamp
 )
 VALUES (
@@ -96,6 +96,6 @@ VALUES (
   source.status,
   source.failedreason,
   source.contactdetailsource,
-  source.type,
+  source.channeltype,
   source.timestamp
 )
