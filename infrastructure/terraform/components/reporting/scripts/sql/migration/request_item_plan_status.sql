@@ -30,8 +30,8 @@ USING (
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM transaction_history
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%')
-      UNION
-            SELECT
+      UNION ALL
+      SELECT
         clientid,
         NULL as campaignid,
         sendinggroupid,

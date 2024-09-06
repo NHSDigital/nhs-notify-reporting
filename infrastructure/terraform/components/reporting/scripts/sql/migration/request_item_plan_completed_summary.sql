@@ -35,7 +35,7 @@ USING (
         CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
       FROM transaction_history_old
       WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%')
-      UNION
+      UNION ALL
       SELECT
         requestitemid,
         sk,

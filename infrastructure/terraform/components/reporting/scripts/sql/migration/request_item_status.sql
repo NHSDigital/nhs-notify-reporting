@@ -26,7 +26,7 @@ USING (
         CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
       FROM transaction_history_old
       WHERE (sk LIKE 'REQUEST_ITEM#%')
-      UNION
+      UNION ALL
       SELECT
         clientid,
         campaignid,
@@ -44,7 +44,7 @@ USING (
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM transaction_history
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NULL) OR (SUBSTRING(completeddate, 11, 1) = 'T'))
-      UNION
+      UNION ALL
       --data quality issue from invalid manual correction of soure data
       SELECT
         clientid,
