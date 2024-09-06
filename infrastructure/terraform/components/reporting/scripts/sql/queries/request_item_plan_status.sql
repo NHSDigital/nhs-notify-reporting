@@ -26,7 +26,7 @@ USING (
         status,
         failedreason,
         contactdetailsource,
-        type
+        type,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
