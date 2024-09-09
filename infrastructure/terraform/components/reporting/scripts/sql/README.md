@@ -137,9 +137,6 @@ This query finds the latest update of each object in the ingestion window. It th
         source.timestamp
     )
 
-
-
-
 ### Aggregation Queries
 
 Aggregation queries produce much smaller result sets than the corresponding projection queries by grouping related items together.
