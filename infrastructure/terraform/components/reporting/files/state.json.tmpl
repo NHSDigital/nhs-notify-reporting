@@ -1,11 +1,11 @@
 {
   "Comment": "Workflow to run ingestion queries to populate reporting tables from the underlying transaction_history table in the core account.",
-  "StartAt": "Parallel Queries",
+  "StartAt": "First Pass",
   "States": {
-    "Parallel Queries": {
+    "First Pass": {
       "Type": "Parallel",
       "Branches": ${jsonencode(concat([
-        for query_id in query_ids:
+        for query_id in query_ids_1:
         {
           "StartAt": "Get Query ${query_id}",
           "States": {
@@ -51,7 +51,115 @@
           }
         }
       ],[
-        for query_id in hash_query_ids:
+        for query_id in hash_query_ids_1:
+        {
+          "StartAt": "Get Hash Key ${query_id}",
+          "States": {
+            "Get Hash Key ${query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "Name": "/${environment}/hash-key",
+                "WithDecryption": true
+              },
+              "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+              "Next": "Get Query ${query_id}"
+            },
+            "Get Query ${query_id}": {
+              "Next": "Execute Query ${query_id}",
+              "Parameters": {
+                "NamedQueryId": "${query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Type": "Task",
+              "ResultPath": "$.Retrieved"
+            },
+            "Execute Query ${query_id}": {
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "Next": "Transaction Failed ${query_id}",
+                  "ResultPath": "$.error"
+                }
+              ],
+              "Next": "Transaction Success ${query_id}",
+              "Parameters": {
+                "ExecutionParameters.$": "States.Array($.Parameter.Value)",
+                "QueryExecutionContext": {
+                  "Database.$": "$.Retrieved.NamedQuery.Database"
+                },
+                "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
+                "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup"
+              },
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Type": "Task"
+            },
+            "Transaction Failed ${query_id}": {
+              "CausePath": "$.error.Cause",
+              "ErrorPath": "$.error.Error",
+              "Type": "Fail"
+            },
+            "Transaction Success ${query_id}": {
+              "End": true,
+              "Result": "Athena query succeeded.",
+              "Type": "Pass"
+            }
+          }
+        }
+      ]))},
+      "Next": "Second Pass"
+    },
+    "Second Pass": {
+      "Type": "Parallel",
+      "Branches": ${jsonencode(concat([
+        for query_id in query_ids_2:
+        {
+          "StartAt": "Get Query ${query_id}",
+          "States": {
+            "Get Query ${query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query ${query_id}"
+            },
+            "Execute Query ${query_id}": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
+              },
+              "Type": "Task",
+              "Next": "Transaction Success ${query_id}",
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.error",
+                  "Next": "Transaction Failed ${query_id}"
+                }
+              ]
+            },
+            "Transaction Success ${query_id}": {
+              "Type": "Pass",
+              "Result": "Athena query succeeded.",
+              "End": true
+            },
+            "Transaction Failed ${query_id}": {
+              "Type": "Fail",
+              "CausePath": "$.error.Cause",
+              "ErrorPath": "$.error.Error"
+            }
+          }
+        }
+      ],[
+        for query_id in hash_query_ids_2:
         {
           "StartAt": "Get Hash Key ${query_id}",
           "States": {
