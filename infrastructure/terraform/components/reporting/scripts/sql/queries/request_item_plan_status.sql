@@ -32,7 +32,7 @@ USING (
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
       (
         -- Moving 1-week ingestion window
-        __year*1000 + __month*100 + __day >= YEAR(DATE_ADD('week', -1, CURRENT_DATE)) * 1000 + MONTH(DATE_ADD('week', -1, CURRENT_DATE)) * 100 + DAY(DATE_ADD('week', -1, CURRENT_DATE))
+        DATE(CAST(__year AS VARCHAR) || '-' || CAST(__month AS VARCHAR) || '-' || CAST(__day  AS VARCHAR)) >= DATE_ADD('week', -1, CURRENT_DATE)
       )
     )
   )
