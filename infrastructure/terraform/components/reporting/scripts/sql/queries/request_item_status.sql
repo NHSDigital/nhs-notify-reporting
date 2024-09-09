@@ -30,9 +30,8 @@ USING (
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND
       (
-        -- Moving 1-month ingestion window
-        (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-        (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+        -- Moving 1-week ingestion window
+        __year*1000 + __month*100 + __day >= YEAR(DATE_ADD('week', -1, CURRENT_DATE)) * 1000 + MONTH(DATE_ADD('week', -1, CURRENT_DATE)) * 100 + DAY(DATE_ADD('week', -1, CURRENT_DATE))
       )
     )
   )
