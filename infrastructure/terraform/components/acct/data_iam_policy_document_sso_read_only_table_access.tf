@@ -15,16 +15,13 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
 
     resources = concat(
+      local.core_glue_catalog_resources, # Access to all core account catalogs is required as they are all accessible via the default catalog in the environment's account
       [
         "arn:aws:glue:${var.region}:${var.aws_account_id}:catalog", # Local catalogs
         "arn:aws:glue:${var.region}:${var.aws_account_id}:database/${var.project}-*-reporting-database",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_plan_completed_summary",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status"
       ],
-      [
-        for account_id in var.core_account_ids :
-        "arn:aws:glue:${var.region}:${account_id}:catalog" # Remote Catalogs
-      ]
     )
   }
 

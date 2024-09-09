@@ -47,7 +47,6 @@ variable "default_tags" {
   default     = {}
 }
 
-
 ##
 # Variables specific to the "acct" component
 ##
