@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
       "glue:GetPartitions"
     ]
 
-   resources = [
+    resources = [
         aws_glue_catalog_database.reporting.arn,
         "arn:aws:glue:${var.region}:${var.core_account_id}:catalog",
         "arn:aws:glue:${var.region}:${local.this_account}:catalog",
@@ -112,7 +112,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
       "s3:GetBucketLocation",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject" # Needed?
+      "s3:PutObject"
     ]
 
     resources = [
