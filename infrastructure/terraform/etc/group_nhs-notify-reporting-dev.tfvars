@@ -7,6 +7,7 @@ non_prod_core_account_ids = [
   "257995483745", # dev
   "815490582396"  # ref
 ]
+
  core_account_ids = [
   "257995483745",
   "815490582396"
