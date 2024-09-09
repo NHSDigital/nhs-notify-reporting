@@ -68,7 +68,6 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
 
     resources = [
       "arn:aws:logs:${local.parameter_bundle.region}:${local.this_account}:log-group:*",
-      "arn:aws:logs:${local.parameter_bundle.region}:${local.this_account}:log-group:*",
     ]
   }
 
@@ -102,6 +101,116 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     resources = [
       aws_s3_bucket.results.arn,
       "${aws_s3_bucket.results.arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess1"
+    effect = "Allow"
+
+    actions = [
+        "athena:GetQueryResults",
+        "athena:GetQueryResultsStream",
+        "athena:GetQueryExecution",
+        "athena:StartQueryExecution",
+        "athena:GetWorkGroup",
+        "athena:GetNamedQuery"
+    ]
+
+    resources = [
+      aws_athena_workgroup.user.arn
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess2"
+    effect = "Allow"
+
+    actions = [
+        "athena:GetDatabase",
+        "athena:GetTableMetadata",
+        "athena:GetDataCatalog",
+        "athena:GetTable"
+    ]
+
+    resources = [
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/AWSDataCatalog"
+    ]
+  }
+
+  statement {
+    sid    = "AllowAthenaAccess3"
+    effect = "Allow"
+
+    actions = [
+        "athena:ListDataCatalogs",
+        "athena:ListDatabases",
+        "athena:ListTableMetadata",
+        "athena:ListWorkGroups"
+    ]
+
+    resources = [ "*" ] # Access to List all above is required. Condition keys not supported for these resources.
+  }
+
+  statement {
+    sid    = "AllowGlueAccess"
+    effect = "Allow"
+
+    actions = [
+      "glue:GetTable",
+      "glue:GetTables",
+      "glue:BatchGetTable",
+      "glue:GetDatabase",
+      "glue:GetDatabases",
+      "glue:GetPartition",
+      "glue:GetPartitions"
+    ]
+
+    resources = concat(
+      local.core_glue_catalog_resources, # Access to all core account catalogs is required as they are all accessible via the default catalog in the environment's account
+      [
+        aws_glue_catalog_database.reporting.arn,
+        "arn:aws:glue:${var.region}:${var.core_account_id}:catalog",
+        "arn:aws:glue:${var.region}:${local.this_account}:catalog",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status"
+
+      ]
+    )
+  }
+
+  statement {
+    sid    = "AllowS3KMSAccess"
+    effect = "Allow"
+
+    actions = [
+      "kms:Decrypt",
+      "kms:Encrypt",
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:DescribeKey"
+    ]
+
+    resources = [
+      aws_kms_key.s3.arn
+    ]
+  }
+
+  statement {
+    sid    = "AllowSSMAccess"
+    effect = "Allow"
+
+    actions = [
+      "ssm:GetParameter",
+      "ssm:GetParameters",
+      "ssm:GetParameterHistory",
+    ]
+
+    resources = [
+      aws_ssm_parameter.powerbi_gateway_recovery_key[0].arn,
+      aws_ssm_parameter.powerbi_gateway_client_id[0].arn,
+      aws_ssm_parameter.powerbi_gateway_client_secret[0].arn,
+      aws_ssm_parameter.powerbi_gateway_tenant_id[0].arn
     ]
   }
 }
