@@ -3,13 +3,16 @@ resource "aws_sfn_state_machine" "athena" {
   role_arn = aws_iam_role.sfn_athena.arn
 
   definition = templatefile("${path.module}/files/state.json.tmpl", {
-    query_ids = [
-      "${aws_athena_named_query.request_item_plan_completed_summary.id}",
+    query_ids_1 = [
       "${aws_athena_named_query.request_item_plan_status.id}"
     ]
-    hash_query_ids = [
+    hash_query_ids_1 = [
       "${aws_athena_named_query.request_item_status.id}"
     ]
+    query_ids_2 = [
+      "${aws_athena_named_query.request_item_plan_completed_summary.id}"
+    ]
+    hash_query_ids_2 = []
     environment = "${local.csi}"
   })
 
