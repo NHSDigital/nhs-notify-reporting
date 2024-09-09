@@ -41,11 +41,6 @@ variable "component" {
   default     = "acct"
 }
 
-variable "nhs_notify_domain" {
-  type        = string
-  description = "The name of the NHS Notify Domain that this is deploying to"
-}
-
 variable "default_tags" {
   type        = map(string)
   description = "A map of default tags to apply to all taggable resources within the component"
@@ -57,8 +52,8 @@ variable "default_tags" {
 # Variables specific to the "acct" component
 ##
 
-variable "subdomain_name" {
-  type        = string
-  description = "The subdomain name to create a Route53 zone for"
-  default     = ""
+variable "core_account_ids" {
+  type        = list(string)
+  description = "List of core account IDs"
+  default     = []
 }
