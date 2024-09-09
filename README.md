@@ -37,6 +37,7 @@ This domain does not contain any application code. The reporting domain is execu
   - [Architecture Overview](#architecture-overview)
   - [Staging Table Design](#staging-table-design)
   - [Ingestion Query Design](#ingestion-query-design)
+  - [Multiple Ingestion Passes](#multiple-ingestion-passes)
   - [Handling PID](#handling-pid)
   - [Permissions](#permissions)
 - [Contacts](#contacts)
@@ -98,7 +99,9 @@ As a workaround, we manage reporting tables via DDL queries executed in Athena a
 
 The filename should be the same in all 3 sql folders.
 
-If your target table contains hashed NHS numbers add the step function's `hash_query_ids` array, otherwise add it to the `query_ids` array.
+If your target table contains hashed NHS numbers add the step function's `hash_query_ids_n` array, otherwise add it to the `query_ids_n` array.
+
+The suffix _`n`_ indicates which pass the ingestion should operate in, which allows one ingestion query to be dependent on the outcome of another one. Currently two passes are supported
 
 #### How do I add a new column to a projection/aggregation retrospectively?
 
@@ -157,13 +160,21 @@ Ingestion queries must be specifically designed to take account of these charact
 
 See also this [readme](/infrastructure/terraform/components/reporting/scripts/sql/README.md) for the individual tables and ingestion queries.
 
+### Multiple Ingestion Passes
+
+The step function runs queries in two passes, which allows ingestion queries to be dependent on other ingestion queries.
+
+This means that it is possible to run an aggregation on a previously executed projection.
+
+This offers performance, scaling and cost benefits and also means that aggregation contents will be consistent with underlying projections.
+
 ### Handling PID
 
 Staging tables exposed to Power BI should not contain any PID.
 
 Pseudonymisation of PID is approved via the use of a SHA256 hash together with a secret environment key held in AWS Parameter Store.
 
-The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
+The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids_n` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
 
 ### Permissions
 
