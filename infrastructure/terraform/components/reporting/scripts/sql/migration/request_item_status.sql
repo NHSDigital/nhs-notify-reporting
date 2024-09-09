@@ -45,7 +45,7 @@ USING (
       FROM transaction_history
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NULL) OR (SUBSTRING(completeddate, 11, 1) = 'T'))
       UNION ALL
-      --data quality issue from invalid manual correction of soure data
+      --data quality issue from invalid manual correction of source data
       SELECT
         clientid,
         campaignid,
