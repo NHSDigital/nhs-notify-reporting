@@ -1,0 +1,7 @@
+{
+  "aws_account_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "381492132479"
+  }
+}
