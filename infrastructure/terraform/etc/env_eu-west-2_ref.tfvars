@@ -5,7 +5,7 @@ core_account_id = "815490582396"
 core_env        = "ref"
 
 # PowerBI On-Premises Gateway variables:
-enable_powerbi_gateway = true
+enable_powerbi_gateway = false
 
 public_subnet_cidrs  = [
   "10.0.1.0/24",
