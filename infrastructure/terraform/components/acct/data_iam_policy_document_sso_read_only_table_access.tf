@@ -14,8 +14,8 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
       "glue:GetTables"
     ]
     # Access to all core account catalogs is required as they are all accessible via the default catalog in the environment's account
-    # Database and Table level access is restricted to just the desired tables.
-    # This does NOT allow blanket access to all catalogs/databases/tables.
+    # Database and Table level access is restricted to just the desired tables. This does NOT allow blanket access to all catalogs/databases/tables.
+    # This is a PowerBI Desktop requirement/limitation, not AWS or Athena ODBC Driver.
     resources = concat(
       local.core_glue_catalog_resources,
       [
