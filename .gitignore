@@ -11,5 +11,6 @@ version.json
 !project.code-workspace
 *.rej
 *.porig
+infrastructure/terraform/*_output.json
 
 # Please, add your custom content below!
