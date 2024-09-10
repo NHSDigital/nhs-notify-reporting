@@ -158,7 +158,7 @@ variable "scale_in_recurrence_schedule" {
   default     = null
 }
 
-variable "non_prod_core_account_ids" {
+variable "core_account_ids" {
   description = "List of all corresponding core account id's that exist in the Non-Prod domain"
   type = list(string)
   default = []
