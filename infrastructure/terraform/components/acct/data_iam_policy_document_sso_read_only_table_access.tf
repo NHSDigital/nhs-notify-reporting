@@ -88,8 +88,16 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
 
     resources = [
-      "arn:aws:kms:${var.region}:${var.aws_account_id}:alias/${var.project}-*-reporting-s3"
+      "arn:aws:kms:${var.region}:${var.aws_account_id}:*"
     ]
+
+    condition {
+      test = "ForAnyValue:StringLike"
+      variable = "kms:ResourceAliases"
+      values = [
+        "alias/${var.project}-*-reporting-s3"
+      ]
+    }
   }
 
   statement {

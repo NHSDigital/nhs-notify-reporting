@@ -13,3 +13,4 @@ version.json
 *.porig
 
 # Please, add your custom content below!
+infrastructure/terraform/*_output.json
