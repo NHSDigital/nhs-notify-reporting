@@ -1,6 +1,6 @@
-resource "aws_sfn_state_machine" "ingestion" {
-  name     = "${local.csi}-state-machine-ingestion"
-  role_arn = aws_iam_role.sfn_ingestion.arn
+resource "aws_sfn_state_machine" "housekeeping" {
+  name     = "${local.csi}-state-machine-housekeeping"
+  role_arn = aws_iam_role.sfn_housekeeping.arn
 
   definition = templatefile("${path.module}/files/state.json.tmpl", {
     query_ids_1 = []
@@ -21,9 +21,9 @@ resource "aws_sfn_state_machine" "ingestion" {
   }
 }
 
-resource "aws_iam_role" "sfn_ingestion" {
-  name               = "${local.csi}-sf-ingestion-role"
-  description        = "Role used by the State Machine for Athena ingestion queries"
+resource "aws_iam_role" "sfn_housekeeping" {
+  name               = "${local.csi}-sf-housekeeping-role"
+  description        = "Role used by the State Machine for Athena housekeeping queries"
   assume_role_policy = data.aws_iam_policy_document.sfn_assumerole.json
 }
 
@@ -46,32 +46,19 @@ data "aws_iam_policy_document" "sfn_assumerole" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sfn_ingestion" {
-  role       = aws_iam_role.sfn_ingestion.name
-  policy_arn = aws_iam_policy.sfn_ingestion.arn
+resource "aws_iam_role_policy_attachment" "sfn_housekeeping" {
+  role       = aws_iam_role.sfn_housekeeping.name
+  policy_arn = aws_iam_policy.sfn_housekeeping.arn
 }
 
-resource "aws_iam_policy" "sfn_ingestion" {
-  name        = "${local.csi}-sfn-ingestion-policy"
-  description = "Allow Step Function State Machine to run Athena ingestion queries"
+resource "aws_iam_policy" "sfn_housekeeping" {
+  name        = "${local.csi}-sfn-housekeeping-policy"
+  description = "Allow Step Function State Machine to run Athena housekeeping queries"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sfn_ingestion.json
+  policy      = data.aws_iam_policy_document.sfn_housekeeping.json
 }
 
-data "aws_iam_policy_document" "sfn_ingestion" {
-
-  statement {
-    sid    = "AllowSSM"
-    effect = "Allow"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-
-    resources = [
-      aws_ssm_parameter.hash_key.arn
-    ]
-  }
+data "aws_iam_policy_document" "sfn_housekeeping" {
 
   statement {
     sid    = "AllowAthena"
@@ -115,7 +102,8 @@ data "aws_iam_policy_document" "sfn_ingestion" {
       "s3:GetBucketLocation",
       "s3:GetObject",
       "s3:ListBucket",
-      "s3:PutObject"
+      "s3:PutObject",
+      "s3:DeleteObject"
     ]
 
     resources = [
@@ -140,61 +128,6 @@ data "aws_iam_policy_document" "sfn_ingestion" {
 
     resources = [
       aws_kms_key.s3.arn
-    ]
-  }
-
-  statement {
-    sid    = "AllowGlueCore"
-    effect = "Allow"
-
-    actions = [
-      "glue:Get*"
-    ]
-
-    resources = [
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:catalog",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:database/comms-${var.core_env}-api-rpt-reporting",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:table/comms-${var.core_env}-api-rpt-reporting/transaction_history",
-    ]
-  }
-
-  statement {
-    sid    = "AllowKMSCore"
-    effect = "Allow"
-
-    actions = [
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Encrypt",
-      "kms:DescribeKey",
-      "kms:Decrypt"
-    ]
-
-    resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
-    ]
-    condition {
-      test     = "ForAnyValue:StringEquals"
-      variable = "kms:ResourceAliases"
-      values = [
-        "alias/comms-${var.core_env}-api-s3"
-      ]
-    }
-  }
-
-  statement {
-    sid    = "AllowS3Core"
-    effect = "Allow"
-
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
-
-    resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
     ]
   }
 
