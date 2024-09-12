@@ -2,7 +2,7 @@ resource "aws_sfn_state_machine" "housekeeping" {
   name     = "${local.csi}-state-machine-housekeeping"
   role_arn = aws_iam_role.sfn_housekeeping.arn
 
-  definition = templatefile("${path.module}/files/state.json.tmpl", {
+  definition = templatefile("${path.module}/templates/housekeeping.json.tmpl", {
     query_ids_1 = []
     hash_query_ids_1 = [
       "${aws_athena_named_query.request_item_status.id}"

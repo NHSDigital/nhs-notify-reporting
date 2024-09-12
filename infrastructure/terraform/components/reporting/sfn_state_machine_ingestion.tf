@@ -2,7 +2,7 @@ resource "aws_sfn_state_machine" "ingestion" {
   name     = "${local.csi}-state-machine-ingestion"
   role_arn = aws_iam_role.sfn_ingestion.arn
 
-  definition = templatefile("${path.module}/files/state.json.tmpl", {
+  definition = templatefile("${path.module}/templates/ingestion.json.tmpl", {
     query_ids_1 = []
     hash_query_ids_1 = [
       "${aws_athena_named_query.request_item_status.id}"
