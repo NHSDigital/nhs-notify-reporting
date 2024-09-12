@@ -1,6 +1,6 @@
-resource "aws_sfn_state_machine" "athena" {
-  name     = "${local.csi}-state-machine-athena"
-  role_arn = aws_iam_role.sfn_athena.arn
+resource "aws_sfn_state_machine" "ingestion" {
+  name     = "${local.csi}-state-machine-ingestion"
+  role_arn = aws_iam_role.sfn_ingestion.arn
 
   definition = templatefile("${path.module}/files/state.json.tmpl", {
     query_ids_1 = []
@@ -21,9 +21,9 @@ resource "aws_sfn_state_machine" "athena" {
   }
 }
 
-resource "aws_iam_role" "sfn_athena" {
-  name               = "${local.csi}-sf-athena-role"
-  description        = "Role used by the State Machine for Athena"
+resource "aws_iam_role" "sfn_ingestion" {
+  name               = "${local.csi}-sf-ingestion-role"
+  description        = "Role used by the State Machine for Athena ingestion queries"
   assume_role_policy = data.aws_iam_policy_document.sfn_assumerole.json
 }
 
@@ -46,19 +46,19 @@ data "aws_iam_policy_document" "sfn_assumerole" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sfn_athena" {
-  role       = aws_iam_role.sfn_athena.name
-  policy_arn = aws_iam_policy.sfn_athena.arn
+resource "aws_iam_role_policy_attachment" "sfn_ingestion" {
+  role       = aws_iam_role.sfn_ingestion.name
+  policy_arn = aws_iam_policy.sfn_ingestion.arn
 }
 
-resource "aws_iam_policy" "sfn_athena" {
-  name        = "${local.csi}-sfn-athena-policy"
+resource "aws_iam_policy" "sfn_ingestion" {
+  name        = "${local.csi}-sfn-ingestion-policy"
   description = "Allow Step Function State Machine to run Athena queries"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sfn_athena.json
+  policy      = data.aws_iam_policy_document.sfn_ingestion.json
 }
 
-data "aws_iam_policy_document" "sfn_athena" {
+data "aws_iam_policy_document" "sfn_ingestion" {
 
   statement {
     sid    = "AllowSSM"
