@@ -1,6 +1,6 @@
-resource "aws_scheduler_schedule" "sf_scheduler" {
-  name       = "${local.csi}-scheduler"
-  description = "Schduler to trigger Step function to query Athena"
+resource "aws_scheduler_schedule" "sf_ingestion_scheduler" {
+  name       = "${local.csi}-ingestion-scheduler"
+  description = "Schduler to trigger Step Function to run ingestion queries"
   group_name = "default"
 
   flexible_time_window {
@@ -12,17 +12,17 @@ resource "aws_scheduler_schedule" "sf_scheduler" {
 
   target {
     arn      = aws_sfn_state_machine.ingestion.arn
-    role_arn = aws_iam_role.sf_scheduler.arn
+    role_arn = aws_iam_role.sf_ingestion_scheduler.arn
   }
 }
 
-resource "aws_iam_role" "sf_scheduler" {
-  name               = "${local.csi}-sf-scheduler-role"
-  description        = "Role used by the State Machine Scheduler"
-  assume_role_policy = data.aws_iam_policy_document.scheduler_assumerole.json
+resource "aws_iam_role" "sf_ingestion_scheduler" {
+  name               = "${local.csi}-sf-ingestion-scheduler-role"
+  description        = "Role used by the State Machine Ingestion Scheduler"
+  assume_role_policy = data.aws_iam_policy_document.ingestion_scheduler_assumerole.json
 }
 
-data "aws_iam_policy_document" "scheduler_assumerole" {
+data "aws_iam_policy_document" "ingestion_scheduler_assumerole" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"
@@ -41,19 +41,19 @@ data "aws_iam_policy_document" "scheduler_assumerole" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sf_scheduler" {
-  role       = aws_iam_role.sf_scheduler.name
-  policy_arn = aws_iam_policy.sf_scheduler.arn
+resource "aws_iam_role_policy_attachment" "sf_ingestion_scheduler" {
+  role       = aws_iam_role.sf_ingestion_scheduler.name
+  policy_arn = aws_iam_policy.sf_ingestion_scheduler.arn
 }
 
-resource "aws_iam_policy" "sf_scheduler" {
-  name        = "${local.csi}-sfn-scheduler-policy"
-  description = "Allow Scheduler to execute State Machine every hour"
+resource "aws_iam_policy" "sf_ingestion_scheduler" {
+  name        = "${local.csi}-sfn-ingestion-scheduler-policy"
+  description = "Allow Scheduler to execute State Machine"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sf_scheduler.json
+  policy      = data.aws_iam_policy_document.sf_ingestion_scheduler.json
 }
 
-data "aws_iam_policy_document" "sf_scheduler" {
+data "aws_iam_policy_document" "sf_ingestion_scheduler" {
   statement {
     sid    = "AllowAthena"
     effect = "Allow"
