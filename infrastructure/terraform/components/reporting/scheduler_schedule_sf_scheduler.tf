@@ -11,7 +11,7 @@ resource "aws_scheduler_schedule" "sf_scheduler" {
   schedule_expression_timezone = "Europe/London"
 
   target {
-    arn      = aws_sfn_state_machine.athena.arn
+    arn      = aws_sfn_state_machine.ingestion.arn
     role_arn = aws_iam_role.sf_scheduler.arn
   }
 }
@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "sf_scheduler" {
     ]
 
     resources = [
-      aws_sfn_state_machine.athena.arn
+      aws_sfn_state_machine.ingestion.arn
     ]
   }
 }

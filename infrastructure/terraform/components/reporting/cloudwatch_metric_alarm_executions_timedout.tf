@@ -11,6 +11,6 @@ resource "aws_cloudwatch_metric_alarm" "executions_timedout" {
   insufficient_data_actions = []
 
   dimensions = {
-    StateMachineArn = aws_sfn_state_machine.athena.arn
+    StateMachineArn = aws_sfn_state_machine.ingestion.arn
   }
 }
