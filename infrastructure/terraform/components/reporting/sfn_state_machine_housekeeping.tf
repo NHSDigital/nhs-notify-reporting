@@ -23,10 +23,10 @@ resource "aws_sfn_state_machine" "housekeeping" {
 resource "aws_iam_role" "sfn_housekeeping" {
   name               = "${local.csi}-sf-housekeeping-role"
   description        = "Role used by the State Machine for Athena housekeeping queries"
-  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole.json
+  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_housekeeping.json
 }
 
-data "aws_iam_policy_document" "sfn_assumerole" {
+data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"

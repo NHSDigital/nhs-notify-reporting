@@ -24,10 +24,10 @@ resource "aws_sfn_state_machine" "ingestion" {
 resource "aws_iam_role" "sfn_ingestion" {
   name               = "${local.csi}-sf-ingestion-role"
   description        = "Role used by the State Machine for Athena ingestion queries"
-  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole.json
+  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_ingestion.json
 }
 
-data "aws_iam_policy_document" "sfn_assumerole" {
+data "aws_iam_policy_document" "sfn_assumerole_ingestion" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"
