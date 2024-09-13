@@ -3,15 +3,14 @@ resource "aws_sfn_state_machine" "housekeeping" {
   role_arn = aws_iam_role.sfn_housekeeping.arn
 
   definition = templatefile("${path.module}/templates/housekeeping.json.tmpl", {
-    query_ids_1 = []
-    hash_query_ids_1 = [
-      "${aws_athena_named_query.request_item_status.id}"
+    optimize_query_ids = [
+      "${aws_athena_named_query.request_item_status_optimize.id}",
+      "${aws_athena_named_query.request_item_plan_completed_summary_optimize.id}"
     ]
-    query_ids_2 = [
-      "${aws_athena_named_query.request_item_plan_completed_summary.id}"
+    vacuum_query_ids = [
+      "${aws_athena_named_query.request_item_status_vacuum.id}",
+      "${aws_athena_named_query.request_item_plan_completed_summary_vacuum.id}"
     ]
-    hash_query_ids_2 = []
-    environment = "${local.csi}"
   })
 
   logging_configuration {
