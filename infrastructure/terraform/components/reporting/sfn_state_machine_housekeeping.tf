@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
     ]
 
     resources = [
-      aws_athena_workgroup.ingestion.arn,
+      aws_athena_workgroup.housekeeping.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }

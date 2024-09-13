@@ -13,7 +13,7 @@ resource "aws_athena_named_query" "request_item_status" {
 resource "aws_athena_named_query" "request_item_status_vacuum" {
   name        = "request_item_status_vacuum"
   description = "Perform vacuum operation to remove old snapshots"
-  workgroup   = aws_athena_workgroup.ingestion.id
+  workgroup   = aws_athena_workgroup.housekeeping.id
   database    = aws_glue_catalog_database.reporting.name
   query       = file("${path.module}/scripts/sql/vacuum/request_item_status.sql")
 
@@ -23,7 +23,7 @@ resource "aws_athena_named_query" "request_item_status_vacuum" {
 resource "aws_athena_named_query" "request_item_status_optimize" {
   name        = "request_item_status_optimize"
   description = "Optiizes storage by rewriting data files "
-  workgroup   = aws_athena_workgroup.ingestion.id
+  workgroup   = aws_athena_workgroup.housekeeping.id
   database    = aws_glue_catalog_database.reporting.name
   query       = file("${path.module}/scripts/sql/optimize/request_item_status.sql")
 
