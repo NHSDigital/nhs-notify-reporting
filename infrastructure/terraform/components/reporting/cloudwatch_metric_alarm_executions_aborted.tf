@@ -1,5 +1,5 @@
-resource "aws_cloudwatch_metric_alarm" "executions_aborted" {
-  alarm_name                = "${local.csi}-execution-aborted"
+resource "aws_cloudwatch_metric_alarm" "ingestion_executions_aborted" {
+  alarm_name                = "${local.csi}-ingestion-execution-aborted"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = "ExecutionsAborted"

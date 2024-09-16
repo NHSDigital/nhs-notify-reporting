@@ -1,5 +1,5 @@
-resource "aws_cloudwatch_metric_alarm" "ingestion_executions_timedout" {
-  alarm_name                = "${local.csi}-ingestion-executions-timedout"
+resource "aws_cloudwatch_metric_alarm" "housekeeping_executions_timedout" {
+  alarm_name                = "${local.csi}-housekeeping-executions-timedout"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = "ExecutionsTimedOut"
@@ -11,6 +11,6 @@ resource "aws_cloudwatch_metric_alarm" "ingestion_executions_timedout" {
   insufficient_data_actions = []
 
   dimensions = {
-    StateMachineArn = aws_sfn_state_machine.ingestion.arn
+    StateMachineArn = aws_sfn_state_machine.housekeeping.arn
   }
 }

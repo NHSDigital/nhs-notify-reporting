@@ -1,5 +1,5 @@
-resource "aws_cloudwatch_metric_alarm" "ingestion_executions_failed" {
-  alarm_name                = "${local.csi}-ingestion-executions-failed"
+resource "aws_cloudwatch_metric_alarm" "housekeeping_executions_failed" {
+  alarm_name                = "${local.csi}-housekeeping-executions-failed"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   metric_name               = "ExecutionsFailed"
@@ -11,6 +11,6 @@ resource "aws_cloudwatch_metric_alarm" "ingestion_executions_failed" {
   insufficient_data_actions = []
 
   dimensions = {
-    StateMachineArn = aws_sfn_state_machine.ingestion.arn
+    StateMachineArn = aws_sfn_state_machine.housekeeping.arn
   }
 }
