@@ -1,8 +1,8 @@
-resource "aws_cloudwatch_metric_alarm" "executions_failed" {
-  alarm_name                = "${local.csi}-executions-failed"
+resource "aws_cloudwatch_metric_alarm" "housekeeping_executions_aborted" {
+  alarm_name                = "${local.csi}-housekeeping-execution-aborted"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
-  metric_name               = "ExecutionsFailed"
+  metric_name               = "ExecutionsAborted"
   namespace                 = "AWS/States"
   period                    = 60
   statistic                 = "Sum"
@@ -11,6 +11,6 @@ resource "aws_cloudwatch_metric_alarm" "executions_failed" {
   insufficient_data_actions = []
 
   dimensions = {
-    StateMachineArn = aws_sfn_state_machine.athena.arn
+    StateMachineArn = aws_sfn_state_machine.housekeeping.arn
   }
 }
