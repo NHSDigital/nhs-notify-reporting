@@ -1,0 +1,108 @@
+{
+  "Comment": "Workflow to run housekeeping queries to maintain reporting tables.",
+  "StartAt": "Optimize Pass",
+  "States": {
+    "Optimize Pass": {
+      "Type": "Parallel",
+      "Branches": ${jsonencode(concat([
+        for query_id in optimize_query_ids:
+        {
+          "StartAt": "Get Query ${query_id}",
+          "States": {
+            "Get Query ${query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query ${query_id}"
+            },
+            "Execute Query ${query_id}": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
+              },
+              "Type": "Task",
+              "Next": "Transaction Success ${query_id}",
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.error",
+                  "Next": "Transaction Failed ${query_id}"
+                }
+              ]
+            },
+            "Transaction Success ${query_id}": {
+              "Type": "Pass",
+              "Result": "Athena query succeeded.",
+              "End": true
+            },
+            "Transaction Failed ${query_id}": {
+              "Type": "Fail",
+              "CausePath": "$.error.Cause",
+              "ErrorPath": "$.error.Error"
+            }
+          }
+        }
+      ]))},
+      "Next": "Vacuum Pass"
+    },
+    "Vacuum Pass": {
+      "Type": "Parallel",
+      "Branches": ${jsonencode(concat([
+        for query_id in vacuum_query_ids:
+        {
+          "StartAt": "Get Query ${query_id}",
+          "States": {
+            "Get Query ${query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query ${query_id}"
+            },
+            "Execute Query ${query_id}": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
+              },
+              "Type": "Task",
+              "Next": "Transaction Success ${query_id}",
+              "Catch": [
+                {
+                  "ErrorEquals": [
+                    "States.ALL"
+                  ],
+                  "ResultPath": "$.error",
+                  "Next": "Transaction Failed ${query_id}"
+                }
+              ]
+            },
+            "Transaction Success ${query_id}": {
+              "Type": "Pass",
+              "Result": "Athena query succeeded.",
+              "End": true
+            },
+            "Transaction Failed ${query_id}": {
+              "Type": "Fail",
+              "CausePath": "$.error.Cause",
+              "ErrorPath": "$.error.Error"
+            }
+          }
+        }
+      ]))},
+      "End": true
+    }
+  }
+}

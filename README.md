@@ -63,8 +63,9 @@ After successful deployment, the following will be available:
 - Staging tables for each data aggregation/projection.
 - Athena saved queries to incrementally populate the staging tables from the core account.
 - A step function to periodically execute the saved ingestion queries.
+- A step function to periodically execute housekeeping queries.
 
-The step function and saved queries can be executed manually as required. They are idempotent, so can be executed outside of the scheduled execution without harm.
+The step functions and saved queries can be executed manually as required. They are idempotent, so can be executed outside of the scheduled execution without harm.
 
 Access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment.
 
@@ -95,11 +96,12 @@ As a workaround, we manage reporting tables via DDL queries executed in Athena a
 - Specify the DDL for the new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
 - Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
 - (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
-- Add the named query to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf)
+- Add the named query to the ingestion step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_ingestion.tf)
+- Add housekeeping operations (VACUUM and OPTIMISE) to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_housekeeping.tf)
 
-The filename should be the same in all 3 sql folders.
+The filename should be the same in all sql folders.
 
-If your target table contains hashed NHS numbers add the step function's `hash_query_ids_n` array, otherwise add it to the `query_ids_n` array.
+If your target table contains hashed NHS numbers add the ingestion step function's `hash_query_ids_n` array, otherwise add it to the `query_ids_n` array.
 
 The suffix _`n`_ indicates which pass the ingestion should operate in, which allows one ingestion query to be dependent on the outcome of another one. Currently two passes are supported
 
@@ -162,7 +164,7 @@ See also this [readme](/infrastructure/terraform/components/reporting/scripts/sq
 
 ### Multiple Ingestion Passes
 
-The step function runs queries in two passes, which allows ingestion queries to be dependent on other ingestion queries.
+The ingestion step function runs queries in two passes, which allows ingestion queries to be dependent on other ingestion queries.
 
 This means that it is possible to run an aggregation on a previously executed projection.
 
@@ -174,11 +176,17 @@ Staging tables exposed to Power BI should not contain any PID.
 
 Pseudonymisation of PID is approved via the use of a SHA256 hash together with a secret environment key held in AWS Parameter Store.
 
-The step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids_n` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_athena.tf).
+The ingestion step function will inject the environment key as the execution parameter to any SQL query that is defined in the `hash_query_ids_n` collection in the [Step Function Terraform](./infrastructure/terraform/components/reporting/sfn_state_machine_ingestion.tf).
 
 ### Permissions
 
 External access (including PowerBI) should be restricted to read-only access of the staging tables only. No external access should be provided to the underlying transaction_history table.
+
+### Housekeeping
+
+Because of the Terraform limitation documented above we're unable to declaratively enable housekeeping on the Iceberg tables.
+
+Equivalent functionality is instead achieved via OPTIMISE and VACUUM commands executed by a second step function.
 
 ## Contacts
 
