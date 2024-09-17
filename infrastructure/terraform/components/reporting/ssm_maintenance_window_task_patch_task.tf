@@ -4,7 +4,7 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
   description     = "Windows Server 2022 Patch Task"
   window_id       = aws_ssm_maintenance_window.patch_window[0].id
   task_arn        = "AWS-RunPatchBaseline"
-  service_role_arn = aws_iam_role.powerbi_gateway_role[0].arn
+  #service_role_arn = aws_iam_role.powerbi_gateway_role[0].arn
   task_type       = "RUN_COMMAND"
 
   targets {
