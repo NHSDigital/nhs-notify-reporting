@@ -1,0 +1,1 @@
+OPTIMIZE request_item_plan_status REWRITE DATA USING BIN_PACK

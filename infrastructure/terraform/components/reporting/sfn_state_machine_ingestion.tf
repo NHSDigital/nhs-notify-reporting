@@ -3,7 +3,9 @@ resource "aws_sfn_state_machine" "ingestion" {
   role_arn = aws_iam_role.sfn_ingestion.arn
 
   definition = templatefile("${path.module}/templates/ingestion.json.tmpl", {
-    query_ids_1 = []
+    query_ids_1 = [
+      "${aws_athena_named_query.request_item_plan_status.id}"
+    ]
     hash_query_ids_1 = [
       "${aws_athena_named_query.request_item_status.id}"
     ]

@@ -3,17 +3,22 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     campaignid string,
     sendinggroupid string,
     sendinggroupidversion string,
+    requestitemrefid string,
+    requestitemid string,
+    requestrefid string,
+    requestid string,
+    requestitemplanid string,
     communicationtype string,
     supplier string,
-    createddate date,
-    completeddate date,
+    createdtime timestamp,
+    completedtime timestamp,
     status string,
     failedreason string,
     contactdetailsource string,
     channeltype string,
-    requestitemcount int
+    timestamp bigint
 )
-PARTITIONED BY (month(createddate), month(completeddate))
+PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
 LOCATION '${s3_location}'
 TBLPROPERTIES (
   'table_type'='ICEBERG',

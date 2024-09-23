@@ -15,7 +15,7 @@ resource "null_resource" "request_item_status_table" {
   depends_on = [aws_athena_workgroup.setup]
 }
 
-resource "null_resource" "patientodscode_column" {
+resource "null_resource" "request_item_status_patientodscode_column" {
   triggers = {
     always_run = timestamp()
   }
@@ -25,6 +25,38 @@ resource "null_resource" "patientodscode_column" {
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
         request_item_status patientodscode string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_status_table]
+}
+
+resource "null_resource" "request_item_status_requestitemrefid_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_status requestitemrefid string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_status_table]
+}
+
+resource "null_resource" "request_item_status_sendinggroupidversion_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_status sendinggroupidversion string
     EOT
   }
 

@@ -44,6 +44,6 @@ if [[ $? == 0 ]] && [[ $status == "SUCCEEDED" ]]; then
     echo "Query execution succeeded"
     exit 0
 else
-    echo "Query execution failed"
+    echo "Query execution failed with status $status and exit code $?"
     exit 1
 fi

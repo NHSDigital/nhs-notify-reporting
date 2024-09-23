@@ -11,8 +11,10 @@ USING (
     FROM (
       SELECT
         clientid,
-        NULL AS campaignid,
+        campaignid,
         sendinggroupid,
+        sendinggroupidversion,
+        requestitemrefid,
         requestitemid,
         requestrefid,
         requestid,
@@ -23,46 +25,14 @@ USING (
         failedcommunicationtypes,
         status,
         failedreason,
-        CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
-      FROM transaction_history_old
-      WHERE (sk LIKE 'REQUEST_ITEM#%')
-      UNION ALL
-      SELECT
-        clientid,
-        campaignid,
-        sendinggroupid,
-        requestitemid,
-        requestrefid,
-        requestid,
-        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
-        from_iso8601_timestamp(createddate) AS createdtime,
-        from_iso8601_timestamp(completeddate) AS completedtime,
-        completedcommunicationtypes,
-        failedcommunicationtypes,
-        status,
-        failedreason,
+        patientodscode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
-      FROM transaction_history
-      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NULL) OR (SUBSTRING(completeddate, 11, 1) = 'T'))
-      UNION ALL
-      --data quality issue from invalid manual correction of source data
-      SELECT
-        clientid,
-        campaignid,
-        sendinggroupid,
-        requestitemid,
-        requestrefid,
-        requestid,
-        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
-        from_iso8601_timestamp(createddate) AS createdtime,
-        cast(completeddate AS timestamp) AS completedtime,
-        completedcommunicationtypes,
-        failedcommunicationtypes,
-        status,
-        failedreason,
-        CAST("$classification".timestamp AS BIGINT) AS timestamp
-      FROM transaction_history
-      WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NOT NULL) AND (SUBSTRING(completeddate, 11, 1) != 'T'))
+      FROM ${source_table}
+      WHERE (sk LIKE 'REQUEST_ITEM#%') AND
+      (
+        -- Moving 1-week ingestion window
+        DATE(CAST(__year AS VARCHAR) || '-' || CAST(__month AS VARCHAR) || '-' || CAST(__day  AS VARCHAR)) >= DATE_ADD('week', -1, CURRENT_DATE)
+      )
     )
   )
   WHERE rownumber = 1
@@ -73,6 +43,8 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   clientid = source.clientid,
   campaignid = source.campaignid,
   sendinggroupid = source.sendinggroupid,
+  sendinggroupidversion = source.sendinggroupidversion,
+  requestitemrefid = source.requestitemrefid,
   requestrefid = source.requestrefid,
   requestid = source.requestid,
   nhsnumberhash = source.nhsnumberhash,
@@ -82,11 +54,14 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   failedcommunicationtypes = source.failedcommunicationtypes,
   status = source.status,
   failedreason = source.failedreason,
+  patientodscode = source.patientodscode,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
   sendinggroupid,
+  sendinggroupidversion,
+  requestitemrefid,
   requestitemid,
   requestrefid,
   requestid,
@@ -97,12 +72,15 @@ WHEN NOT MATCHED THEN INSERT (
   failedcommunicationtypes,
   status,
   failedreason,
+  patientodscode,
   timestamp
 )
 VALUES (
   source.clientid,
   source.campaignid,
   source.sendinggroupid,
+  source.sendinggroupidversion,
+  source.requestitemrefid,
   source.requestitemid,
   source.requestrefid,
   source.requestid,
@@ -113,5 +91,6 @@ VALUES (
   source.failedcommunicationtypes,
   source.status,
   source.failedreason,
+  source.patientodscode,
   source.timestamp
 )

@@ -2,6 +2,8 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     clientid string,
     campaignid string,
     sendinggroupid string,
+    sendinggroupidversion string,
+    requestitemrefid string,
     requestitemid string,
     requestrefid string,
     requestid string,

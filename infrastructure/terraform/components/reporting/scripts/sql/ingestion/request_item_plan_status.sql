@@ -1,10 +1,10 @@
-MERGE INTO request_item_status as target
+MERGE INTO request_item_plan_status as target
 USING (
   SELECT * FROM (
     SELECT
       *,
       ROW_NUMBER() OVER (
-        partition BY requestitemid ORDER BY
+        partition BY requestitemplanid ORDER BY
         timestamp DESC,
         length(coalesce(cast(completedtime AS varchar), '')) DESC
       ) AS rownumber
@@ -13,77 +13,88 @@ USING (
         clientid,
         campaignid,
         sendinggroupid,
+        sendinggroupidversion,
+        requestitemrefid,
         requestitemid,
         requestrefid,
         requestid,
-        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
+        requestitemplanid,
+        communicationtype,
+        supplier,
         from_iso8601_timestamp(createddate) AS createdtime,
         from_iso8601_timestamp(completeddate) AS completedtime,
-        completedcommunicationtypes,
-        failedcommunicationtypes,
         status,
         failedreason,
-        patientodscode,
+        contactdetailsource,
+        channeltype,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
-      WHERE (sk LIKE 'REQUEST_ITEM#%') AND
+      WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
       (
-        -- Moving 1-month ingestion window
-        (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-        (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+        -- Moving 1-week ingestion window
+        DATE(CAST(__year AS VARCHAR) || '-' || CAST(__month AS VARCHAR) || '-' || CAST(__day  AS VARCHAR)) >= DATE_ADD('week', -1, CURRENT_DATE)
       )
     )
   )
   WHERE rownumber = 1
 ) as source
 ON
-  source.requestitemid = target.requestitemid
+  source.requestitemplanid = target.requestitemplanid
 WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   clientid = source.clientid,
   campaignid = source.campaignid,
   sendinggroupid = source.sendinggroupid,
+  sendinggroupidversion = source.sendinggroupidversion,
+  requestitemrefid = source.requestitemrefid,
+  requestitemid = source.requestitemid,
   requestrefid = source.requestrefid,
   requestid = source.requestid,
-  nhsnumberhash = source.nhsnumberhash,
+  communicationtype = source.communicationtype,
+  supplier = source.supplier,
   createdtime = source.createdtime,
   completedtime = source.completedtime,
-  completedcommunicationtypes = source.completedcommunicationtypes,
-  failedcommunicationtypes = source.failedcommunicationtypes,
   status = source.status,
   failedreason = source.failedreason,
-  patientodscode = source.patientodscode,
+  contactdetailsource = source.contactdetailsource,
+  channeltype = source.channeltype,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
   sendinggroupid,
+  sendinggroupidversion,
+  requestitemrefid,
   requestitemid,
   requestrefid,
   requestid,
-  nhsnumberhash,
+  requestitemplanid,
+  communicationtype,
+  supplier,
   createdtime,
   completedtime,
-  completedcommunicationtypes,
-  failedcommunicationtypes,
   status,
   failedreason,
-  patientodscode,
+  contactdetailsource,
+  channeltype,
   timestamp
 )
 VALUES (
   source.clientid,
   source.campaignid,
   source.sendinggroupid,
+  source.sendinggroupidversion,
+  source.requestitemrefid,
   source.requestitemid,
   source.requestrefid,
   source.requestid,
-  source.nhsnumberhash,
+  source.requestitemplanid,
+  source.communicationtype,
+  source.supplier,
   source.createdtime,
   source.completedtime,
-  source.completedcommunicationtypes,
-  source.failedcommunicationtypes,
   source.status,
   source.failedreason,
-  source.patientodscode,
+  source.contactdetailsource,
+  source.channeltype,
   source.timestamp
 )

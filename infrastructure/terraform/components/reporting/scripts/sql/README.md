@@ -11,6 +11,8 @@ Each row corresponds to the latest state of each request item in the system, wit
     clientid
     campaignid
     sendinggroupid
+    sendinggroupidversion
+    requestitemrefid
     requestitemid
     requestrefid
     requestid
@@ -21,6 +23,32 @@ Each row corresponds to the latest state of each request item in the system, wit
     failedcommunicationtypes
     status
     failedreason
+    patientodscode
+    timestamp
+
+### request_item_plan_status
+
+A projection containing one row per request item plan.
+
+Each row corresponds to the latest state of each request item plan in the system, with the following fields available:
+
+    clientid
+    campaignid
+    sendinggroupid
+    sendinggroupidversion
+    requestitemrefid
+    requestitemid
+    requestrefid
+    requestid
+    requestitemplanid
+    communicationtype
+    supplier
+    createdtime
+    completedtime
+    status
+    failedreason
+    contactdetailsource
+    channeltype
     timestamp
 
 ### request_item_plan_completed_summary
@@ -32,12 +60,15 @@ Dimensions:
     clientid
     campaignid
     sendinggroupid
+    sendinggroupidversion
     communicationtype
     supplier
     createddate
     completeddate
     status
     failedreason
+    contactdetailsource
+    channeltype
 
 Facts:
 
@@ -51,7 +82,7 @@ These are simplified examples of the actual ingestion queries.
 
 ### Projection Queries
 
-This query finds the latest update  of each object in the ingestion window. It then inserts a subset of columns into the reporting table if the primary key is not already present, or updates the row if already present but a later version is available.
+This query finds the latest update of each object in the ingestion window. It then inserts a subset of columns into the reporting table if the primary key is not already present, or updates the row if already present but a later version is available.
 
     MERGE INTO <reporting_table> as target
     USING (
@@ -79,9 +110,8 @@ This query finds the latest update  of each object in the ingestion window. It t
                 FROM ${source_table}
                 WHERE (sk LIKE 'REQUEST_ITEM#%') AND
                 (
-                    -- Moving 1-month ingestion window
-                    (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-                    (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
+                    -- Moving 1-week ingestion window
+                    DATE(CAST(__year AS VARCHAR) || '-' || CAST(__month AS VARCHAR) || '-' || CAST(__day  AS VARCHAR)) >= DATE_ADD('week', -1, CURRENT_DATE)
                 )
             )
         )
@@ -111,7 +141,7 @@ This query finds the latest update  of each object in the ingestion window. It t
 
 Aggregation queries produce much smaller result sets than the corresponding projection queries by grouping related items together.
 
-This query finds the latest update of each object in the ingestion window, then groups them together according to the specified dimensions.
+Typically aggregation queries operate as a second pass against earlier data projections.
 
 If a new combination of dimensions are found an insert is performed.
 
@@ -119,7 +149,7 @@ If an existing combination of dimensions are found an update is performed only i
 
 For correct results, the ingestion window must be large enough to encompass all events that correspond to a given combination of dimensions.
 
-    MERGE INTO <reporting_table> as target
+    MERGE INTO <aggregation_table> as target
     USING (
     SELECT
         --Dimensions
@@ -128,39 +158,12 @@ For correct results, the ingestion window must be large enough to encompass all 
 
         --Facts
         count(distinct requestitemid) AS requestitemcount
-    FROM (
-        SELECT
-        *,
-        ROW_NUMBER() OVER (
-            --Only select last update from sample window
-            --Use completeddate as indicator of terminal state as a tie-breaker on identical timestamps
-            partition BY sk ORDER BY
-            timestamp DESC,
-            length(coalesce(completeddate, '')) DESC
-        ) AS rownumber
-        FROM (
-            SELECT
-                --Dimensions
-                clientid,
-                sendinggroupid,
-
-                --Facts
-                requestitemid,
-
-                --Timestamp partitioning/ordering columns
-                sk,
-                completeddate,
-                CAST("$classification".timestamp AS BIGINT) AS timestamp
-            FROM ${source_table}
-            WHERE (status = 'DELIVERED' OR status = 'FAILED') AND (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
-            (
-                -- Moving 1-month ingestion window
-                (__month=MONTH(CURRENT_DATE) AND __year=YEAR(CURRENT_DATE)) OR
-                (__month=MONTH(DATE_ADD('month', -1, CURRENT_DATE)) AND __year=YEAR(DATE_ADD('month', -1, CURRENT_DATE)) AND __day >= DAY(CURRENT_DATE))
-            )
-        )
+    FROM <projection_table>
+    WHERE (status = 'DELIVERED' OR status = 'FAILED') AND
+    (
+        -- Moving 1-month ingestion window
+        DATE(createdtime) >= DATE_ADD('month', -1, CURRENT_DATE)
     )
-    WHERE rownumber = 1
 
     -- Group by dimension columns
     GROUP BY
@@ -207,6 +210,6 @@ A data migration query is usually very similar to the corresponding ingestion qu
 Key differences include:
 
 - The sliding time window is omitted so that all available rows in the source table are available
-- The migration queries use a UNION operator to pull from both `transaction_history_old` and `transaction_history` tables
+- The migration queries use a `UNION ALL` operator to pull from both `transaction_history_old` and `transaction_history` tables
 - Historic indiosyncrasies are accounted for (such as the change from second-precision to millisecond-precision timestamps between `transaction_history_old` and `transaction_history` tables)
 - Migration queries may include specific amendments to rectify  historic data quality issues
