@@ -94,7 +94,7 @@ As a workaround, we manage reporting tables via DDL queries executed in Athena a
 - Add a new file containing a Terraform null_resource that wraps the [create_table](/infrastructure/terraform/components/reporting/scripts/create_table.sh) shell script
 - Add a new file containing a Terraform athena_named_query used for data ingestion
 - Specify the DDL for the new table definition [here](/infrastructure/terraform/components/reporting/scripts/sql/tables/)
-- Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/queries/)
+- Specify the SQL to define the ingestion query [here](/infrastructure/terraform/components/reporting/scripts/sql/ingestion/)
 - (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
 - Add the named query to the ingestion step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_ingestion.tf)
 - Add housekeeping operations (VACUUM and OPTIMISE) to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_housekeeping.tf)
