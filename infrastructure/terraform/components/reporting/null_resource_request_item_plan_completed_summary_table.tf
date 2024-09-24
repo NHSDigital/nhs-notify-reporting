@@ -44,7 +44,7 @@ resource "null_resource" "request_item_plan_completed_summary_sendinggroupidvers
     EOT
   }
 
-  depends_on = [null_resource.request_item_plan_completed_summary_table]
+  depends_on = [null_resource.request_item_plan_completed_summary_contactdetailsource_column]
 }
 
 resource "null_resource" "request_item_plan_completed_summary_channeltype_column" {
@@ -60,5 +60,5 @@ resource "null_resource" "request_item_plan_completed_summary_channeltype_column
     EOT
   }
 
-  depends_on = [null_resource.request_item_plan_completed_summary_table]
+  depends_on = [null_resource.request_item_plan_completed_summary_sendinggroupidversion_column]
 }
