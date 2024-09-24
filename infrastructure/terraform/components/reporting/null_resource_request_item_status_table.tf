@@ -44,7 +44,7 @@ resource "null_resource" "request_item_status_requestitemrefid_column" {
     EOT
   }
 
-  depends_on = [null_resource.request_item_status_table]
+  depends_on = [null_resource.request_item_status_patientodscode_column]
 }
 
 resource "null_resource" "request_item_status_sendinggroupidversion_column" {
@@ -60,5 +60,5 @@ resource "null_resource" "request_item_status_sendinggroupidversion_column" {
     EOT
   }
 
-  depends_on = [null_resource.request_item_status_table]
+  depends_on = [null_resource.request_item_status_requestitemrefid_column]
 }
