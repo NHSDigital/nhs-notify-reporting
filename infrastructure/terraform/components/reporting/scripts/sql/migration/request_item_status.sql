@@ -13,6 +13,8 @@ USING (
         clientid,
         NULL AS campaignid,
         sendinggroupid,
+        sendinggroupidversion,
+        requestitemrefid,
         requestitemid,
         requestrefid,
         requestid,
@@ -23,6 +25,7 @@ USING (
         failedcommunicationtypes,
         status,
         failedreason,
+        NULL AS patientodscode,
         CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
       FROM transaction_history_old
       WHERE (sk LIKE 'REQUEST_ITEM#%')
@@ -31,6 +34,8 @@ USING (
         clientid,
         campaignid,
         sendinggroupid,
+        sendinggroupidversion,
+        requestitemrefid,
         requestitemid,
         requestrefid,
         requestid,
@@ -41,6 +46,7 @@ USING (
         failedcommunicationtypes,
         status,
         failedreason,
+        patientodscode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM transaction_history
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NULL) OR (SUBSTRING(completeddate, 11, 1) = 'T'))
@@ -50,6 +56,8 @@ USING (
         clientid,
         campaignid,
         sendinggroupid,
+        sendinggroupidversion,
+        requestitemrefid,
         requestitemid,
         requestrefid,
         requestid,
@@ -60,6 +68,7 @@ USING (
         failedcommunicationtypes,
         status,
         failedreason,
+        patientodscode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM transaction_history
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND ((completeddate IS NOT NULL) AND (SUBSTRING(completeddate, 11, 1) != 'T'))
@@ -73,6 +82,8 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   clientid = source.clientid,
   campaignid = source.campaignid,
   sendinggroupid = source.sendinggroupid,
+  sendinggroupidversion = source.sendinggroupidversion,
+  requestitemrefid = source.requestitemrefid,
   requestrefid = source.requestrefid,
   requestid = source.requestid,
   nhsnumberhash = source.nhsnumberhash,
@@ -82,11 +93,14 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   failedcommunicationtypes = source.failedcommunicationtypes,
   status = source.status,
   failedreason = source.failedreason,
+  patientodscode = source.patientodscode,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
   sendinggroupid,
+  sendinggroupidversion,
+  requestitemrefid,
   requestitemid,
   requestrefid,
   requestid,
@@ -97,12 +111,15 @@ WHEN NOT MATCHED THEN INSERT (
   failedcommunicationtypes,
   status,
   failedreason,
+  patientodscode,
   timestamp
 )
 VALUES (
   source.clientid,
   source.campaignid,
   source.sendinggroupid,
+  source.sendinggroupidversion,
+  source.requestitemrefid,
   source.requestitemid,
   source.requestrefid,
   source.requestid,
@@ -113,5 +130,6 @@ VALUES (
   source.failedcommunicationtypes,
   source.status,
   source.failedreason,
+  source.patientodscode,
   source.timestamp
 )
