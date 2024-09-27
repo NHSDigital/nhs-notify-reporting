@@ -8,6 +8,8 @@ A projection containing one row per request item.
 
 Each row corresponds to the latest state of each request item in the system, with the following fields available:
 
+Columns:
+
     clientid
     campaignid
     sendinggroupid
@@ -26,11 +28,19 @@ Each row corresponds to the latest state of each request item in the system, wit
     patientodscode
     timestamp
 
+Partitions:
+
+    bucket(32, clientid)
+    month(createdtime)
+    month(completedtime)
+
 ### request_item_plan_status
 
 A projection containing one row per request item plan.
 
 Each row corresponds to the latest state of each request item plan in the system, with the following fields available:
+
+Columns:
 
     clientid
     campaignid
@@ -50,6 +60,12 @@ Each row corresponds to the latest state of each request item plan in the system
     contactdetailsource
     channeltype
     timestamp
+
+Partitions:
+
+    bucket(32, clientid)
+    month(createdtime)
+    month(completedtime)
 
 ### request_item_plan_completed_summary
 
@@ -73,6 +89,11 @@ Dimensions:
 Facts:
 
     Number of distinct request items
+
+Partitions:
+
+    month(createddate)
+    month(completeddate)
 
 ## Anatomy of an Ingestion Query
 
@@ -212,4 +233,4 @@ Key differences include:
 - The sliding time window is omitted so that all available rows in the source table are available
 - The migration queries use a `UNION ALL` operator to pull from both `transaction_history_old` and `transaction_history` tables
 - Historic indiosyncrasies are accounted for (such as the change from second-precision to millisecond-precision timestamps between `transaction_history_old` and `transaction_history` tables)
-- Migration queries may include specific amendments to rectify  historic data quality issues
+- Migration queries may include specific amendments to rectify historic data quality issues

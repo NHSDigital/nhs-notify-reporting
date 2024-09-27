@@ -69,7 +69,7 @@ The step functions and saved queries can be executed manually as required. They 
 
 Access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment.
 
-More information on the individual staging tables and associated ingestion queries is available [here](/infrastructure/terraform/components/reporting/scripts/sql/README.md)
+More information on the individual staging tables and associated ingestion queries is available [here](/infrastructure/terraform/components/reporting/scripts/sql/README.md).
 
 ### Athena Workgroups
 
@@ -103,7 +103,7 @@ The filename should be the same in all sql folders.
 
 If your target table contains hashed NHS numbers add the ingestion step function's `hash_query_ids_n` array, otherwise add it to the `query_ids_n` array.
 
-The suffix _`n`_ indicates which pass the ingestion should operate in, which allows one ingestion query to be dependent on the outcome of another one. Currently two passes are supported
+The suffix _`n`_ indicates which pass the ingestion should operate in, which allows one ingestion query to be dependent on the outcome of another one. Currently two passes are supported.
 
 #### How do I add a new column to a projection/aggregation retrospectively?
 
@@ -111,7 +111,7 @@ Columns can be added retrospectiely by adding a Terraform null_resource that wra
 
 By convention, the column null_resources are defined in the same file as the associate table null_resource.
 
-The column null_resource should have a dependency on the underlying table null_resource so that they are created in the correct sequence.
+The column null_resource should have a dependency on the table null_resource or previous column null_resource so that they are created in the correct sequence. (Each column should have a different dependency to create a daisy-chain of sequential operations, as attempts to add two new columns concurrently will fail)
 
 New columns should also be added to the underlying [table definition](/infrastructure/terraform/components/reporting/scripts/sql/tables/) so they are created as part of the initial table creation in new environments.
 
@@ -148,7 +148,7 @@ The underlying transaction_history table is a Glue representation of the change 
 Ingestion queries must be specifically designed to take account of these characteristics in order to produce a consistent output for reporting. In addition:
 
 - Ingestion queries must be idempotent
-- Ingestion queries must operate on a moving time window (typically pulling transactional data from the last month into the staging tables)
+- Ingestion queries must operate on a moving time window (typically pulling transactional data from the last week into the staging tables)
 - Ingestion queries must be one-way only (data should not be removed or unwound), specifically:
   - Ingestion queries should not change the contents of the staging table when data is expired from the underlying transaction_history table
   - Ingestion queries should not change the contents of the staging table when records leave the incremental ingestion window
