@@ -5,7 +5,7 @@ resource "aws_athena_named_query" "request_item_plan_completed_summary_batch" {
   database    = aws_glue_catalog_database.reporting.name
   query       = templatefile("${path.module}/scripts/sql/ingestion/request_item_plan_completed_summary_batch.sql", {
     source_table= "\"${aws_athena_data_catalog.source_data.name}\".\"comms-${var.core_env}-api-rpt-reporting\".\"transaction_history\"",
-    batch_client_ids = join(", ", [for s in var.batch_client_ids : format("%q", s)])
+    batch_client_ids = join(", ", [for id in var.batch_client_ids : format("'%s'", id)])
   })
 
   depends_on = [null_resource.request_item_plan_completed_summary_batch_table]
