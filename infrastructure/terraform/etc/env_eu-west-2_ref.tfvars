@@ -26,3 +26,8 @@ min_size         = 1
 max_size         = 1
 enable_spot      = false
 spot_max_price   = "0.3"
+
+batch_client_ids = [
+  "perf-test-client-1",
+  "perf-test-client-2"
+]
