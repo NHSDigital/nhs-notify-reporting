@@ -95,6 +95,38 @@ Partitions:
     month(createddate)
     month(completeddate)
 
+### request_item_plan_completed_summary_batch
+
+An aggregated view of request item plans that have reached `DELIVERED` or `FAILED` status.
+
+Includes batch dimensions for specific large-batch use cases such as vaccinations.
+
+Dimensions:
+
+    clientid
+    campaignid
+    sendinggroupid
+    sendinggroupidversion
+    requestrefid
+    requestid
+    communicationtype
+    supplier
+    createddate
+    completeddate
+    status
+    failedreason
+    contactdetailsource
+    channeltype
+
+Facts:
+
+    Number of distinct request items
+
+Partitions:
+
+    month(createddate)
+    month(completeddate)
+
 ## Anatomy of an Ingestion Query
 
 Ingestion queries follow a similar format in order to take account of the characteristics of the underlying transaction_history table.

@@ -163,3 +163,9 @@ variable "core_account_ids" {
   type = list(string)
   default = []
 }
+
+variable "batch_client_ids" {
+  description = "List of client ids that require additional batch identifier dimensions when aggregating data"
+  type = list(string)
+  default = ["NULL"]
+}
