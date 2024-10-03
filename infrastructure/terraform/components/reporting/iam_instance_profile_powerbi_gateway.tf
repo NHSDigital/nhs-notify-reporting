@@ -172,11 +172,13 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
         aws_glue_catalog_database.reporting.arn,
         "arn:aws:glue:${var.region}:${var.core_account_id}:catalog",
         "arn:aws:glue:${var.region}:${local.this_account}:catalog",
+        # Tables
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary_batch",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
-        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status"
-
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+        # Views
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary_all"
       ]
     )
   }

@@ -98,12 +98,21 @@ As a workaround, we manage reporting tables via DDL queries executed in Athena a
 - (Optionally) specify the data migration query [here](/infrastructure/terraform/components/reporting/scripts/sql/migration/)
 - Add the named query to the ingestion step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_ingestion.tf)
 - Add housekeeping operations (VACUUM and OPTIMISE) to the step function [here](/infrastructure/terraform/components/reporting/sfn_state_machine_housekeeping.tf)
+- Add the table to the IAM policy for both [SSO access](infrastructure/terraform/components/acct/data_iam_policy_document_sso_read_only_table_access.tf) and the [Power BI Gateway](infrastructure/terraform/components/reporting/iam_instance_profile_powerbi_gateway.tf)
 
-The filename should be the same in all sql folders.
+The filename should be the same in all sql folders, and should be the same as the table name in the database with a .sql file extension.
 
 If your target table contains hashed NHS numbers add the ingestion step function's `hash_query_ids_n` array, otherwise add it to the `query_ids_n` array.
 
 The suffix _`n`_ indicates which pass the ingestion should operate in, which allows one ingestion query to be dependent on the outcome of another one. Currently two passes are supported.
+
+#### How do I define a view?
+
+- Add a new file containing a Terraform null_resource that wraps the [create_replace_view](/infrastructure/terraform/components/reporting/scripts/create_replace_view.sh) shell script
+- Specify the CREATE OR REPLACE SQL to define the view [here](/infrastructure/terraform/components/reporting/scripts/sql/views/)
+- Add the view to the IAM policy for both [SSO access](infrastructure/terraform/components/acct/data_iam_policy_document_sso_read_only_table_access.tf) and the [Power BI Gateway](infrastructure/terraform/components/reporting/iam_instance_profile_powerbi_gateway.tf)
+
+The filename should be the same as the view name in the database with a .sql file extension.
 
 #### How do I add a new column to a projection/aggregation retrospectively?
 
