@@ -29,6 +29,7 @@ readme
 sql
 SQL
 create_table
+create_replace_view
 athena_named_query
 add_column
 declaratively
