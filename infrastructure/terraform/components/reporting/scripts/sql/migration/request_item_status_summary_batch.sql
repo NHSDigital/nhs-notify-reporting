@@ -40,7 +40,7 @@ ON
   COALESCE(source.sendinggroupidversion, '') = COALESCE(target.sendinggroupidversion, '') AND
   COALESCE(source.requestrefid, '') = COALESCE(target.requestrefid, '') AND
   COALESCE(source.requestid, '') = COALESCE(target.requestid, '') AND
-  COALESCE(CAST(source.createddate AS varchar), '') = COALESCE(CAST(target.createddate AS varchar), '') AND
+  COALESCE(CAST(source.createddate AS varchar), '') = COALESCE(CAST(target.createddate AS varchar), '')
 WHEN MATCHED AND
 (
   source.requestedcount > target.requestedcount OR
