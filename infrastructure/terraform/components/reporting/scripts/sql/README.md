@@ -127,6 +127,38 @@ Partitions:
     month(createddate)
     month(completeddate)
 
+### request_item_status_summary
+
+An aggregated view of request items providing counts for key states and channels.
+
+Dimensions:
+
+    clientid
+    campaignid
+    sendinggroupid
+    sendinggroupidversion
+    createddate
+
+Facts:
+
+    requestedcount
+    deliveredcount
+    failedcount
+    completedcount
+    outstandingcount
+    nhsappdeliveredcount
+    emaildeliveredcount
+    smsdeliveredcount
+    letterdeliveredcount
+    nhsappfailedcount
+    emailfailedcount
+    smsfailedcount
+    letterfailedcount
+
+Partitions:
+
+    month(createddate)
+
 ### request_item_status_summary_batch
 
 An aggregated view of request items providing counts for key states and channels.

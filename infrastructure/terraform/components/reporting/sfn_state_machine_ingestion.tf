@@ -11,7 +11,8 @@ resource "aws_sfn_state_machine" "ingestion" {
     ]
     query_ids_2 = [
       "${aws_athena_named_query.request_item_plan_completed_summary.id}",
-      "${aws_athena_named_query.request_item_plan_completed_summary_batch.id}"      ,
+      "${aws_athena_named_query.request_item_plan_completed_summary_batch.id}",
+      "${aws_athena_named_query.request_item_status_summary.id}",
       "${aws_athena_named_query.request_item_status_summary_batch.id}"
     ]
     hash_query_ids_2 = []
