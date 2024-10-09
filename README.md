@@ -146,7 +146,7 @@ See also this [readme](/infrastructure/terraform/components/reporting/scripts/sq
 
 Staging tables should have an immutable primary key (for projections) or immutable dimensions (for aggregations) that are used for matching. Mutable data should only be placed in non-PK fields (for projections) or facts (for aggregations). This convention is such that the ingestion process does not need to delete rows that would be associated with an old value of a mutable key.
 
-Whether a field is mutable or not depends heavily upon context. A record ingested only in a terminal state (e.g. DELIVERED or FAILED) will have many more immutable fields than a record ingested while it is still being processed.
+Whether a field is mutable or not depends heavily upon context. A record ingested only in a terminal state (e.g. DELIVERED or FAILED) will have many more immutable fields than a record ingested while it is still being actively processed.
 
 ### Ingestion Query Design
 
