@@ -144,6 +144,10 @@ See also this [readme](/infrastructure/terraform/components/reporting/scripts/sq
 
 **Note: Partitions in Iceberg tables are not visible via the AWS Glue Console, but can be seen instead using a "SHOW CREATE TABLE" query in Athena (and verified by inspecting the underlying S3 storage**)
 
+Staging tables should have an immutable primary key (for projections) or immutable dimensions (for aggregations) that are used for matching. Mutable data should only be placed in non-PK fields (for projections) or facts (for aggregations). This convention is such that the ingestion process does not need to delete rows that would be associated with an old value of a mutable key.
+
+Whether a field is mutable or not depends heavily upon context. A record ingested only in a terminal state (e.g. DELIVERED or FAILED) will have many more immutable fields than a record ingested while it is still being processed.
+
 ### Ingestion Query Design
 
 The underlying transaction_history table is a Glue representation of the change capture log from DynamoDB. It has a number of characteristics that make it more difficult to query than a "traditional" RDBMS table:
