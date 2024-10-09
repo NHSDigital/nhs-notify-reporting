@@ -7,13 +7,15 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_status_optimize.id}",
       "${aws_athena_named_query.request_item_plan_status_optimize.id}",
       "${aws_athena_named_query.request_item_plan_completed_summary_optimize.id}",
-      "${aws_athena_named_query.request_item_plan_completed_summary_batch_optimize.id}"
+      "${aws_athena_named_query.request_item_plan_completed_summary_batch_optimize.id}",
+      "${aws_athena_named_query.request_item_status_summary_batch_optimize.id}"
     ]
     vacuum_query_ids = [
       "${aws_athena_named_query.request_item_status_vacuum.id}",
       "${aws_athena_named_query.request_item_plan_status_vacuum.id}",
       "${aws_athena_named_query.request_item_plan_completed_summary_vacuum.id}",
-      "${aws_athena_named_query.request_item_plan_completed_summary_batch_vacuum.id}"
+      "${aws_athena_named_query.request_item_plan_completed_summary_batch_vacuum.id}",
+      "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}"
     ]
   })
 
