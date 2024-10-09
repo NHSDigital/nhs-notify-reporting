@@ -127,7 +127,7 @@ Partitions:
     month(createddate)
     month(completeddate)
 
-### request_item_plan_completed_summary_batch
+### request_item_status_summary_batch
 
 An aggregated view of request items providing counts for key states and channels.
 
@@ -135,29 +135,29 @@ Includes batch dimensions for specific large-batch use cases such as vaccination
 
 Dimensions:
 
-  clientid
-  campaignid
-  sendinggroupid
-  sendinggroupidversion
-  requestrefid
-  requestid
-  createddate
+    clientid
+    campaignid
+    sendinggroupid
+    sendinggroupidversion
+    requestrefid
+    requestid
+    createddate
 
 Facts:
 
-  requestedcount
-  deliveredcount
-  failedcount
-  completedcount
-  outstandingcount
-  nhsappdeliveredcount
-  emaildeliveredcount
-  smsdeliveredcount
-  letterdeliveredcount
-  nhsappfailedcount
-  emailfailedcount
-  smsfailedcount
-  letterfailedcount
+    requestedcount
+    deliveredcount
+    failedcount
+    completedcount
+    outstandingcount
+    nhsappdeliveredcount
+    emaildeliveredcount
+    smsdeliveredcount
+    letterdeliveredcount
+    nhsappfailedcount
+    emailfailedcount
+    smsfailedcount
+    letterfailedcount
 
 Partitions:
 
