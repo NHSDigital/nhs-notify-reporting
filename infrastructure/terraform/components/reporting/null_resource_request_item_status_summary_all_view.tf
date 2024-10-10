@@ -11,5 +11,8 @@ resource "null_resource" "request_item_status_summary_all_view" {
     EOT
   }
 
-  depends_on = [aws_athena_workgroup.setup]
+  depends_on = [
+    null_resource.request_item_status_summary_table,
+    null_resource.request_item_status_summary_batch_table
+  ]
 }
