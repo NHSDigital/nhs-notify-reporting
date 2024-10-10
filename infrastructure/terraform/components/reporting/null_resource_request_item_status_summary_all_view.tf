@@ -1,14 +1,13 @@
-resource "null_resource" "request_item_status_summary_batch_table" {
+resource "null_resource" "request_item_status_summary_all_view" {
   triggers = {
-    always_run = timestamp()
+    sql = filesha256("${path.module}/scripts/sql/views/request_item_status_summary_all.sql")
   }
   provisioner "local-exec" {
     command = <<EOT
-      ${path.module}/scripts/create_table.sh \
+      ${path.module}/scripts/create_replace_view.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        ${aws_s3_bucket.data.bucket} \
-        request_item_status_summary_batch
+        request_item_status_summary_all
     EOT
   }
 
