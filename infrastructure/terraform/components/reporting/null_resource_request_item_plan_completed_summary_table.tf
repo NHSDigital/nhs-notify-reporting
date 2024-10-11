@@ -11,8 +11,6 @@ resource "null_resource" "request_item_plan_completed_summary_table" {
         request_item_plan_completed_summary
     EOT
   }
-
-  depends_on = [aws_athena_workgroup.setup]
 }
 
 resource "null_resource" "request_item_plan_completed_summary_contactdetailsource_column" {

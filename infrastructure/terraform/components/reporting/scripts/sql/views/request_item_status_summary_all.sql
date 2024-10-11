@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW ${view_name}  AS
+CREATE OR REPLACE VIEW ${view_name} AS
 SELECT
   clientid,
   campaignid,
