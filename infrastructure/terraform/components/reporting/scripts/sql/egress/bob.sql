@@ -16,7 +16,7 @@ WHERE
     ri.status IN ('FAILED', 'DELIVERED') AND
     rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') AND
     (
-        DATE(ri.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -1, CURRENT_DATE)) OR
-        DATE(rip.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -1, CURRENT_DATE))
+        DATE(ri.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -3, CURRENT_DATE)) OR
+        DATE(rip.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -3, CURRENT_DATE))
     )
 
