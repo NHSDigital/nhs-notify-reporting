@@ -1,0 +1,65 @@
+{
+  "Comment": "Workflow to run bob query.",
+  "StartAt": "Get Client Ids",
+  "States": {
+      "Get Client Ids": {
+      "Type": "Task",
+      "Parameters": {
+        "Name": "/${environment}/bob/clientIds"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Next": "For Each Client Id"
+    },
+    "For Each Client Id": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Get Query",
+        "States": {
+          "Get Query": {
+            "Type": "Task",
+            "Parameters": {
+              "NamedQueryId": "${query_id}"
+            },
+            "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+            "Next": "Execute Query"
+          },
+          "Execute Query": {
+            "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+            "Parameters": {
+              "QueryString.$": "$.NamedQuery.QueryString",
+              "WorkGroup.$": "$.NamedQuery.WorkGroup",
+              "QueryExecutionContext": {
+                "Database.$": "$.NamedQuery.Database"
+              }
+            },
+            "Type": "Task",
+            "Next": "Transaction Success",
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.ALL"
+                ],
+                "ResultPath": "$.error",
+                "Next": "Transaction Failed"
+              }
+            ]
+          },
+          "Transaction Success": {
+            "Type": "Pass",
+            "Result": "Athena query succeeded.",
+            "End": true
+          },
+          "Transaction Failed": {
+            "Type": "Fail",
+            "CausePath": "$.error.Cause",
+            "ErrorPath": "$.error.Error"
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}
