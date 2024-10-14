@@ -42,6 +42,9 @@
               "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.Retrieved.NamedQuery.Database"
+              },
+              "ResultConfiguration": {
+                   "OutputLocation.$": "States.Format('${output_root}{}/', $.clientId)"
               }
             },
             "Type": "Task",
