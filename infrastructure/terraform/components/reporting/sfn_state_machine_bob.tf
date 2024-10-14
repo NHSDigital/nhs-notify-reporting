@@ -5,7 +5,7 @@ resource "aws_sfn_state_machine" "bob" {
   definition = templatefile("${path.module}/templates/bob.json.tmpl", {
     query_id = "${aws_athena_named_query.bob.id}"
     environment = "${local.csi}"
-    output_root = "s3://${aws_s3_bucket.results.bucket}/user/"
+    output_root = "s3://${aws_s3_bucket.results.bucket}/core/"
   })
 
   logging_configuration {
@@ -80,7 +80,7 @@ data "aws_iam_policy_document" "sfn_bob" {
     ]
 
     resources = [
-      aws_athena_workgroup.user.arn,
+      aws_athena_workgroup.core.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }
