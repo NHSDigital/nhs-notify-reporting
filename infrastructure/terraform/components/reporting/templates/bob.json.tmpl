@@ -2,7 +2,7 @@
   "Comment": "Workflow to run bob query.",
   "StartAt": "Get Client Ids",
   "States": {
-      "Get Client Ids": {
+    "Get Client Ids": {
       "Type": "Task",
       "Parameters": {
         "Name": "/${environment}/bob/clientIds"
@@ -16,6 +16,9 @@
     "For Each Client Id": {
       "Type": "Map",
       "ItemsPath": "$.clientIds",
+      "ItemSelector": {
+        "clientId.$": "$$.Map.Item.Value"
+      },
       "ItemProcessor": {
         "ProcessorConfig": {
           "Mode": "INLINE"
@@ -35,7 +38,7 @@
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
-              "ExecutionParameters.$": "States.Array($, $)",
+              "ExecutionParameters.$": "States.Array($.clientId)",
               "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.Retrieved.NamedQuery.Database"
