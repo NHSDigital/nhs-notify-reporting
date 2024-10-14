@@ -5,7 +5,7 @@ resource "aws_sfn_state_machine" "bob" {
   definition = templatefile("${path.module}/templates/bob.json.tmpl", {
     query_id = "${aws_athena_named_query.bob.id}"
     environment = "${local.csi}"
-    output_root = "${aws_athena_workgroup.user.configuration.result_configuration.output_location}"
+    output_root = "s3://${aws_s3_bucket.results.bucket}/user/"
   })
 
   logging_configuration {
