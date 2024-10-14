@@ -38,7 +38,7 @@
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
-              "ExecutionParameters.$": "States.Array($.clientId, NULL, NULL)",
+              "ExecutionParameters.$": "States.Array($.clientId, 'NULL', 'NULL')",
               "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.Retrieved.NamedQuery.Database"
