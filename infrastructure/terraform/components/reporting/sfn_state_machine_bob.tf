@@ -79,7 +79,7 @@ data "aws_iam_policy_document" "sfn_bob" {
     ]
 
     resources = [
-      aws_athena_workgroup.bob.arn,
+      aws_athena_workgroup.user.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }
