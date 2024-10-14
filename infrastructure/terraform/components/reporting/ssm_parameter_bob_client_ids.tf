@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "bob_client_ids" {
   value       = "[]"
 
   lifecycle {
-    ignore_changes = ["value"]
+    ignore_changes = [value]
   }
 }
 
