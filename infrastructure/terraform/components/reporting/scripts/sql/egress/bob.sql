@@ -13,6 +13,6 @@ LEFT OUTER JOIN request_item_plan_status rip ON
     ri.clientid = rip.clientid
 WHERE
     (DATE(ri.completedtime) = DATE('2024-10-11') OR DATE(rip.completedtime) = DATE('2024-10-11')) AND
-    ri.clientid = 'perf-test-client-1' AND
+    ri.clientid = ? AND
     ri.status IN ('FAILED', 'DELIVERED') AND
     rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED')

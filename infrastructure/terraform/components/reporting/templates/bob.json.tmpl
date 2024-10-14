@@ -8,10 +8,14 @@
         "Name": "/${environment}/bob/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Next": "For Each Client Id"
+      "Next": "For Each Client Id",
+      "ResultSelector": {
+        "clientIds.$": "States.StringToJson($.Parameter.Value)"
+      }
     },
     "For Each Client Id": {
       "Type": "Map",
+      "ItemsPath": "$.clientIds",
       "ItemProcessor": {
         "ProcessorConfig": {
           "Mode": "INLINE"
@@ -24,15 +28,17 @@
               "NamedQueryId": "${query_id}"
             },
             "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-            "Next": "Execute Query"
+            "Next": "Execute Query",
+            "ResultPath": "$.Retrieved"
           },
           "Execute Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
-              "QueryString.$": "$.NamedQuery.QueryString",
-              "WorkGroup.$": "$.NamedQuery.WorkGroup",
+              "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
+              "ExecutionParameters.$": "States.Array($, $)",
+              "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
-                "Database.$": "$.NamedQuery.Database"
+                "Database.$": "$.Retrieved.NamedQuery.Database"
               }
             },
             "Type": "Task",
