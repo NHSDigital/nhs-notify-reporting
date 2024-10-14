@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "sfn_bob" {
     ]
 
     resources = [
-      aws_ssm_parameter.hash_key.arn
+      aws_ssm_parameter.bob_client_ids.arn
     ]
   }
 
@@ -89,19 +89,35 @@ data "aws_iam_policy_document" "sfn_bob" {
     effect = "Allow"
 
     actions = [
-      "glue:Get*",
-      "glue:UpdateTable"
+      "glue:Get*"
     ]
 
     resources = [
       "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
+      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
     ]
   }
 
   statement {
-    sid    = "AllowS3Current"
+    sid    = "AllowS3ReadData"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      aws_s3_bucket.data.arn,
+      "${aws_s3_bucket.data.arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowS3WriteResults"
     effect = "Allow"
 
     actions = [
@@ -112,8 +128,6 @@ data "aws_iam_policy_document" "sfn_bob" {
     ]
 
     resources = [
-      aws_s3_bucket.data.arn,
-      "${aws_s3_bucket.data.arn}/*",
       aws_s3_bucket.results.arn,
       "${aws_s3_bucket.results.arn}/*"
     ]
@@ -133,61 +147,6 @@ data "aws_iam_policy_document" "sfn_bob" {
 
     resources = [
       aws_kms_key.s3.arn
-    ]
-  }
-
-  statement {
-    sid    = "AllowGlueCore"
-    effect = "Allow"
-
-    actions = [
-      "glue:Get*"
-    ]
-
-    resources = [
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:catalog",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:database/comms-${var.core_env}-api-rpt-reporting",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:table/comms-${var.core_env}-api-rpt-reporting/transaction_history",
-    ]
-  }
-
-  statement {
-    sid    = "AllowKMSCore"
-    effect = "Allow"
-
-    actions = [
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Encrypt",
-      "kms:DescribeKey",
-      "kms:Decrypt"
-    ]
-
-    resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
-    ]
-    condition {
-      test     = "ForAnyValue:StringEquals"
-      variable = "kms:ResourceAliases"
-      values = [
-        "alias/comms-${var.core_env}-api-s3"
-      ]
-    }
-  }
-
-  statement {
-    sid    = "AllowS3Core"
-    effect = "Allow"
-
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:GetObject",
-      "s3:ListBucket"
-    ]
-
-    resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
     ]
   }
 
