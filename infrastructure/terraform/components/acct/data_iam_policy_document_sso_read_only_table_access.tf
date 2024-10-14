@@ -31,6 +31,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
         # Views
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_plan_completed_summary_all",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status_summary_all",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/dates",
       ],
     )
   }
