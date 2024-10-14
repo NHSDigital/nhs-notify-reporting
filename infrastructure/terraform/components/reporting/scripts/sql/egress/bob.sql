@@ -12,7 +12,10 @@ LEFT OUTER JOIN request_item_plan_status rip ON
     ri.requestitemid = rip.requestitemid AND
     ri.clientid = rip.clientid
 WHERE
-    (DATE(ri.completedtime) = DATE('2024-10-11') OR DATE(rip.completedtime) = DATE('2024-10-11')) AND
+    (
+        DATE(ri.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -1, CURRENT_DATE)) OR
+        DATE(rip.completedtime) = COALESCE(DATE(?), DATE_ADD('day', -1, CURRENT_DATE))
+    ) AND
     ri.clientid = ? AND
     ri.status IN ('FAILED', 'DELIVERED') AND
     rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED')
