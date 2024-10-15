@@ -46,7 +46,8 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
       "athena:GetQueryResults",
       "athena:GetQueryResultsStream",
       "athena:GetWorkGroup",
-      "athena:StartQueryExecution"
+      "athena:StartQueryExecution",
+      "athena:ListQueryExecutions"
     ]
 
     resources = [
