@@ -8,10 +8,18 @@
         {
           "Variable": "$.clientIds",
           "IsPresent": true,
-          "Next": "Pass"
+          "Next": "Get Client Ids From Args"
         }
       ],
       "Default": "Get Client Ids From SSM"
+    },
+    "Get Client Ids From Args": {
+      "Type": "Pass",
+      "Next": "Placeholder",
+      "ResultPath": "$.clients",
+      "Parameters": {
+        "clientIds.$": "$.clientIds"
+      }
     },
     "Get Client Ids From SSM": {
       "Type": "Task",
@@ -19,18 +27,19 @@
         "Name": "/${environment}/bob/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Next": "Pass",
+      "Next": "Placeholder",
       "ResultSelector": {
         "clientIds.$": "States.StringToJson($.Parameter.Value)"
-      }
+      },
+      "ResultPath": "$.clients"
     },
-    "Pass": {
+    "Placeholder": {
       "Type": "Pass",
       "Next": "For Each Client Id"
     },
     "For Each Client Id": {
       "Type": "Map",
-      "ItemsPath": "$.clientIds",
+      "ItemsPath": "$.clients.clientIds",
       "ItemSelector": {
         "clientId.$": "$$.Map.Item.Value"
       },
