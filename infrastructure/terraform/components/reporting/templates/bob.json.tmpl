@@ -1,17 +1,32 @@
 {
   "Comment": "Workflow to run bob query.",
-  "StartAt": "Get Client Ids",
+  "StartAt": "Select Client Ids",
   "States": {
-    "Get Client Ids": {
+    "Select Client Ids": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.clientIds",
+          "IsPresent": true,
+          "Next": "Pass"
+        }
+      ],
+      "Default": "Get Client Ids From SSM"
+    },
+    "Get Client Ids From SSM": {
       "Type": "Task",
       "Parameters": {
         "Name": "/${environment}/bob/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Next": "For Each Client Id",
+      "Next": "Pass",
       "ResultSelector": {
         "clientIds.$": "States.StringToJson($.Parameter.Value)"
       }
+    },
+    "Pass": {
+      "Type": "Pass",
+      "Next": "For Each Client Id"
     },
     "For Each Client Id": {
       "Type": "Map",
