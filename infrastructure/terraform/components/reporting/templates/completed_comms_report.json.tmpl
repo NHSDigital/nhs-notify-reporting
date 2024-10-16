@@ -15,11 +15,26 @@
     },
     "Get Client Ids From Args": {
       "Type": "Pass",
-      "Next": "Select Completed Date",
+      "Next": "Exit if No Clients",
       "ResultPath": "$.useClientIds",
       "Parameters": {
         "clientIds.$": "$.clientIds"
       }
+    },
+    "Exit if No Clients": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.useClientIds.clientIds[0]",
+          "IsPresent": false,
+          "Next": "No Clients Found"
+        }
+      ],
+      "Default": "Select Completed Date"
+    },
+    "No Clients Found": {
+      "Type": "Pass",
+      "End": true
     },
     "Get Client Ids From SSM": {
       "Type": "Task",
@@ -27,7 +42,7 @@
         "Name": "/${environment}/completed_comms_report/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Next": "Select Completed Date",
+      "Next": "Exit if No Clients",
       "ResultSelector": {
         "clientIds.$": "States.StringToJson($.Parameter.Value)"
       },
