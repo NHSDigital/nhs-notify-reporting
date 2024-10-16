@@ -6,7 +6,7 @@ resource "aws_sfn_state_machine" "completed_comms_report" {
     date_query_id = "${aws_athena_named_query.yesterday.id}"
     report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
     environment = "${local.csi}"
-    output_root = "s3://${aws_s3_bucket.results.bucket}/core/"
+    output_root = "s3://comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/completed_comms_report/"
   })
 
   logging_configuration {
