@@ -80,7 +80,11 @@
       "Parameters": {
         "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
       },
-      "Next": "For Each Client Id"
+      "Next": "For Each Client Id",
+      "ResultPath": "$.useCompletedDate",
+      "ResultSelector": {
+        "completedDate.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
+      }
     },
     "For Each Client Id": {
       "Type": "Map",
