@@ -1,6 +1,6 @@
-resource "aws_ssm_parameter" "bob_client_ids" {
-  name        = "/${local.csi}/bob/clientIds"
-  description = "List of client ids to for which to generate bob report"
+resource "aws_ssm_parameter" "completed_comms_report_client_ids" {
+  name        = "/${local.csi}/completed_comms_report/clientIds"
+  description = "List of client ids to for which to generate the completed communications report"
   type        = "String"
   value       = "[]"
 

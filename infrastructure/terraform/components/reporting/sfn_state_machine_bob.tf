@@ -1,10 +1,10 @@
-resource "aws_sfn_state_machine" "bob" {
-  name     = "${local.csi}-state-machine-bob"
-  role_arn = aws_iam_role.sfn_bob.arn
+resource "aws_sfn_state_machine" "completed_comms_report" {
+  name     = "${local.csi}-state-machine-completed-comms-report"
+  role_arn = aws_iam_role.sfn_completed_comms_report.arn
 
-  definition = templatefile("${path.module}/templates/bob.json.tmpl", {
+  definition = templatefile("${path.module}/templates/completed_comms_report.json.tmpl", {
     date_query_id = "${aws_athena_named_query.yesterday.id}"
-    report_query_id = "${aws_athena_named_query.bob.id}"
+    report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
     environment = "${local.csi}"
     output_root = "s3://${aws_s3_bucket.results.bucket}/core/"
   })
@@ -16,13 +16,13 @@ resource "aws_sfn_state_machine" "bob" {
   }
 }
 
-resource "aws_iam_role" "sfn_bob" {
-  name               = "${local.csi}-sf-bob-role"
-  description        = "Role used by the State Machine for Athena bob queries"
-  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_bob.json
+resource "aws_iam_role" "sfn_completed_comms_report" {
+  name               = "${local.csi}-sf-completed-comms-report-role"
+  description        = "Role used by the State Machine to generate the completed communications report"
+  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_completed_comms_report.json
 }
 
-data "aws_iam_policy_document" "sfn_assumerole_bob" {
+data "aws_iam_policy_document" "sfn_assumerole_completed_comms_report" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"
@@ -41,19 +41,19 @@ data "aws_iam_policy_document" "sfn_assumerole_bob" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sfn_bob" {
-  role       = aws_iam_role.sfn_bob.name
-  policy_arn = aws_iam_policy.sfn_bob.arn
+resource "aws_iam_role_policy_attachment" "sfn_completed_comms_report" {
+  role       = aws_iam_role.sfn_completed_comms_report.name
+  policy_arn = aws_iam_policy.sfn_completed_comms_report.arn
 }
 
-resource "aws_iam_policy" "sfn_bob" {
-  name        = "${local.csi}-sfn-bob-policy"
-  description = "Allow Step Function State Machine to run Athena bob queries"
+resource "aws_iam_policy" "sfn_completed_comms_report" {
+  name        = "${local.csi}-sfn-completed-comms-report-policy"
+  description = "Allow Step Function State Machine to generate the completed communications report"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sfn_bob.json
+  policy      = data.aws_iam_policy_document.sfn_completed_comms_report.json
 }
 
-data "aws_iam_policy_document" "sfn_bob" {
+data "aws_iam_policy_document" "sfn_completed_comms_report" {
 
   statement {
     sid    = "AllowSSM"
@@ -64,7 +64,7 @@ data "aws_iam_policy_document" "sfn_bob" {
     ]
 
     resources = [
-      aws_ssm_parameter.bob_client_ids.arn
+      aws_ssm_parameter.completed_comms_report_client_ids.arn
     ]
   }
 

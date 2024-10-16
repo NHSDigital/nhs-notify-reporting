@@ -1,5 +1,5 @@
 {
-  "Comment": "Workflow to run bob query.",
+  "Comment": "Workflow to generate the completed communications report.",
   "StartAt": "Select Client Ids",
   "States": {
     "Select Client Ids": {
@@ -24,7 +24,7 @@
     "Get Client Ids From SSM": {
       "Type": "Task",
       "Parameters": {
-        "Name": "/${environment}/bob/clientIds"
+        "Name": "/${environment}/completed_comms_report/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
       "Next": "Select Completed Date",
