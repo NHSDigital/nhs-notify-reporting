@@ -77,7 +77,8 @@ data "aws_iam_policy_document" "sfn_bob" {
       "athena:stopQueryExecution",
       "athena:getQueryExecution",
       "athena:getDataCatalog",
-      "athena:getNamedQuery"
+      "athena:getNamedQuery",
+      "athena:GetQueryResults"
     ]
 
     resources = [

@@ -55,7 +55,7 @@
     "Get Completed Date Query": {
       "Type": "Task",
       "Parameters": {
-              "NamedQueryId": "${date_query_id}"
+        "NamedQueryId": "${date_query_id}"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
       "Next": "Execute Completed Date Query",
@@ -71,8 +71,16 @@
         }
       },
       "Type": "Task",
-      "Next": "For Each Client Id",
+      "Next": "Get Completed Date From Query Results",
       "ResultPath": "$.DateQueryExecution"
+    },
+    "Get Completed Date From Query Results": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::athena:getQueryResults",
+      "Parameters": {
+        "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
+      },
+      "Next": "For Each Client Id"
     },
     "For Each Client Id": {
       "Type": "Map",
