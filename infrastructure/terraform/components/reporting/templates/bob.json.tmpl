@@ -42,7 +42,7 @@
           "Next": "Get Completed Date From Args"
         }
       ],
-      "Default": "Pass2"
+      "Default": "Get Completed Date Query"
     },
     "Get Completed Date From Args": {
       "Type": "Pass",
@@ -52,9 +52,27 @@
       },
       "ResultPath": "$.useCompletedDate"
     },
-    "Pass2": {
-      "Type": "Pass",
-      "Next": "For Each Client Id"
+    "Get Completed Date Query": {
+      "Type": "Task",
+      "Parameters": {
+              "NamedQueryId": "${date_query_id}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+      "Next": "Execute Completed Date Query",
+      "ResultPath": "$.DateQuery"
+    },
+    "Execute Completed Date Query": {
+      "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+      "Parameters": {
+        "QueryString.$": "$.DateQuery.NamedQuery.QueryString",
+        "WorkGroup.$": "$.DateQuery.NamedQuery.WorkGroup",
+        "QueryExecutionContext": {
+          "Database.$": "$.DateQuery.NamedQuery.Database"
+        }
+      },
+      "Type": "Task",
+      "Next": "For Each Client Id",
+      "ResultPath": "$.DateQueryExecution"
     },
     "For Each Client Id": {
       "Type": "Map",
@@ -67,18 +85,18 @@
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "Get Query",
+        "StartAt": "Get Report Query",
         "States": {
-          "Get Query": {
+          "Get Report Query": {
             "Type": "Task",
             "Parameters": {
-              "NamedQueryId": "${query_id}"
+              "NamedQueryId": "${report_query_id}"
             },
             "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-            "Next": "Execute Query",
+            "Next": "Execute Report Query",
             "ResultPath": "$.ReportQuery"
           },
-          "Execute Query": {
+          "Execute Report Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",

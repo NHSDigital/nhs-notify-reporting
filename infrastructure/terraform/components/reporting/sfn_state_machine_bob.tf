@@ -3,7 +3,8 @@ resource "aws_sfn_state_machine" "bob" {
   role_arn = aws_iam_role.sfn_bob.arn
 
   definition = templatefile("${path.module}/templates/bob.json.tmpl", {
-    query_id = "${aws_athena_named_query.bob.id}"
+    date_query_id = "${aws_athena_named_query.yesterday.id}"
+    report_query_id = "${aws_athena_named_query.bob.id}"
     environment = "${local.csi}"
     output_root = "s3://${aws_s3_bucket.results.bucket}/core/"
   })
