@@ -15,8 +15,8 @@
     },
     "Get Client Ids From Args": {
       "Type": "Pass",
-      "Next": "Placeholder",
-      "ResultPath": "$.clients",
+      "Next": "Select Completed Date",
+      "ResultPath": "$.useClientIds",
       "Parameters": {
         "clientIds.$": "$.clientIds"
       }
@@ -27,21 +27,41 @@
         "Name": "/${environment}/bob/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
-      "Next": "Placeholder",
+      "Next": "Select Completed Date",
       "ResultSelector": {
         "clientIds.$": "States.StringToJson($.Parameter.Value)"
       },
-      "ResultPath": "$.clients"
+      "ResultPath": "$.useClientIds"
     },
-    "Placeholder": {
+    "Select Completed Date": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.completedDate",
+          "IsPresent": true,
+          "Next": "Get Completed Date From Args"
+        }
+      ],
+      "Default": "Pass2"
+    },
+    "Get Completed Date From Args": {
+      "Type": "Pass",
+      "Next": "For Each Client Id",
+      "Parameters": {
+        "completedDate.$": "$.completedDate"
+      },
+      "ResultPath": "$.useCompletedDate"
+    },
+    "Pass2": {
       "Type": "Pass",
       "Next": "For Each Client Id"
     },
     "For Each Client Id": {
       "Type": "Map",
-      "ItemsPath": "$.clients.clientIds",
+      "ItemsPath": "$.useClientIds.clientIds",
       "ItemSelector": {
-        "clientId.$": "$$.Map.Item.Value"
+        "clientId.$": "$$.Map.Item.Value",
+        "completedDate.$": "$.useCompletedDate.completedDate"
       },
       "ItemProcessor": {
         "ProcessorConfig": {
@@ -62,13 +82,13 @@
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
-              "ExecutionParameters.$": "States.Array($.clientId, 'NULL', 'NULL')",
+              "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedDate), States.Format('\\'{}\\'', $.completedDate))",
               "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.Retrieved.NamedQuery.Database"
               },
               "ResultConfiguration": {
-                   "OutputLocation.$": "States.Format('${output_root}{}/', $.clientId)"
+                "OutputLocation.$": "${output_root}{}/{}/', $.clientId, $.completedDate)"
               }
             },
             "Type": "Task",
