@@ -71,7 +71,7 @@
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
               "Type": "Task",
-              "ResultPath": "$.Retrieved"
+              "ResultPath": "$.IngestionQuery"
             },
             "Execute Query ${query_id}": {
               "Catch": [
@@ -87,10 +87,10 @@
               "Parameters": {
                 "ExecutionParameters.$": "States.Array($.Parameter.Value)",
                 "QueryExecutionContext": {
-                  "Database.$": "$.Retrieved.NamedQuery.Database"
+                  "Database.$": "$.IngestionQuery.NamedQuery.Database"
                 },
-                "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
-                "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup"
+                "QueryString.$": "$.IngestionQuery.NamedQuery.QueryString",
+                "WorkGroup.$": "$.IngestionQuery.NamedQuery.WorkGroup"
               },
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Type": "Task"
@@ -179,7 +179,7 @@
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
               "Type": "Task",
-              "ResultPath": "$.Retrieved"
+              "ResultPath": "$.IngestionQuery"
             },
             "Execute Query ${query_id}": {
               "Catch": [
@@ -195,10 +195,10 @@
               "Parameters": {
                 "ExecutionParameters.$": "States.Array($.Parameter.Value)",
                 "QueryExecutionContext": {
-                  "Database.$": "$.Retrieved.NamedQuery.Database"
+                  "Database.$": "$.IngestionQuery.NamedQuery.Database"
                 },
-                "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
-                "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup"
+                "QueryString.$": "$.IngestionQuery.NamedQuery.QueryString",
+                "WorkGroup.$": "$.IngestionQuery.NamedQuery.WorkGroup"
               },
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Type": "Task"

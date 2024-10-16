@@ -76,16 +76,16 @@
             },
             "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
             "Next": "Execute Query",
-            "ResultPath": "$.Retrieved"
+            "ResultPath": "$.ReportQuery"
           },
           "Execute Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
-              "QueryString.$": "$.Retrieved.NamedQuery.QueryString",
+              "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
               "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedDate), States.Format('\\'{}\\'', $.completedDate))",
-              "WorkGroup.$": "$.Retrieved.NamedQuery.WorkGroup",
+              "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
-                "Database.$": "$.Retrieved.NamedQuery.Database"
+                "Database.$": "$.ReportQuery.NamedQuery.Database"
               },
               "ResultConfiguration": {
                 "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedDate)"
