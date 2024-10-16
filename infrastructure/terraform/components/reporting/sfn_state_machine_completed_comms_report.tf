@@ -132,8 +132,8 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      aws_s3_bucket.results.arn,
-      "${aws_s3_bucket.results.arn}/*"
+      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress",
+      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/*"
     ]
   }
 
