@@ -155,6 +155,30 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
+    sid    = "AllowKMSCore"
+    effect = "Allow"
+
+    actions = [
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:Encrypt",
+      "kms:DescribeKey",
+      "kms:Decrypt"
+    ]
+
+    resources = [
+      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
+    ]
+    condition {
+      test     = "ForAnyValue:StringEquals"
+      variable = "kms:ResourceAliases"
+      values = [
+        "alias/comms-${var.core_env}-api-s3"
+      ]
+    }
+  }
+
+  statement {
     sid    = "AllowCloudwatchLogging"
     effect = "Allow"
 
