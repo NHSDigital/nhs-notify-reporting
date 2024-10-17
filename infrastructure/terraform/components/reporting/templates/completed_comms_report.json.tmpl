@@ -1,0 +1,166 @@
+{
+  "Comment": "Workflow to generate the completed communications report.",
+  "StartAt": "Select Client Ids",
+  "States": {
+    "Select Client Ids": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.clientIds",
+          "IsPresent": true,
+          "Next": "Get Client Ids From Args"
+        }
+      ],
+      "Default": "Get Client Ids From SSM"
+    },
+    "Get Client Ids From Args": {
+      "Type": "Pass",
+      "Next": "Exit if No Clients",
+      "ResultPath": "$.useClientIds",
+      "Parameters": {
+        "clientIds.$": "$.clientIds"
+      }
+    },
+    "Exit if No Clients": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.useClientIds.clientIds[0]",
+          "IsPresent": false,
+          "Next": "No Clients Found"
+        }
+      ],
+      "Default": "Select Completed Date"
+    },
+    "No Clients Found": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Get Client Ids From SSM": {
+      "Type": "Task",
+      "Parameters": {
+        "Name": "/${environment}/completed-comms-report/clientIds"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Next": "Exit if No Clients",
+      "ResultSelector": {
+        "clientIds.$": "States.StringToJson($.Parameter.Value)"
+      },
+      "ResultPath": "$.useClientIds"
+    },
+    "Select Completed Date": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.completedDate",
+          "IsPresent": true,
+          "Next": "Get Completed Date From Args"
+        }
+      ],
+      "Default": "Get Completed Date Query"
+    },
+    "Get Completed Date From Args": {
+      "Type": "Pass",
+      "Next": "For Each Client Id",
+      "Parameters": {
+        "completedDate.$": "$.completedDate"
+      },
+      "ResultPath": "$.useCompletedDate"
+    },
+    "Get Completed Date Query": {
+      "Type": "Task",
+      "Parameters": {
+        "NamedQueryId": "${date_query_id}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+      "Next": "Execute Completed Date Query",
+      "ResultPath": "$.DateQuery"
+    },
+    "Execute Completed Date Query": {
+      "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+      "Parameters": {
+        "QueryString.$": "$.DateQuery.NamedQuery.QueryString",
+        "WorkGroup.$": "$.DateQuery.NamedQuery.WorkGroup",
+        "QueryExecutionContext": {
+          "Database.$": "$.DateQuery.NamedQuery.Database"
+        }
+      },
+      "Type": "Task",
+      "Next": "Get Completed Date From Query Results",
+      "ResultPath": "$.DateQueryExecution"
+    },
+    "Get Completed Date From Query Results": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::athena:getQueryResults",
+      "Parameters": {
+        "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
+      },
+      "Next": "For Each Client Id",
+      "ResultPath": "$.useCompletedDate",
+      "ResultSelector": {
+        "completedDate.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
+      }
+    },
+    "For Each Client Id": {
+      "Type": "Map",
+      "ItemsPath": "$.useClientIds.clientIds",
+      "ItemSelector": {
+        "clientId.$": "$$.Map.Item.Value",
+        "completedDate.$": "$.useCompletedDate.completedDate"
+      },
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Get Report Query",
+        "States": {
+          "Get Report Query": {
+            "Type": "Task",
+            "Parameters": {
+              "NamedQueryId": "${report_query_id}"
+            },
+            "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+            "Next": "Execute Report Query",
+            "ResultPath": "$.ReportQuery"
+          },
+          "Execute Report Query": {
+            "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+            "Parameters": {
+              "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
+              "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedDate), States.Format('\\'{}\\'', $.completedDate))",
+              "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
+              "QueryExecutionContext": {
+                "Database.$": "$.ReportQuery.NamedQuery.Database"
+              },
+              "ResultConfiguration": {
+                "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedDate)"
+              }
+            },
+            "Type": "Task",
+            "Next": "Transaction Success",
+            "Catch": [
+              {
+                "ErrorEquals": [
+                  "States.ALL"
+                ],
+                "ResultPath": "$.error",
+                "Next": "Transaction Failed"
+              }
+            ]
+          },
+          "Transaction Success": {
+            "Type": "Pass",
+            "Result": "Athena query succeeded.",
+            "End": true
+          },
+          "Transaction Failed": {
+            "Type": "Fail",
+            "CausePath": "$.error.Cause",
+            "ErrorPath": "$.error.Error"
+          }
+        }
+      },
+      "End": true
+    }
+  }
+}
