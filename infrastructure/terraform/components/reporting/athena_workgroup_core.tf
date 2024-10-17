@@ -7,8 +7,8 @@ resource "aws_athena_workgroup" "core" {
     enforce_workgroup_configuration = false
 
     result_configuration {
-      expected_bucket_owner = var.core_account_id
-      output_location       = "s3://comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
+      #expected_bucket_owner = var.core_account_id
+      output_location       = "s3://comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/"
 
       encryption_configuration {
         encryption_option = "SSE_KMS"
