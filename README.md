@@ -40,6 +40,9 @@ This domain does not contain any application code. The reporting domain is execu
   - [Multiple Ingestion Passes](#multiple-ingestion-passes)
   - [Handling PID](#handling-pid)
   - [Permissions](#permissions)
+  - [Housekeeping](#housekeeping)
+- [Canned Reports](#canned-reports)
+  - [Completed Communications Report](#completed-communications-report)
 - [Contacts](#contacts)
 - [Licence](#licence)
 
@@ -64,10 +67,11 @@ After successful deployment, the following will be available:
 - Athena saved queries to incrementally populate the staging tables from the core account.
 - A step function to periodically execute the saved ingestion queries.
 - A step function to periodically execute housekeeping queries.
+- A step function to periodically execute the completed communications report (canned report).
 
 The step functions and saved queries can be executed manually as required. They are idempotent, so can be executed outside of the scheduled execution without harm.
 
-Access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment.
+For the most part access to the core NHS Notify account is read-only. Any side-effects of changes are restricted solely to the staging tables within the reporting environment. (The exception to this is the ability to write reports back to the core account to a nominated ingress bucket)
 
 More information on the individual staging tables and associated ingestion queries is available [here](/infrastructure/terraform/components/reporting/scripts/sql/README.md).
 
@@ -78,6 +82,8 @@ The following Athena workgroups are available:
 - `setup` for DDL execution and initial data migration.
 - `ingestion` for execution of the ingestion queries used to populate staging tables.
 - `user` for execution of queries that read from staging tables, including external consumers like Power BI.
+- `housekeeping` for execution of able housekeeping queries, such as VACUUM or OPTIMIZE.
+- `core` for execution of queries that write results back to the ingress S3 bucket of the core account.
 
 Ad-hoc queries should be executed using the `user` workgroup.
 
@@ -126,7 +132,7 @@ New columns should also be added to the underlying [table definition](/infrastru
 
 ## Testing
 
-As there is no application code suited to unit testing, testing of ingestion queries is currently performed manually.
+As there is no application code suited to unit testing, testing of step functions and queries is currently performed manually.
 
 ## Design
 
@@ -200,6 +206,27 @@ External access (including PowerBI) should be restricted to read-only access of 
 Because of the Terraform limitation documented above we're unable to declaratively enable housekeeping on the Iceberg tables.
 
 Equivalent functionality is instead achieved via OPTIMISE and VACUUM commands executed by a second step function.
+
+## Canned Reports
+
+The reporting domain has the ability to execute sql queries as canned reports and write the output back to a nominated S3 bucket in the core account.
+
+(Currently just one is supported - the completed communications report)
+
+### Completed Communications Report
+
+The completed communications report can be triggered by executing the `state-machine-completed-comms-report` step function.
+
+By default, and when executed on schedule, this will run for yesterday's date and for the client ids held in the `completed_comms_report/clientIds` parameter in AWS Parameter Store.
+
+When executed manually via the AWS console, the step function can be run for any completion date and set of clients by providing a JSON input to the step function as follows:
+
+```
+{
+  "completedDate": "2024-10-15",
+  "clientIds": ["any_client_id"]
+}
+```
 
 ## Contacts
 
