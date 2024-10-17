@@ -105,7 +105,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3ReadData"
+    sid    = "AllowS3ReadDataCurrent"
     effect = "Allow"
 
     actions = [
@@ -121,7 +121,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3WriteResults"
+    sid    = "AllowS3WriteResultsCore"
     effect = "Allow"
 
     actions = [
