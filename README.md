@@ -217,11 +217,11 @@ The reporting domain has the ability to execute sql queries as canned reports an
 
 The completed communications report can be triggered by executing the `state-machine-completed-comms-report` step function.
 
-By default, and when executed on schedule, this will run for yesterday's date and for the client ids held in the `completed_comms_report/clientIds` parameter in AWS Parameter Store.
+By default, and when executed on schedule, this will run for yesterday's date and for the client ids held in the `completed-comms-report/clientIds` parameter in AWS Parameter Store.
 
 When executed manually via the AWS console, the step function can be run for any completion date and set of clients by providing a JSON input to the step function as follows:
 
-```
+```json
 {
   "completedDate": "2024-10-15",
   "clientIds": ["any_client_id"]

@@ -39,7 +39,7 @@
     "Get Client Ids From SSM": {
       "Type": "Task",
       "Parameters": {
-        "Name": "/${environment}/completed_comms_report/clientIds"
+        "Name": "/${environment}/completed-comms-report/clientIds"
       },
       "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
       "Next": "Exit if No Clients",
