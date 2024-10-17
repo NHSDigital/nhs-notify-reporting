@@ -14,6 +14,10 @@ resource "aws_athena_workgroup" "core" {
         encryption_option = "SSE_KMS"
         kms_key_arn       = "arn:aws:kms:eu-west-2:${var.core_account_id}:alias/comms-${var.core_env}-api-s3"
       }
+
+      acl_configuration {
+        s3_acl_option = "BUCKET_OWNER_FULL_CONTROL"
+      }
     }
   }
 }
