@@ -105,13 +105,14 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3ReadDataCurrent"
+    sid    = "AllowS3Current"
     effect = "Allow"
 
     actions = [
       "s3:GetBucketLocation",
       "s3:GetObject",
-      "s3:ListBucket"
+      "s3:ListBucket",
+      "s3:PutObject"
     ]
 
     resources = [
@@ -121,7 +122,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3WriteResultsCore"
+    sid    = "AllowS3Core"
     effect = "Allow"
 
     actions = [
