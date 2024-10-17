@@ -105,7 +105,23 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3Current"
+    sid    = "AllowS3CurrentRead"
+    effect = "Allow"
+
+    actions = [
+      "s3:GetBucketLocation",
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+
+    resources = [
+      aws_s3_bucket.data.arn,
+      "${aws_s3_bucket.data.arn}/*"
+    ]
+  }
+
+  statement {
+    sid    = "AllowS3CurrentWrite"
     effect = "Allow"
 
     actions = [
@@ -116,13 +132,13 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      aws_s3_bucket.data.arn,
-      "${aws_s3_bucket.data.arn}/*"
+      aws_s3_bucket.results.arn,
+      "${aws_s3_bucket.results.arn}/*"
     ]
   }
 
   statement {
-    sid    = "AllowS3Core"
+    sid    = "AllowS3CoreWrite"
     effect = "Allow"
 
     actions = [
