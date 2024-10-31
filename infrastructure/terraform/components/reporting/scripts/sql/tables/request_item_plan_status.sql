@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     supplier string,
     createdtime timestamp,
     completedtime timestamp,
+    sendtime timestamp,
     status string,
     failedreason string,
     contactdetailsource string,
