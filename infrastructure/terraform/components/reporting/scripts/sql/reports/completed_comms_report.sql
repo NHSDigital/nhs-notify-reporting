@@ -1,5 +1,6 @@
 SELECT
     ri.requestitemid AS requestitemid,
+    ri.clientid AS clientid,
     DATE(ri.createdtime) AS requestitemcreateddate,
     ri.status AS requestitemstatus,
     rip.requestitemplanid AS requestitemplanid,
@@ -14,8 +15,10 @@ LEFT OUTER JOIN request_item_plan_status rip ON
 WHERE
     ri.clientid = ? AND
     ri.status IN ('FAILED', 'DELIVERED') AND
-    rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') AND
+    (
+        rip.status is null OR
+        rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED')
+    ) AND
     (
         DATE(ri.completedtime) = DATE(?) OR DATE(rip.completedtime) = DATE(?)
     )
-
