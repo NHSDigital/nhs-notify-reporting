@@ -60,6 +60,7 @@ Columns:
     failedreason
     contactdetailsource
     channeltype
+    ordernumber
     timestamp
 
 Partitions:

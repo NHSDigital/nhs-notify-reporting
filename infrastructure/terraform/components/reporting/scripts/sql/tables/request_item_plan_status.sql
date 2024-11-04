@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     failedreason string,
     contactdetailsource string,
     channeltype string,
+    ordernumber int,
     timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
