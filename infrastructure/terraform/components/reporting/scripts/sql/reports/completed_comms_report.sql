@@ -16,5 +16,5 @@ WHERE
     ri.clientid = ? AND
     (
         (rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') AND DATE(rip.completedtime) = DATE(?)) OR
-        (ri.status IN ('FAILED') AND rip.status is null AND DATE(ri.completedtime) = DATE(?))
+        (ri.status IN ('FAILED') AND rip.requestitemplanid is null AND DATE(ri.completedtime) = DATE(?))
     )
