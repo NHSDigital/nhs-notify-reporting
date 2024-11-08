@@ -7,7 +7,7 @@ resource "aws_scheduler_schedule" "sf_completed_comms_report_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(30 1 ? * * *)"
+  schedule_expression          = "cron(30 4 ? * * *)"
   schedule_expression_timezone = "Europe/London"
 
   target {
