@@ -12,7 +12,7 @@ SELECT
     DATE(rip.completedtime) AS requestitemplancompleteddate,
     rip.status AS requestitemplanstatus,
     rip.communicationtype AS communicationtype,
-    rip.channeltype AS channeltype
+    rip.channeltype AS channeltype,
     rip.failedReason as requestitemplanfailedreason
 FROM request_item_status ri
 LEFT OUTER JOIN request_item_plan_status rip ON
