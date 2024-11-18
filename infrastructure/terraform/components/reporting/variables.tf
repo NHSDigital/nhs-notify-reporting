@@ -189,9 +189,9 @@ variable "periodic_s3backup_retention_days" {
 }
 
 variable "periodic_s3backup_schedule" {
-  type = string
+  type        = string
   description = "Crontab formatted schedule for Periodic S3 Backups"
-  default = "cron(0 5 ? * 7 *)" # Runs every Saturday at 5 AM UTC
+  default     = "cron(0 5 ? * 7 *)" # Runs every Saturday at 5 AM UTC
 }
 
 variable "enable_vault_lock_configuration" {
