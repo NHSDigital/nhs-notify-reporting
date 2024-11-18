@@ -169,3 +169,33 @@ variable "batch_client_ids" {
   type = list(string)
   default = ["NULL"]
 }
+
+variable "enable_s3_backup" {
+  type        = bool
+  description = "Enable AWS S3 Backup of data and results buckets"
+  default     = true
+}
+
+variable "continuous_s3backup_retention_days" {
+  type        = number
+  description = "number of days to retain continous s3 backups for PITR"
+  default     = "90"
+}
+
+variable "periodic_s3backup_retention_days" {
+  type        = number
+  description = "number of days to retain weekly s3 backups"
+  default     = "365"
+}
+
+variable "periodic_s3backup_schedule" {
+  type = string
+  description = "Crontab formatted schedule for Periodic S3 Backups"
+  default = "cron(0 5 ? * 7 *)" # Runs every Saturday at 5 AM UTC
+}
+
+variable "enable_vault_lock_configuration" {
+  type        = bool
+  description = "Enable vault lock, preventing the deletion of a vault that contains 1 or more Recovery Points"
+  default     = false
+}

@@ -26,3 +26,5 @@ min_size         = 1
 max_size         = 1
 enable_spot      = false
 spot_max_price   = "0.3"
+
+enable_s3_backup = false
