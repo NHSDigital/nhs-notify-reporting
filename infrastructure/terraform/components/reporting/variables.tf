@@ -178,7 +178,7 @@ variable "enable_s3_backup" {
 
 variable "continuous_s3backup_retention_days" {
   type        = number
-  description = "number of days to retain continous s3 restore points for PITR - Maximum is 35 days"
+  description = "number of days to retain continous s3 restore points for PITR - Maximum 35 days"
   default     = 35
 }
 
