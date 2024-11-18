@@ -14,9 +14,10 @@ resource "aws_backup_plan" "s3_backup" {
   }
 
   rule {
-    rule_name         = "PeriodicBackupRule"
-    target_vault_name = aws_backup_vault.s3_backup[0].name
-    schedule          = var.periodic_s3backup_schedule
+    rule_name                = "PeriodicBackupRule"
+    target_vault_name        = aws_backup_vault.s3_backup[0].name
+    schedule                 = var.periodic_s3backup_schedule
+    enable_continuous_backup = false
 
     lifecycle {
       delete_after = var.periodic_s3backup_retention_days

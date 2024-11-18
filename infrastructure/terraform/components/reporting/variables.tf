@@ -179,7 +179,7 @@ variable "enable_s3_backup" {
 variable "continuous_s3backup_retention_days" {
   type        = number
   description = "number of days to retain continous s3 backups for PITR"
-  default     = 90
+  default     = 35
 }
 
 variable "periodic_s3backup_retention_days" {
