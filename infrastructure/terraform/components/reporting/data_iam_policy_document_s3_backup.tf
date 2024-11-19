@@ -27,6 +27,7 @@ data "aws_iam_policy_document" "s3_backup" {
       "backup:StartRestoreJob",
       "events:ListRules",
       "events:PutRule",
+      "events:DeleteRule",
       "events:ListTargetsByRule",
       "events:PutTargets",
       "events:RemoveTargets",
