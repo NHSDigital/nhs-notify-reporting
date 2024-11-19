@@ -29,6 +29,7 @@ data "aws_iam_policy_document" "s3_backup" {
       "events:PutRule",
       "events:ListTargetsByRule",
       "events:PutTargets",
+      "events:RemoveTargets",
       "cloudwatch:GetMetricData"
     ]
     resources = ["*"]
