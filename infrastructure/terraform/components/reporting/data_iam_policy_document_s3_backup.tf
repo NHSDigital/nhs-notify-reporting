@@ -22,16 +22,44 @@ data "aws_iam_policy_document" "s3_backup" {
 
   statement {
     actions = [
-      "backup:StartBackupJob",
-      "backup:ListRecoveryPointsByBackupVault",
-      "backup:StartRestoreJob",
-      "events:ListRules",
-      "events:PutRule",
       "events:DeleteRule",
+      "events:DescribeRule",
+      "events:DisableRule",
+      "events:EnableRule",
+      "events:ListRules",
       "events:ListTargetsByRule",
+      "events:PutRule",
       "events:PutTargets",
-      "events:RemoveTargets",
-      "cloudwatch:GetMetricData"
+      "events:RemoveTargets"
+    ]
+    resources = [
+      "arn:aws:events:${var.region}:${local.this_account}:rule/AwsBackupManagedRule-*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "backup:ListRecoveryPointsByBackupVault",
+      "backup:StartBackupJob",
+    ]
+    resources = [
+      aws_backup_vault.s3_backup[0].arn
+    ]
+  }
+
+  statement {
+    actions = [
+      "backup:StartRestoreJob"
+    ]
+    resources = [
+      "arn:aws:backup:${var.region}:${local.this_account}:recovery-point:${var.project}-${local.this_account}-${var.region}-${var.environment}-*"
+    ]
+  }
+
+  statement {
+    actions = [
+      "cloudwatch:GetMetricData", # List action, cannot be scoped
+      "events:ListRules"          # List action, cannot be scoped
     ]
     resources = ["*"]
   }
