@@ -185,7 +185,7 @@ variable "continuous_s3backup_retention_days" {
 variable "periodic_s3backup_retention_days" {
   type        = number
   description = "number of days to retain weekly s3 backups"
-  default     = 365
+  default     = 90
 }
 
 variable "periodic_s3backup_schedule" {
