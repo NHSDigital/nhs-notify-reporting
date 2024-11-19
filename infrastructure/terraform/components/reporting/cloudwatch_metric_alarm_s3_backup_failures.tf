@@ -1,4 +1,6 @@
 resource "aws_cloudwatch_metric_alarm" "s3_backup_failures" {
+  count = var.enable_s3_backup ? 1 : 0
+
   alarm_name                = "${local.csi}-s3-backup-failures"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
@@ -11,6 +13,6 @@ resource "aws_cloudwatch_metric_alarm" "s3_backup_failures" {
   insufficient_data_actions = []
 
   dimensions = {
-    BackupVaultName = aws_backup_vault.s3_backup.name
+    BackupVaultName = aws_backup_vault.s3_backup[0].name
   }
 }
