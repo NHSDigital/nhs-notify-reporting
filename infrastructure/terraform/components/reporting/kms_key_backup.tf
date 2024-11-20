@@ -74,35 +74,8 @@ data "aws_iam_policy_document" "backup" {
     principals {
       type = "AWS"
       identifiers = [
-        local.parameter_bundle.iam_resource_arns.any_authorised_user_in_this_account,
-        "arn:aws:iam::${local.this_account}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
-
+        local.parameter_bundle.iam_resource_arns.any_authorised_user_in_this_account
       ]
-    }
-  }
-  statement {
-    sid    = "AllowAutoscalingToUse"
-    effect = "Allow"
-
-    actions = [
-      "kms:CreateGrant",
-    ]
-
-    resources = [
-      "*",
-    ]
-
-    principals {
-      type = "AWS"
-      identifiers = [
-        "arn:aws:iam::${local.this_account}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling",
-      ]
-    }
-
-    condition {
-      test     = "Bool"
-      variable = "kms:GrantIsForAWSResource"
-      values   = ["true"]
     }
   }
 }
