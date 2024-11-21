@@ -15,8 +15,6 @@ data "aws_iam_policy_document" "s3_backup" {
     resources = [
       aws_s3_bucket.data.arn,
       "${aws_s3_bucket.data.arn}/*",
-      aws_s3_bucket.results.arn,
-      "${aws_s3_bucket.results.arn}/*"
     ]
   }
 
