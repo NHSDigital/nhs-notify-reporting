@@ -172,7 +172,7 @@ variable "batch_client_ids" {
 
 variable "enable_s3_backup" {
   type        = bool
-  description = "Enable AWS S3 Backup of data and results buckets"
+  description = "Enable AWS S3 Backup of the data bucket"
   default     = true
 }
 
