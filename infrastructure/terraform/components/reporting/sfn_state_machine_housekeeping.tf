@@ -92,7 +92,8 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
 
     actions = [
       "glue:Get*",
-      "glue:UpdateTable"
+      "glue:UpdateTable",
+      "glue:StartColumnStatisticsTaskRun"
     ]
 
     resources = [

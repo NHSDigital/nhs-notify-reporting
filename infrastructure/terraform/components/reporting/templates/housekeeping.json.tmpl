@@ -8,7 +8,33 @@
         "DatabaseName": "${database_name}"
       },
       "Resource": "arn:aws:states:::aws-sdk:glue:getTables",
-      "Next": "Optimize Pass"
+      "OutputPath": "$.TableList[?(@.TableType=='EXTERNAL_TABLE')].Name",
+      "Next": "Calculate Statistics For Each Table"
+    },
+    "Calculate Statistics For Each Table": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "StartColumnStatisticsTaskRun",
+        "States": {
+          "StartColumnStatisticsTaskRun": {
+            "Type": "Task",
+            "Parameters": {
+              "DatabaseName": "${database_name}",
+              "TableName.$": "$.tableName",
+              "Role": ""
+            },
+            "Resource": "arn:aws:states:::aws-sdk:glue:startColumnStatisticsTaskRun",
+            "End": true
+          }
+        }
+      },
+      "Next": "Optimize Pass",
+      "ItemSelector": {
+        "tableName.$": "$$.Map.Item.Value"
+      }
     },
     "Optimize Pass": {
       "Type": "Parallel",
