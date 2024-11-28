@@ -42,14 +42,15 @@ data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
     effect = "Allow"
 
     actions = [
-      "sts:AssumeRole",
+      "sts:AssumeRole"
     ]
 
     principals {
       type = "Service"
 
       identifiers = [
-        "states.amazonaws.com"
+        "states.amazonaws.com",
+        "glue.amazonaws.com"
       ]
     }
   }
