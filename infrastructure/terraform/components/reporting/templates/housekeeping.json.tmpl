@@ -1,7 +1,15 @@
 {
   "Comment": "Workflow to run housekeeping queries to maintain reporting tables.",
-  "StartAt": "Optimize Pass",
+  "StartAt": "Get Tables for Statistics",
   "States": {
+    "Get Tables for Statistics": {
+      "Type": "Task",
+      "Parameters": {
+        "DatabaseName": "${database_name}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:glue:getTables",
+      "Next": "Optimize Pass"
+    },
     "Optimize Pass": {
       "Type": "Parallel",
       "Branches": ${jsonencode(concat([

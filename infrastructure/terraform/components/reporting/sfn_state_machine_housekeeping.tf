@@ -19,6 +19,7 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_status_summary_vacuum.id}",
       "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}"
     ]
+    database_name = "${aws_glue_catalog_database.reporting.name}"
   })
 
   logging_configuration {
