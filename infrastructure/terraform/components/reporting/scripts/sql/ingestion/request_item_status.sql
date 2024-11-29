@@ -59,7 +59,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   patientodscode = source.patientodscode,
   timestamp = source.timestamp,
   sendinggroupname = source.sendinggroupname,
-  sendinggroupcreateddate = source.sendinggroupcreateddate,
+  sendinggroupcreateddate = source.sendinggroupcreateddate
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
