@@ -26,7 +26,9 @@ USING (
         status,
         failedreason,
         patientodscode,
-        CAST("$classification".timestamp AS BIGINT) AS timestamp
+        CAST("$classification".timestamp AS BIGINT) AS timestamp,
+        sendinggroupname,
+        sendinggroupcreateddate
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND
       (
@@ -55,7 +57,9 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   status = source.status,
   failedreason = source.failedreason,
   patientodscode = source.patientodscode,
-  timestamp = source.timestamp
+  timestamp = source.timestamp,
+  sendinggroupname = source.sendinggroupname,
+  sendinggroupcreateddate = source.sendinggroupcreateddate,
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
@@ -73,7 +77,9 @@ WHEN NOT MATCHED THEN INSERT (
   status,
   failedreason,
   patientodscode,
-  timestamp
+  timestamp,
+  sendinggroupname,
+  sendinggroupcreateddate
 )
 VALUES (
   source.clientid,
@@ -92,5 +98,7 @@ VALUES (
   source.status,
   source.failedreason,
   source.patientodscode,
-  source.timestamp
+  source.timestamp,
+  source.sendinggroupname,
+  source.sendinggroupcreateddate
 )
