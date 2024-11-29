@@ -38,7 +38,7 @@ resource "aws_iam_role" "sfn_housekeeping" {
 
 data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
   statement {
-    sid    = "EcsAssumeRole"
+    sid    = "StateMachineAssumeRole"
     effect = "Allow"
 
     actions = [
@@ -100,12 +100,7 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
     resources = [
       "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary",
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary_batch",
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary",
-      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary_batch"
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*"
     ]
   }
 
