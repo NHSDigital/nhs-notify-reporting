@@ -49,8 +49,7 @@ data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
       type = "Service"
 
       identifiers = [
-        "states.amazonaws.com",
-        "glue.amazonaws.com"
+        "states.amazonaws.com"
       ]
     }
   }
@@ -84,7 +83,7 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
 
     resources = [
       aws_athena_workgroup.housekeeping.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -99,9 +98,14 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_completed_summary_batch",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary_batch"
     ]
   }
 

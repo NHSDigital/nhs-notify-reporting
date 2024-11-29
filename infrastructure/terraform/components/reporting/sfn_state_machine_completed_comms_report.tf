@@ -84,7 +84,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     resources = [
       aws_athena_workgroup.core.arn,
       aws_athena_workgroup.user.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -97,10 +97,10 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
     ]
   }
 
@@ -185,7 +185,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
+      "arn:aws:kms:${var.region}:${var.core_account_id}:key/*",
     ]
     condition {
       test     = "ForAnyValue:StringEquals"
