@@ -49,7 +49,8 @@ data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
       type = "Service"
 
       identifiers = [
-        "states.amazonaws.com"
+        "states.amazonaws.com",
+        "glue.amazonaws.com"
       ]
     }
   }
@@ -58,6 +59,11 @@ data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
 resource "aws_iam_role_policy_attachment" "sfn_housekeeping" {
   role       = aws_iam_role.sfn_housekeeping.name
   policy_arn = aws_iam_policy.sfn_housekeeping.arn
+}
+
+resource "aws_iam_role_policy_attachment" "sfn_housekeeping_columnstats" {
+  role       = aws_iam_role.sfn_housekeeping.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
 
 resource "aws_iam_policy" "sfn_housekeeping" {
