@@ -1,6 +1,6 @@
 resource "aws_scheduler_schedule" "sf_completed_comms_report_scheduler" {
   name       = "${local.csi}-completed-comms-report-scheduler"
-  description = "Schduler to trigger Step Function to generate the completed communications"
+  description = "Schduler to trigger Step Function to generate the completed communications report"
   group_name = "default"
 
   flexible_time_window {
@@ -18,7 +18,7 @@ resource "aws_scheduler_schedule" "sf_completed_comms_report_scheduler" {
 
 resource "aws_iam_role" "sf_completed_comms_report_scheduler" {
   name               = "${local.csi}-sf-completed-comms-rpt-scheduler-role"
-  description        = "Role used by the State Machine Ingestion Scheduler"
+  description        = "Role used by the State Machine Completed Communications Report Scheduler"
   assume_role_policy = data.aws_iam_policy_document.completed_comms_report_scheduler_assumerole.json
 }
 
