@@ -30,7 +30,7 @@
           "Next": "No Clients Found"
         }
       ],
-      "Default": "Select Completed Date"
+      "Default": "Select Completed Batch Ids"
     },
     "No Clients Found": {
       "Type": "Pass",
@@ -48,35 +48,35 @@
       },
       "ResultPath": "$.useClientIds"
     },
-    "Select Completed Date": {
+    "Select Completed Batch Ids": {
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.completedDate",
+          "Variable": "$.completedBatchIds",
           "IsPresent": true,
-          "Next": "Get Completed Date From Args"
+          "Next": "Get Completed Batch Ids From Args"
         }
       ],
-      "Default": "Get Completed Date Query"
+      "Default": "Get Completed Batch Ids Query"
     },
-    "Get Completed Date From Args": {
+    "Get Completed Batch Ids From Args": {
       "Type": "Pass",
       "Next": "Get Report Query",
       "Parameters": {
-        "completedDate.$": "$.completedDate"
+        "completedBatchIds.$": "$.completedBatchIds"
       },
-      "ResultPath": "$.useCompletedDate"
+      "ResultPath": "$.useCompletedBatchIds"
     },
-    "Get Completed Date Query": {
+    "Get Completed Batch Ids Query": {
       "Type": "Task",
       "Parameters": {
         "NamedQueryId": "${date_query_id}"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-      "Next": "Execute Completed Date Query",
+      "Next": "Execute Completed Batch Ids Query",
       "ResultPath": "$.DateQuery"
     },
-    "Execute Completed Date Query": {
+    "Execute Completed Batch Ids Query": {
       "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
       "Parameters": {
         "QueryString.$": "$.DateQuery.NamedQuery.QueryString",
@@ -86,19 +86,19 @@
         }
       },
       "Type": "Task",
-      "Next": "Get Completed Date From Query Results",
+      "Next": "Get Completed Batch Ids From Query Results",
       "ResultPath": "$.DateQueryExecution"
     },
-    "Get Completed Date From Query Results": {
+    "Get Completed Batch Ids From Query Results": {
       "Type": "Task",
       "Resource": "arn:aws:states:::athena:getQueryResults",
       "Parameters": {
         "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
       },
       "Next": "Get Report Query",
-      "ResultPath": "$.useCompletedDate",
+      "ResultPath": "$.useCompletedBatchIds",
       "ResultSelector": {
-        "completedDate.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
+        "completedBatchIds.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
       }
     },
     "Get Report Query": {
@@ -115,7 +115,7 @@
       "ItemsPath": "$.useClientIds.clientIds",
       "ItemSelector": {
         "clientId.$": "$$.Map.Item.Value",
-        "completedDate.$": "$.useCompletedDate.completedDate",
+        "completedBatchIds.$": "$.useCompletedBatchIds.completedBatchIds",
         "ReportQuery.$": "$.ReportQuery"
       },
       "ItemProcessor": {
@@ -128,13 +128,13 @@
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
-              "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedDate), States.Format('\\'{}\\'', $.completedDate))",
+              "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedBatchIds), States.Format('\\'{}\\'', $.completedBatchIds))",
               "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.ReportQuery.NamedQuery.Database"
               },
               "ResultConfiguration": {
-                "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedDate)"
+                "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedBatchIds)"
               }
             },
             "Type": "Task",
