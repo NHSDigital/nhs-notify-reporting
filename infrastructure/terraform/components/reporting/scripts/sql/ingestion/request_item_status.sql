@@ -14,6 +14,8 @@ USING (
         campaignid,
         sendinggroupid,
         sendinggroupidversion,
+        sendinggroupname,
+        sendinggroupcreateddate,
         requestitemrefid,
         requestitemid,
         requestrefid,
@@ -26,9 +28,7 @@ USING (
         status,
         failedreason,
         patientodscode,
-        CAST("$classification".timestamp AS BIGINT) AS timestamp,
-        sendinggroupname,
-        sendinggroupcreateddate
+        CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND
       (
@@ -46,6 +46,8 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   campaignid = source.campaignid,
   sendinggroupid = source.sendinggroupid,
   sendinggroupidversion = source.sendinggroupidversion,
+  sendinggroupname = source.sendinggroupname,
+  sendinggroupcreateddate = source.sendinggroupcreateddate,
   requestitemrefid = source.requestitemrefid,
   requestrefid = source.requestrefid,
   requestid = source.requestid,
@@ -57,14 +59,14 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   status = source.status,
   failedreason = source.failedreason,
   patientodscode = source.patientodscode,
-  timestamp = source.timestamp,
-  sendinggroupname = source.sendinggroupname,
-  sendinggroupcreateddate = source.sendinggroupcreateddate
+  timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
   sendinggroupid,
   sendinggroupidversion,
+  sendinggroupname,
+  sendinggroupcreateddate,
   requestitemrefid,
   requestitemid,
   requestrefid,
@@ -77,15 +79,15 @@ WHEN NOT MATCHED THEN INSERT (
   status,
   failedreason,
   patientodscode,
-  timestamp,
-  sendinggroupname,
-  sendinggroupcreateddate
+  timestamp
 )
 VALUES (
   source.clientid,
   source.campaignid,
   source.sendinggroupid,
   source.sendinggroupidversion,
+  source.sendinggroupname,
+  source.sendinggroupcreateddate,
   source.requestitemrefid,
   source.requestitemid,
   source.requestrefid,
@@ -98,7 +100,5 @@ VALUES (
   source.status,
   source.failedreason,
   source.patientodscode,
-  source.timestamp,
-  source.sendinggroupname,
-  source.sendinggroupcreateddate
+  source.timestamp
 )
