@@ -61,7 +61,7 @@
     },
     "Get Completed Date From Args": {
       "Type": "Pass",
-      "Next": "For Each Client Id",
+      "Next": "Get Report Query",
       "Parameters": {
         "completedDate.$": "$.completedDate"
       },
@@ -95,34 +95,35 @@
       "Parameters": {
         "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
       },
-      "Next": "For Each Client Id",
+      "Next": "Get Report Query",
       "ResultPath": "$.useCompletedDate",
       "ResultSelector": {
         "completedDate.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
       }
+    },
+    "Get Report Query": {
+      "Type": "Task",
+      "Parameters": {
+        "NamedQueryId": "${report_query_id}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+      "Next": "For Each Client Id",
+      "ResultPath": "$.ReportQuery"
     },
     "For Each Client Id": {
       "Type": "Map",
       "ItemsPath": "$.useClientIds.clientIds",
       "ItemSelector": {
         "clientId.$": "$$.Map.Item.Value",
-        "completedDate.$": "$.useCompletedDate.completedDate"
+        "completedDate.$": "$.useCompletedDate.completedDate",
+        "ReportQuery.$": "$.ReportQuery"
       },
       "ItemProcessor": {
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "Get Report Query",
+        "StartAt": "Execute Report Query",
         "States": {
-          "Get Report Query": {
-            "Type": "Task",
-            "Parameters": {
-              "NamedQueryId": "${report_query_id}"
-            },
-            "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-            "Next": "Execute Report Query",
-            "ResultPath": "$.ReportQuery"
-          },
           "Execute Report Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
