@@ -118,8 +118,33 @@
               "ProcessorConfig": {
                 "Mode": "INLINE"
               },
-              "StartAt": "Execute Report Query",
+              "StartAt": "Check for Existing Report",
               "States": {
+                "Check for Existing Report": {
+                  "Type": "Task",
+                  "Parameters": {
+                    "Bucket": "${output_bucket}",
+                    "Prefix.$": "States.Format('${output_folder}/{}/{}/', $.clientId, $.requestId)"
+                  },
+                  "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+                  "Next": "Exit if Report Already Exists",
+                  "ResultPath": "$.reportExistsCheck"
+                },
+                "Exit if Report Already Exists": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.reportExistsCheck.KeyCount",
+                      "NumericEquals": 0,
+                      "Next": "Execute Report Query"
+                    }
+                  ],
+                  "Default": "Report Already Exists"
+                },
+                "Report Already Exists": {
+                  "Type": "Pass",
+                  "End": true
+                },
                 "Execute Report Query": {
                   "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
                   "Parameters": {
@@ -130,7 +155,7 @@
                       "Database.$": "$.ReportQuery.NamedQuery.Database"
                     },
                     "ResultConfiguration": {
-                      "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.requestId)"
+                      "OutputLocation.$": "States.Format('s3://${output_bucket}/${output_folder}/{}/{}/', $.clientId, $.requestId)"
                     }
                   },
                   "Type": "Task",
@@ -157,7 +182,8 @@
                 }
               }
             },
-            "End": true
+            "End": true,
+            "ResultSelector": {}
           }
         }
       },
