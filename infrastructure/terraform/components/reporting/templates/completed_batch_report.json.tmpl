@@ -30,7 +30,7 @@
           "Next": "No Clients Found"
         }
       ],
-      "Default": "Get Completed Batch Ids Query"
+      "Default": "Get Completed Request Ids Query"
     },
     "No Clients Found": {
       "Type": "Pass",
@@ -48,7 +48,7 @@
       },
       "ResultPath": "$.useClientIds"
     },
-    "Get Completed Batch Ids Query": {
+    "Get Completed Request Ids Query": {
       "Type": "Task",
       "Parameters": {
         "NamedQueryId": "${batch_query_id}"
@@ -78,9 +78,9 @@
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "Execute Completed Batch Ids Query",
+        "StartAt": "Execute Completed Request Ids Query",
         "States": {
-          "Execute Completed Batch Ids Query": {
+          "Execute Completed Request Ids Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.BatchQuery.NamedQuery.QueryString",
@@ -91,26 +91,26 @@
               }
             },
             "Type": "Task",
-            "Next": "Get Completed Batch Ids From Query Results",
+            "Next": "Get Completed Request Ids From Query Results",
             "ResultPath": "$.BatchQueryExecution"
           },
-          "Get Completed Batch Ids From Query Results": {
+          "Get Completed Request Ids From Query Results": {
             "Type": "Task",
             "Resource": "arn:aws:states:::athena:getQueryResults",
             "Parameters": {
               "QueryExecutionId.$": "$.BatchQueryExecution.QueryExecution.QueryExecutionId"
             },
-            "Next": "For Each Batch Id",
-            "ResultPath": "$.useCompletedBatchIds",
+            "Next": "For Each Request Id",
+            "ResultPath": "$.useCompletedRequestIds",
             "ResultSelector": {
-              "completedBatchIds.$": "$.ResultSet.Rows[1:].Data[0].VarCharValue"
+              "completedRequestIds.$": "$.ResultSet.Rows[1:].Data[0].VarCharValue"
             }
           },
-          "For Each Batch Id": {
+          "For Each Request Id": {
             "Type": "Map",
-            "ItemsPath": "$.useCompletedBatchIds.completedBatchIds",
+            "ItemsPath": "$.useCompletedRequestIds.completedRequestIds",
             "ItemSelector": {
-              "batchId.$": "$$.Map.Item.Value",
+              "requestId.$": "$$.Map.Item.Value",
               "ReportQuery.$": "$.ReportQuery"
             },
             "ItemProcessor": {
@@ -123,13 +123,13 @@
                   "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
                   "Parameters": {
                     "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
-                    "ExecutionParameters.$": "States.Array($.batchId)",
+                    "ExecutionParameters.$": "States.Array($.clientId, $.requestId)",
                     "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
                     "QueryExecutionContext": {
                       "Database.$": "$.ReportQuery.NamedQuery.Database"
                     },
                     "ResultConfiguration": {
-                      "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.batchId)"
+                      "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.requestId)"
                     }
                   },
                   "Type": "Task",
