@@ -108,7 +108,7 @@
           },
           "For Each Batch Id": {
             "Type": "Map",
-            "ItemsPath": "$.completedBatchIds",
+            "ItemsPath": "$.useCompletedBatchIds.completedBatchIds",
             "ItemSelector": {
               "batchId.$": "$$.Map.Item.Value",
               "ReportQuery.$": "$.ReportQuery"
