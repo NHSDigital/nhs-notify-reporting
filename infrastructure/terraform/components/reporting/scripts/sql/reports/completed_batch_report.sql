@@ -21,8 +21,9 @@ LEFT OUTER JOIN request_item_plan_status rip ON
     ri.requestitemid = rip.requestitemid AND
     ri.clientid = rip.clientid
 WHERE
-    ri.clientid = ? AND ri.requestid = ? AND
+    ri.clientid = ? AND
+    ri.requestid = ? AND
     (
-        (rip.status IN ('FAILED', 'DELIVERED') AND DATE(rip.completedtime) = DATE(?)) OR
-        (ri.status IN ('FAILED') AND rip.requestitemplanid is null AND DATE(ri.completedtime) = DATE(?))
+        (rip.status IN ('FAILED', 'DELIVERED')) OR
+        (ri.status IN ('FAILED') AND rip.requestitemplanid is null)
     )
