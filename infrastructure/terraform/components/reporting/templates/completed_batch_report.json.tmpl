@@ -51,7 +51,7 @@
     "Get Completed Batch Ids Query": {
       "Type": "Task",
       "Parameters": {
-        "NamedQueryId": "147dc373-bedb-44a3-88a0-d21cd021e234"
+        "NamedQueryId": "${batch_query_id}"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
       "Next": "Get Report Query",
@@ -60,7 +60,7 @@
     "Get Report Query": {
       "Type": "Task",
       "Parameters": {
-        "NamedQueryId": "a230371b-a286-48ae-ad29-055386a5777c"
+        "NamedQueryId": "${report_query_id}"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
       "Next": "For Each Client Id",
