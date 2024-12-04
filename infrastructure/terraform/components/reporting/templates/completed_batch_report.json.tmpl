@@ -30,7 +30,7 @@
           "Next": "No Clients Found"
         }
       ],
-      "Default": "Select Completed Batch Ids"
+      "Default": "Get Completed Batch Ids Query"
     },
     "No Clients Found": {
       "Type": "Pass",
@@ -48,63 +48,19 @@
       },
       "ResultPath": "$.useClientIds"
     },
-    "Select Completed Batch Ids": {
-      "Type": "Choice",
-      "Choices": [
-        {
-          "Variable": "$.completedBatchIds",
-          "IsPresent": true,
-          "Next": "Get Completed Batch Ids From Args"
-        }
-      ],
-      "Default": "Get Completed Batch Ids Query"
-    },
-    "Get Completed Batch Ids From Args": {
-      "Type": "Pass",
-      "Next": "Get Report Query",
-      "Parameters": {
-        "completedBatchIds.$": "$.completedBatchIds"
-      },
-      "ResultPath": "$.useCompletedBatchIds"
-    },
     "Get Completed Batch Ids Query": {
       "Type": "Task",
       "Parameters": {
-        "NamedQueryId": "${date_query_id}"
+        "NamedQueryId": "147dc373-bedb-44a3-88a0-d21cd021e234"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-      "Next": "Execute Completed Batch Ids Query",
-      "ResultPath": "$.DateQuery"
-    },
-    "Execute Completed Batch Ids Query": {
-      "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
-      "Parameters": {
-        "QueryString.$": "$.DateQuery.NamedQuery.QueryString",
-        "WorkGroup.$": "$.DateQuery.NamedQuery.WorkGroup",
-        "QueryExecutionContext": {
-          "Database.$": "$.DateQuery.NamedQuery.Database"
-        }
-      },
-      "Type": "Task",
-      "Next": "Get Completed Batch Ids From Query Results",
-      "ResultPath": "$.DateQueryExecution"
-    },
-    "Get Completed Batch Ids From Query Results": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::athena:getQueryResults",
-      "Parameters": {
-        "QueryExecutionId.$": "$.DateQueryExecution.QueryExecution.QueryExecutionId"
-      },
       "Next": "Get Report Query",
-      "ResultPath": "$.useCompletedBatchIds",
-      "ResultSelector": {
-        "completedBatchIds.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
-      }
+      "ResultPath": "$.BatchQuery"
     },
     "Get Report Query": {
       "Type": "Task",
       "Parameters": {
-        "NamedQueryId": "${report_query_id}"
+        "NamedQueryId": "a230371b-a286-48ae-ad29-055386a5777c"
       },
       "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
       "Next": "For Each Client Id",
@@ -115,50 +71,88 @@
       "ItemsPath": "$.useClientIds.clientIds",
       "ItemSelector": {
         "clientId.$": "$$.Map.Item.Value",
-        "completedBatchIds.$": "$.useCompletedBatchIds.completedBatchIds",
+        "BatchQuery.$": "$.BatchQuery",
         "ReportQuery.$": "$.ReportQuery"
       },
       "ItemProcessor": {
         "ProcessorConfig": {
           "Mode": "INLINE"
         },
-        "StartAt": "Execute Report Query",
+        "StartAt": "Execute Completed Batch Ids Query",
         "States": {
-          "Execute Report Query": {
+          "Execute Completed Batch Ids Query": {
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
-              "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
-              "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedBatchIds), States.Format('\\'{}\\'', $.completedBatchIds))",
-              "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
+              "QueryString.$": "$.BatchQuery.NamedQuery.QueryString",
+              "WorkGroup.$": "$.BatchQuery.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
-                "Database.$": "$.ReportQuery.NamedQuery.Database"
-              },
-              "ResultConfiguration": {
-                "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedBatchIds)"
+                "Database.$": "$.BatchQuery.NamedQuery.Database"
               }
             },
             "Type": "Task",
-            "Next": "Transaction Success",
-            "Catch": [
-              {
-                "ErrorEquals": [
-                  "States.ALL"
-                ],
-                "ResultPath": "$.error",
-                "Next": "Transaction Failed"
-              }
-            ]
+            "Next": "Get Completed Batch Ids From Query Results",
+            "ResultPath": "$.BatchQueryExecution"
           },
-          "Transaction Success": {
-            "Type": "Pass",
-            "Result": "Athena query succeeded.",
+          "Get Completed Batch Ids From Query Results": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::athena:getQueryResults",
+            "Parameters": {
+              "QueryExecutionId.$": "$.BatchQueryExecution.QueryExecution.QueryExecutionId"
+            },
+            "Next": "For Each Batch Id",
+            "ResultPath": "$.useCompletedBatchIds",
+            "ResultSelector": {
+              "completedBatchIds.$": "$.ResultSet.Rows[1].Data[0].VarCharValue"
+            }
+          },
+          "For Each Batch Id": {
+            "Type": "Map",
+            "ItemProcessor": {
+              "ProcessorConfig": {
+                "Mode": "INLINE"
+              },
+              "StartAt": "Execute Report Query",
+              "States": {
+                  "Execute Report Query": {
+                    "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+                    "Parameters": {
+                      "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
+                      "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedBatchIds), States.Format('\\'{}\\'', $.completedBatchIds))",
+                      "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
+                      "QueryExecutionContext": {
+                        "Database.$": "$.ReportQuery.NamedQuery.Database"
+                      },
+                      "ResultConfiguration": {
+                        "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedBatchIds)"
+                      }
+                    },
+                    "Type": "Task",
+                    "Next": "Transaction Success",
+                    "Catch": [
+                      {
+                        "ErrorEquals": [
+                          "States.ALL"
+                        ],
+                        "ResultPath": "$.error",
+                        "Next": "Transaction Failed"
+                      }
+                    ]
+                  },
+                  "Transaction Success": {
+                    "Type": "Pass",
+                    "Result": "Athena query succeeded.",
+                    "End": true
+                  },
+                  "Transaction Failed": {
+                    "Type": "Fail",
+                    "CausePath": "$.error.Cause",
+                    "ErrorPath": "$.error.Error"
+                  }
+                }
+              }
+            },
             "End": true
           },
-          "Transaction Failed": {
-            "Type": "Fail",
-            "CausePath": "$.error.Cause",
-            "ErrorPath": "$.error.Error"
-          }
         }
       },
       "End": true
