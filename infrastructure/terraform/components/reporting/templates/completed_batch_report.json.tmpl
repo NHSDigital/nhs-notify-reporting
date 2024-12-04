@@ -84,6 +84,7 @@
             "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
             "Parameters": {
               "QueryString.$": "$.BatchQuery.NamedQuery.QueryString",
+              "ExecutionParameters.$": "States.Array($.clientId)",
               "WorkGroup.$": "$.BatchQuery.NamedQuery.WorkGroup",
               "QueryExecutionContext": {
                 "Database.$": "$.BatchQuery.NamedQuery.Database"
