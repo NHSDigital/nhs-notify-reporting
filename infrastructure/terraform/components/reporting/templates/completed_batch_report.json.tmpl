@@ -113,46 +113,45 @@
               },
               "StartAt": "Execute Report Query",
               "States": {
-                  "Execute Report Query": {
-                    "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
-                    "Parameters": {
-                      "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
-                      "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedBatchIds), States.Format('\\'{}\\'', $.completedBatchIds))",
-                      "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
-                      "QueryExecutionContext": {
-                        "Database.$": "$.ReportQuery.NamedQuery.Database"
-                      },
-                      "ResultConfiguration": {
-                        "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedBatchIds)"
-                      }
+                "Execute Report Query": {
+                  "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+                  "Parameters": {
+                    "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
+                    "ExecutionParameters.$": "States.Array($.clientId, States.Format('\\'{}\\'', $.completedBatchIds), States.Format('\\'{}\\'', $.completedBatchIds))",
+                    "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
+                    "QueryExecutionContext": {
+                      "Database.$": "$.ReportQuery.NamedQuery.Database"
                     },
-                    "Type": "Task",
-                    "Next": "Transaction Success",
-                    "Catch": [
-                      {
-                        "ErrorEquals": [
-                          "States.ALL"
-                        ],
-                        "ResultPath": "$.error",
-                        "Next": "Transaction Failed"
-                      }
-                    ]
+                    "ResultConfiguration": {
+                      "OutputLocation.$": "States.Format('${output_root}{}/{}/', $.clientId, $.completedBatchIds)"
+                    }
                   },
-                  "Transaction Success": {
-                    "Type": "Pass",
-                    "Result": "Athena query succeeded.",
-                    "End": true
-                  },
-                  "Transaction Failed": {
-                    "Type": "Fail",
-                    "CausePath": "$.error.Cause",
-                    "ErrorPath": "$.error.Error"
-                  }
+                  "Type": "Task",
+                  "Next": "Transaction Success",
+                  "Catch": [
+                    {
+                      "ErrorEquals": [
+                        "States.ALL"
+                      ],
+                      "ResultPath": "$.error",
+                      "Next": "Transaction Failed"
+                    }
+                  ]
+                },
+                "Transaction Success": {
+                  "Type": "Pass",
+                  "Result": "Athena query succeeded.",
+                  "End": true
+                },
+                "Transaction Failed": {
+                  "Type": "Fail",
+                  "CausePath": "$.error.Cause",
+                  "ErrorPath": "$.error.Error"
                 }
               }
             },
             "End": true
-          },
+          }
         }
       },
       "End": true
