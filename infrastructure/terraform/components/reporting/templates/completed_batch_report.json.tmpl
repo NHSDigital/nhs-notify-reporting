@@ -111,6 +111,7 @@
             "ItemsPath": "$.useCompletedRequestIds.completedRequestIds",
             "ItemSelector": {
               "requestId.$": "$$.Map.Item.Value",
+              "clientId.$": "$.clientId",
               "ReportQuery.$": "$.ReportQuery"
             },
             "ItemProcessor": {
