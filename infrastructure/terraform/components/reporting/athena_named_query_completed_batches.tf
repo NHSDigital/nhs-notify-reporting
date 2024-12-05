@@ -6,7 +6,6 @@ resource "aws_athena_named_query" "completed_batches" {
   query       = file("${path.module}/scripts/sql/reports/completed_batches.sql")
 
   depends_on = [
-    null_resource.request_item_status_table,
-    null_resource.request_item_plan_status_table
+    null_resource.request_item_status_table
   ]
 }
