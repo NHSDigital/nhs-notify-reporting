@@ -7,6 +7,8 @@ SELECT
     ri.failedReason as requestitemfailedreason,
     ri.sendingGroupId as sendinggroupid,
     ri.sendingGroupIdVersion as sendinggroupidversion,
+    ri.sendingGroupName as sendinggroupname,
+    ri.sendingGroupCreatedDate as sendinggroupcreateddate,
     ri.status AS requestitemstatus,
     rip.requestitemplanid AS requestitemplanid,
     DATE(rip.completedtime) AS requestitemplancompleteddate,
