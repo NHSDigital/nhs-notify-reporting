@@ -100,8 +100,6 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
     resources = [
       "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
       "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_comms",
     ]
   }
