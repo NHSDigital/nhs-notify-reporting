@@ -1,6 +1,6 @@
 CREATE OR REPLACE VIEW ${view_name} AS
 SELECT
-    ri.clientid as clientid
+    ri.clientid as clientid,
     ri.requestId as requestid,
     ri.requestRefId as requestrefid,
     ri.requestitemid AS requestitemid,
