@@ -22,7 +22,7 @@ if ! [ -x "$(command -v pip)" ] && [ -x "$(command -v pip3)" ]; then
   pip3 install --upgrade pip
 fi
 
-pip install terraform-compliance==1.3.48 --upgrade --quiet  # always upgrade to latest version
+pip install terraform-compliance~=1.3.49 --upgrade --quiet  # always upgrade to latest version 1.3.x which is >= 1.3.49
 
 features_directory="${test_dir}/features"
 shared_features_directory="${test_dir}/shared_features"

@@ -23,5 +23,5 @@ LEFT OUTER JOIN request_item_plan_status rip ON
     ri.requestitemid = rip.requestitemid AND
     ri.clientid = rip.clientid
 WHERE
-    rip.status IN ('FAILED', 'DELIVERED') OR
+    rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') OR
     (ri.status IN ('FAILED') AND rip.requestitemplanid IS NULL)

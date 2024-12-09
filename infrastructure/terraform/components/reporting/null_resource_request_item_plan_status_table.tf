@@ -44,3 +44,19 @@ resource "null_resource" "request_item_plan_status_ordernumber_column" {
 
   depends_on = [null_resource.request_item_plan_status_sendtime_column]
 }
+
+resource "null_resource" "request_item_plan_status_recipientcontactid_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_plan_status recipientcontactid string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_plan_status_ordernumber_column]
+}
