@@ -7,6 +7,8 @@ SELECT
     ri.failedReason as requestitemfailedreason,
     ri.sendingGroupId as sendinggroupid,
     ri.sendingGroupIdVersion as sendinggroupidversion,
+    ri.sendingGroupName as sendinggroupname,
+    ri.sendingGroupCreatedDate as sendinggroupcreateddate,
     ri.status AS requestitemstatus,
     rip.requestitemplanid AS requestitemplanid,
     DATE(rip.completedtime) AS requestitemplancompleteddate,
@@ -21,6 +23,6 @@ LEFT OUTER JOIN request_item_plan_status rip ON
 WHERE
     ri.clientid = ? AND
     (
-        (rip.status IN ('FAILED', 'DELIVERED') AND DATE(rip.completedtime) = DATE(?)) OR
+        (rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') AND DATE(rip.completedtime) = DATE(?)) OR
         (ri.status IN ('FAILED') AND rip.requestitemplanid is null AND DATE(ri.completedtime) = DATE(?))
     )

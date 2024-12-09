@@ -3,6 +3,8 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     campaignid string,
     sendinggroupid string,
     sendinggroupidversion string,
+    sendinggroupname string,
+    sendinggroupcreateddate string,
     requestitemrefid string,
     requestitemid string,
     requestrefid string,
