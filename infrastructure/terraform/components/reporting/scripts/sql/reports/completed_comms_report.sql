@@ -18,8 +18,8 @@ SELECT
     requestitemplanfailedreason
 FROM completed_comms
 WHERE
-    ri.clientid = ? AND
+    clientid = ? AND
     (
         (requestitemplancompleteddate = DATE(?)) OR
-        (rip.requestitemplanid IS NULL AND requestitemcompleteddate = DATE(?))
+        (requestitemplanid IS NULL AND requestitemcompleteddate = DATE(?))
     )
