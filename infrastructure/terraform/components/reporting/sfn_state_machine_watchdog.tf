@@ -52,7 +52,7 @@ resource "aws_iam_policy" "sfn_watchdog" {
   policy      = data.aws_iam_policy_document.sfn_watchdog.json
 }
 
-data "aws_iam_policy_document" "sfn_completed_comms_report" {
+data "aws_iam_policy_document" "sfn_watchdog" {
 
   statement {
     sid    = "AllowAthena"
