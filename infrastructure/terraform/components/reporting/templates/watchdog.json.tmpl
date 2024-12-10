@@ -1,0 +1,38 @@
+{
+  "Comment": "Workflow to run watchdog queries and raise alarms on detected anomalies.",
+  "StartAt": "For Each Watchdog Query",
+  "States": {
+    "For Each Watchdog Query": {
+      "Type": "Parallel",
+      "Branches": ${jsonencode(concat([
+        for query_id in watchdog_query_ids:
+        {
+          "StartAt": "Get Query ${query_id}",
+          "States": {
+            "Get Query ${query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query ${query_id}"
+            },
+            "Execute Query ${query_id}": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
+              },
+              "Type": "Task",
+              "End": true
+            }
+          }
+        }
+      ]))},
+      "End": true
+    }
+  }
+}

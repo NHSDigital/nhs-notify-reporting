@@ -1,12 +1,11 @@
-resource "aws_sfn_state_machine" "completed_comms_report" {
-  name     = "${local.csi}-state-machine-completed-comms-report"
-  role_arn = aws_iam_role.sfn_completed_comms_report.arn
+resource "aws_sfn_state_machine" "watchdog" {
+  name     = "${local.csi}-state-machine-watchdog"
+  role_arn = aws_iam_role.sfn_watchdog.arn
 
-  definition = templatefile("${path.module}/templates/completed_comms_report.json.tmpl", {
-    date_query_id = "${aws_athena_named_query.yesterday.id}"
-    report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
-    environment = "${local.csi}"
-    output_root = "s3://comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/completed_comms_report/"
+  definition = templatefile("${path.module}/templates/watchdog.json.tmpl", {
+    watchdog_query_ids = [
+      "${aws_athena_named_query.completed_comms_report.id}"
+    ]
   })
 
   logging_configuration {
@@ -16,13 +15,13 @@ resource "aws_sfn_state_machine" "completed_comms_report" {
   }
 }
 
-resource "aws_iam_role" "sfn_completed_comms_report" {
-  name               = "${local.csi}-sf-completed-comms-report-role"
-  description        = "Role used by the State Machine to generate the completed communications report"
-  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_completed_comms_report.json
+resource "aws_iam_role" "sfn_watchdog" {
+  name               = "${local.csi}-sf-watchdog-role"
+  description        = "Role used by the State Machine for Athena watchdog queries"
+  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_watchdog.json
 }
 
-data "aws_iam_policy_document" "sfn_assumerole_completed_comms_report" {
+data "aws_iam_policy_document" "sfn_assumerole_watchdog" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"
@@ -41,32 +40,19 @@ data "aws_iam_policy_document" "sfn_assumerole_completed_comms_report" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sfn_completed_comms_report" {
-  role       = aws_iam_role.sfn_completed_comms_report.name
-  policy_arn = aws_iam_policy.sfn_completed_comms_report.arn
+resource "aws_iam_role_policy_attachment" "sfn_watchdog" {
+  role       = aws_iam_role.sfn_watchdog.name
+  policy_arn = aws_iam_policy.sfn_watchdog.arn
 }
 
-resource "aws_iam_policy" "sfn_completed_comms_report" {
-  name        = "${local.csi}-sfn-completed-comms-report-policy"
-  description = "Allow Step Function State Machine to generate the completed communications report"
+resource "aws_iam_policy" "sfn_watchdog" {
+  name        = "${local.csi}-sfn-watchdog-policy"
+  description = "Allow Step Function State Machine to run Athena watchdog queries"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sfn_completed_comms_report.json
+  policy      = data.aws_iam_policy_document.sfn_watchdog.json
 }
 
 data "aws_iam_policy_document" "sfn_completed_comms_report" {
-
-  statement {
-    sid    = "AllowSSM"
-    effect = "Allow"
-
-    actions = [
-      "ssm:GetParameter"
-    ]
-
-    resources = [
-      aws_ssm_parameter.completed_comms_report_client_ids.arn
-    ]
-  }
 
   statement {
     sid    = "AllowAthena"
@@ -82,7 +68,6 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      aws_athena_workgroup.core.arn,
       aws_athena_workgroup.user.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
@@ -138,24 +123,6 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3CoreWrite"
-    effect = "Allow"
-
-    actions = [
-      "s3:GetBucketLocation",
-      "s3:GetObject",
-      "s3:ListBucket",
-      "s3:PutObject",
-      "s3:PutObjectACL"
-    ]
-
-    resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/*"
-    ]
-  }
-
-  statement {
     sid    = "AllowKMSCurrent"
     effect = "Allow"
 
@@ -170,30 +137,6 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     resources = [
       aws_kms_key.s3.arn
     ]
-  }
-
-  statement {
-    sid    = "AllowKMSCore"
-    effect = "Allow"
-
-    actions = [
-      "kms:ReEncrypt*",
-      "kms:GenerateDataKey*",
-      "kms:Encrypt",
-      "kms:DescribeKey",
-      "kms:Decrypt"
-    ]
-
-    resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
-    ]
-    condition {
-      test     = "ForAnyValue:StringEquals"
-      variable = "kms:ResourceAliases"
-      values = [
-        "alias/comms-${var.core_env}-api-s3"
-      ]
-    }
   }
 
   statement {
