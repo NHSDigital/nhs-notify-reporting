@@ -69,6 +69,7 @@ data "aws_iam_policy_document" "sfn_watchdog" {
 
     resources = [
       aws_athena_workgroup.user.arn,
+      aws_athena_workgroup.core.arn,
       "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
     ]
   }
