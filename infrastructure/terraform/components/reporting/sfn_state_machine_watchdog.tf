@@ -4,7 +4,8 @@ resource "aws_sfn_state_machine" "watchdog" {
 
   definition = templatefile("${path.module}/templates/watchdog.json.tmpl", {
     watchdog_query_ids = [
-      "${aws_athena_named_query.completed_comms_report.id}"
+      "${aws_athena_named_query.outstanding_messages.id}",
+      "${aws_athena_named_query.outstanding_requests.id}"
     ]
   })
 
@@ -85,7 +86,7 @@ data "aws_iam_policy_document" "sfn_watchdog" {
       "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
       "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary",
     ]
   }
 
