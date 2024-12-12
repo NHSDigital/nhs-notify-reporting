@@ -36,6 +36,23 @@
               "Parameters": {
                 "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
               },
+              "Next": "For Each Anomalous Result"
+            },
+            "For Each Anomalous Result": {
+              "Type": "Map",
+              "ItemProcessor": {
+                "ProcessorConfig": {
+                  "Mode": "INLINE"
+                },
+                "StartAt": "Pass",
+                "States": {
+                  "Pass": {
+                    "Type": "Pass",
+                    "End": true
+                  }
+                }
+              },
+              "ItemsPath": "$.WatchdogQueryResults.queryResults",
               "End": true
             }
           }
