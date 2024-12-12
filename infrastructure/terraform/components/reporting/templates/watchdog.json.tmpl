@@ -27,6 +27,15 @@
                 }
               },
               "Type": "Task",
+              "Next": "Get Query ${query_id} Results",
+              "ResultPath": "$.WatchdogQueryExecution"
+            },
+            "Get Query ${query_id} Results": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::athena:getQueryResults",
+              "Parameters": {
+                "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
+              },
               "End": true
             }
           }
