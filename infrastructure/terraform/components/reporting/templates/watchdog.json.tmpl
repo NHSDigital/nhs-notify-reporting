@@ -46,8 +46,8 @@
                 },
                 "StartAt": "Pass ${query_id}",
                 "States": {
-                  "Pass": {
-                    "Type": "Pass ${query_id}",
+                  "Pass ${query_id}": {
+                    "Type": "Pass",
                     "End": true
                   }
                 }
