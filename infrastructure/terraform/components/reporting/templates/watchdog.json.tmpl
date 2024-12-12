@@ -36,7 +36,11 @@
               "Parameters": {
                 "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
               },
-              "Next": "For Each Anomalous Result ${query_id}"
+              "Next": "For Each Anomalous Result ${query_id}",
+              "ResultPath": "$.WatchdogQueryResults",
+              "ResultSelector": {
+                "queryResults.$": "$.ResultSet.Rows[1:].Data"
+              }
             },
             "For Each Anomalous Result ${query_id}": {
               "Type": "Map",
