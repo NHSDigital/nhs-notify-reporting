@@ -44,10 +44,10 @@
                 "ProcessorConfig": {
                   "Mode": "INLINE"
                 },
-                "StartAt": "Pass",
+                "StartAt": "Pass ${query_id}",
                 "States": {
                   "Pass": {
-                    "Type": "Pass",
+                    "Type": "Pass ${query_id}",
                     "End": true
                   }
                 }
