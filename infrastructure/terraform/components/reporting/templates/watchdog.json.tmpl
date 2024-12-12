@@ -36,9 +36,9 @@
               "Parameters": {
                 "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
               },
-              "Next": "For Each Anomalous Result"
+              "Next": "For Each Anomalous Result ${query_id}"
             },
-            "For Each Anomalous Result": {
+            "For Each Anomalous Result ${query_id}": {
               "Type": "Map",
               "ItemProcessor": {
                 "ProcessorConfig": {
