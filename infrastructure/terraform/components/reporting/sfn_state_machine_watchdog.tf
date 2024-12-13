@@ -9,7 +9,7 @@ resource "aws_sfn_state_machine" "watchdog" {
         query_id = "${aws_athena_named_query.outstanding_messages.id}"
       },
       {
-        metric_name = "Outstanding Requests"
+        metric_name = "Outstanding Requests",
         query_id = "${aws_athena_named_query.outstanding_requests.id}"
       }
     ]
