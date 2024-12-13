@@ -13,5 +13,6 @@ resource "aws_cloudwatch_metric_alarm" "outstanding_requests" {
     id          = "SumOutstandingRequestCount"
     expression  = "SELECT SUM(OutstandingRequestCount) FROM \"Notify/Watchdog\""
     return_data = "true"
+    period      = 86400
   }
 }
