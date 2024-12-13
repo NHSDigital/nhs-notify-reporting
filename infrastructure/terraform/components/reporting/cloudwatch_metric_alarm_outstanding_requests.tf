@@ -3,7 +3,7 @@ resource "aws_cloudwatch_metric_alarm" "outstanding_requests" {
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
   threshold                 = 1
-  alarm_description         = "This metric monitors unexpected outstanding requests"
+  alarm_description         = "This metric monitors unexpected/overdue outstanding requests"
 
   metric_query {
     id          = "sum_outstanding_requests_count"
