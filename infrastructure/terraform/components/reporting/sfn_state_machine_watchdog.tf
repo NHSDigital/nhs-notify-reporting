@@ -167,4 +167,17 @@ data "aws_iam_policy_document" "sfn_watchdog" {
       "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
     ]
   }
+
+  statement {
+    sid    = "AllowCloudwatchMetrics"
+    effect = "Allow"
+
+    actions = [
+      "cloudwatch:PutMetricData"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
 }
