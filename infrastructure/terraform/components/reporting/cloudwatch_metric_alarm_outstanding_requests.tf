@@ -6,8 +6,8 @@ resource "aws_cloudwatch_metric_alarm" "outstanding_requests" {
   alarm_description         = "This metric monitors unexpected outstanding requests"
 
   metric_query {
-    id          = "SumOutstandingRequestCount"
-    expression  = "SELECT SUM(OutstandingRequestCount) FROM \"Notify/Watchdog\""
+    id          = "sum_outstanding_requests_count"
+    expression  = "SELECT SUM(OutstandingRequestsCount) FROM \"Notify/Watchdog\""
     return_data = "true"
     period      = 10800
   }

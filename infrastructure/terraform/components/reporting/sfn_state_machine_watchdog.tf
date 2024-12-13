@@ -5,11 +5,11 @@ resource "aws_sfn_state_machine" "watchdog" {
   definition = templatefile("${path.module}/templates/watchdog.json.tmpl", {
     watchdog_queries = [
       {
-        metric_name = "OutstandingMessageCount",
+        metric_name = "OutstandingMessagesCount",
         query_id = "${aws_athena_named_query.outstanding_messages.id}"
       },
       {
-        metric_name = "OutstandingRequestCount",
+        metric_name = "OutstandingRequestsCount",
         query_id = "${aws_athena_named_query.outstanding_requests.id}"
       }
     ]
