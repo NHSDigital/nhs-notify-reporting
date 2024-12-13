@@ -5,19 +5,19 @@
     "For Each Watchdog Query": {
       "Type": "Parallel",
       "Branches": ${jsonencode(concat([
-        for query_id in watchdog_query_ids:
+        for query in watchdog_queries:
         {
-          "StartAt": "Get Query ${query_id}",
+          "StartAt": "Get Query ${query.query_id}",
           "States": {
-            "Get Query ${query_id}": {
+            "Get Query ${query.query_id}": {
               "Type": "Task",
               "Parameters": {
-                "NamedQueryId": "${query_id}"
+                "NamedQueryId": "${query.query_id}"
               },
               "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
-              "Next": "Execute Query ${query_id}"
+              "Next": "Execute Query ${query.query_id}"
             },
-            "Execute Query ${query_id}": {
+            "Execute Query ${query.query_id}": {
               "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
               "Parameters": {
                 "QueryString.$": "$.NamedQuery.QueryString",
@@ -27,36 +27,52 @@
                 }
               },
               "Type": "Task",
-              "Next": "Get Query ${query_id} Results",
+              "Next": "Get Query Results ${query.query_id}",
               "ResultPath": "$.WatchdogQueryExecution"
             },
-            "Get Query ${query_id} Results": {
+            "Get Query Results ${query.query_id}": {
               "Type": "Task",
               "Resource": "arn:aws:states:::athena:getQueryResults",
               "Parameters": {
                 "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
               },
-              "Next": "For Each Anomalous Result ${query_id}",
+              "Next": "For Each Anomalous Result ${query.query_id}",
               "ResultPath": "$.WatchdogQueryResults",
               "ResultSelector": {
-                "queryResults.$": "$.ResultSet.Rows[1:].Data"
+                "Anomalies.$": "$.ResultSet.Rows[1:].Data"
               }
             },
-            "For Each Anomalous Result ${query_id}": {
+            "For Each Anomalous Result ${query.query_id}": {
               "Type": "Map",
               "ItemProcessor": {
                 "ProcessorConfig": {
                   "Mode": "INLINE"
                 },
-                "StartAt": "Pass ${query_id}",
+                "Put Metric ${query.query_id}",
                 "States": {
-                  "Pass ${query_id}": {
-                    "Type": "Pass",
+                   "Put Metric ${query.query_id}": {
+                    "Type": "Task",
+                    "Parameters": {
+                      "Namespace": "Notify/Watchdog",
+                      "MetricData": [
+                        {
+                          "MetricName": "${query.metric_name}",
+                          "Dimensions": [
+                            {
+                              "Name": "clientid",
+                              "Value.$": "$[0].VarCharValue"
+                            }
+                          ],
+                          "Value.$": "States.StringToJson($[1].VarCharValue)"
+                        }
+                      ]
+                    },
+                    "Resource": "arn:aws:states:::aws-sdk:cloudwatch:putMetricData",
                     "End": true
                   }
                 }
               },
-              "ItemsPath": "$.WatchdogQueryResults.queryResults",
+              "ItemsPath": "$.WatchdogQueryResults.Anomalies",
               "End": true
             }
           }

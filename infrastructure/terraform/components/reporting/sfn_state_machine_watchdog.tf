@@ -3,9 +3,15 @@ resource "aws_sfn_state_machine" "watchdog" {
   role_arn = aws_iam_role.sfn_watchdog.arn
 
   definition = templatefile("${path.module}/templates/watchdog.json.tmpl", {
-    watchdog_query_ids = [
-      "${aws_athena_named_query.outstanding_messages.id}",
-      "${aws_athena_named_query.outstanding_requests.id}"
+    watchdog_queries = [
+      {
+        metric_name = "Outstanding Messages",
+        query_id = "${aws_athena_named_query.outstanding_messages.id}"
+      },
+      {
+        metric_name = "Outstanding Requests"
+        query_id = "${aws_athena_named_query.outstanding_requests.id}"
+      }
     ]
   })
 
