@@ -6,6 +6,6 @@ resource "aws_athena_named_query" "overdue_request_item_plans" {
   query       = file("${path.module}/scripts/sql/watchdog/overdue_request_item_plans.sql")
 
   depends_on = [
-    null_resource.request_item_status_summary_tableXX
+    null_resource.request_item_plan_status_table
   ]
 }
