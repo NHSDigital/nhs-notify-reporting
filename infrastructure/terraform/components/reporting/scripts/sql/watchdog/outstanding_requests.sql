@@ -1,4 +1,4 @@
-SELECT clientid, COUNT(DISTINCT requestid) FROM (
+SELECT clientid, SUM(CASE WHEN totalitems > completeditems THEN 1 ELSE 0 END) FROM (
   SELECT
     clientid, requestid,
     COUNT(*) AS totalitems,
@@ -7,7 +7,7 @@ SELECT clientid, COUNT(DISTINCT requestid) FROM (
   FROM request_item_status
   GROUP BY clientid, requestid
 )
-WHERE totalitems > completeditems AND
+WHERE
 createddate <= DATE_ADD('week', -2, CURRENT_DATE) AND
 createddate >= DATE_ADD('day', -90, CURRENT_DATE)
 GROUP BY clientid

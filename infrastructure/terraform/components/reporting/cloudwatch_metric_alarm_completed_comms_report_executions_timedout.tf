@@ -8,7 +8,6 @@ resource "aws_cloudwatch_metric_alarm" "completed_comms_report_executions_timedo
   statistic                 = "Sum"
   threshold                 = 1
   alarm_description         = "This metric monitors step function execution timeouts"
-  insufficient_data_actions = []
 
   dimensions = {
     StateMachineArn = aws_sfn_state_machine.completed_comms_report.arn
