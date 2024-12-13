@@ -10,7 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "outstanding_requests" {
   alarm_description         = "This metric monitors unexpected outstanding requests"
 
   metric_query {
-    id = "m1"
+    id = "outstanding_requests"
 
     metric {
       metric_name = "OutstandingRequestCount"
@@ -19,5 +19,7 @@ resource "aws_cloudwatch_metric_alarm" "outstanding_requests" {
       stat        = "Sum"
       unit        = "Count"
     }
+
+    return_data = "true"
   }
 }
