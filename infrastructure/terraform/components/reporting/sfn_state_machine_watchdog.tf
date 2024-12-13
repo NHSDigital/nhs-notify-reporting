@@ -5,12 +5,16 @@ resource "aws_sfn_state_machine" "watchdog" {
   definition = templatefile("${path.module}/templates/watchdog.json.tmpl", {
     watchdog_queries = [
       {
-        metric_name = "OutstandingRequestItemsCount",
-        query_id = "${aws_athena_named_query.outstanding_request_items.id}"
+        metric_name = "OverdueRequestItemPlansCount",
+        query_id = "${aws_athena_named_query.overdue_request_item_plans.id}"
       },
       {
-        metric_name = "OutstandingRequestsCount",
-        query_id = "${aws_athena_named_query.outstanding_requests.id}"
+        metric_name = "OverdueRequestItemsCount",
+        query_id = "${aws_athena_named_query.overdue_request_items.id}"
+      },
+      {
+        metric_name = "OverdueRequestsCount",
+        query_id = "${aws_athena_named_query.overdue_requests.id}"
       }
     ]
   })
