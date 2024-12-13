@@ -36,13 +36,13 @@
               "Parameters": {
                 "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
               },
-              "Next": "For Each Anomalous Result ${query.query_id}",
+              "Next": "For Each Result Row ${query.query_id}",
               "ResultPath": "$.WatchdogQueryResults",
               "ResultSelector": {
-                "Anomalies.$": "$.ResultSet.Rows[1:].Data"
+                "Rows.$": "$.ResultSet.Rows[1:].Data"
               }
             },
-            "For Each Anomalous Result ${query.query_id}": {
+            "For Each Result Row ${query.query_id}": {
               "Type": "Map",
               "ItemProcessor": {
                 "ProcessorConfig": {
@@ -72,7 +72,7 @@
                   }
                 }
               },
-              "ItemsPath": "$.WatchdogQueryResults.Anomalies",
+              "ItemsPath": "$.WatchdogQueryResults.Rows",
               "End": true
             }
           }
