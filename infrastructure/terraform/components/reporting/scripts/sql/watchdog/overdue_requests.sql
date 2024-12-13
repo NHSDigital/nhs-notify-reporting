@@ -8,6 +8,6 @@ SELECT clientid, SUM(CASE WHEN totalitems > completeditems THEN 1 ELSE 0 END) FR
   GROUP BY clientid, requestid
 )
 WHERE
-createddate <= DATE_ADD('week', -2, CURRENT_DATE) AND
+createddate < DATE_ADD('week', -2, CURRENT_DATE) AND
 createddate >= DATE_ADD('day', -90, CURRENT_DATE)
 GROUP BY clientid
