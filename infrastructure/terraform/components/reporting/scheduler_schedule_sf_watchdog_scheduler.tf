@@ -7,7 +7,7 @@ resource "aws_scheduler_schedule" "sf_watchdog_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(30 1,4,7,10,13,16,19,22 ? * * *)"
+  schedule_expression          = "cron(30 * ? * * *)"
   schedule_expression_timezone = "Europe/London"
 
   target {

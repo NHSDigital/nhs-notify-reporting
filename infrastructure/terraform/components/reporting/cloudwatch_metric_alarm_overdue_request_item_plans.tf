@@ -9,6 +9,6 @@ resource "aws_cloudwatch_metric_alarm" "overdue_request_item_plans" {
     id          = "sum_overdue_request_item_plans_count"
     expression  = "SELECT SUM(OverdueRequestItemPlansCount) FROM \"Notify/Watchdog\""
     return_data = "true"
-    period      = 10800
+    period      = 3600
   }
 }
