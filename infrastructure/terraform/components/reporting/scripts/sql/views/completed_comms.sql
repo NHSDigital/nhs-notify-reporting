@@ -25,3 +25,4 @@ LEFT OUTER JOIN request_item_plan_status rip ON
 WHERE
     rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') OR
     (ri.status IN ('FAILED') AND rip.requestitemplanid IS NULL)
+ORDER BY clientid, requestid, requestitemid, requestitemplanid
