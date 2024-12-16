@@ -43,6 +43,7 @@ This domain does not contain any application code. The reporting domain is execu
   - [Housekeeping](#housekeeping)
 - [Canned Reports](#canned-reports)
   - [Completed Communications Report](#completed-communications-report)
+- [Watchdog Queries](#watchdog-queries)
 - [Contacts](#contacts)
 - [Licence](#licence)
 
@@ -227,6 +228,20 @@ When executed manually via the AWS console, the step function can be run for any
   "clientIds": ["any_client_id"]
 }
 ```
+
+## Watchdog Queries
+
+The step function `<environment>-state-machine-watchdog` executes a set of queries that analyse the state of recent transactions (from the last 90 days) in the database and writes the results of those queries as CloudWatch metrics.
+
+CloudWatch alarms are setup to trigger if any of those watchdog metrics exceed a defined threshold.
+
+Watchdog queries and corresponding metrics and alarms are currently setup for the following:
+
+| Condition                                  | Named Query                | Metric                       | Threshold                  | Alarm                      |
+|--------------------------------------------|----------------------------|------------------------------|----------------------------|----------------------------|
+| Request item plans unexpectedly incomplete | overdue_request_item_plans | OverdueRequestItemPlansCount | Sum across all clients > 0 | overdue-request-item-plans |
+| Request items incomplete after 2 weeks     | overdue_request_items      | OverdueRequestItemsCount     | Sum across all clients > 0 | overdue-request-items      |
+| Requests incomplete after 2 weeks          | overdue_requests           | OverdueRequestsCount         | Sum across all clients > 0 | overdue-requests           |
 
 ## Contacts
 
