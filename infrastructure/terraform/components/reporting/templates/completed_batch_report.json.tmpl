@@ -159,26 +159,7 @@
                     }
                   },
                   "Type": "Task",
-                  "Next": "Transaction Success",
-                  "Catch": [
-                    {
-                      "ErrorEquals": [
-                        "States.ALL"
-                      ],
-                      "ResultPath": "$.error",
-                      "Next": "Transaction Failed"
-                    }
-                  ]
-                },
-                "Transaction Success": {
-                  "Type": "Pass",
-                  "Result": "Athena query succeeded.",
                   "End": true
-                },
-                "Transaction Failed": {
-                  "Type": "Fail",
-                  "CausePath": "$.error.Cause",
-                  "ErrorPath": "$.error.Error"
                 }
               }
             },
