@@ -43,6 +43,7 @@ This domain does not contain any application code. The reporting domain is execu
   - [Housekeeping](#housekeeping)
 - [Canned Reports](#canned-reports)
   - [Completed Communications Report](#completed-communications-report)
+  - [Completed Batch Report](#completed-batch-report)
 - [Contacts](#contacts)
 - [Licence](#licence)
 
