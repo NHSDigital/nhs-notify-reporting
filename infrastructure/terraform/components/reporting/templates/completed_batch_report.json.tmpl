@@ -103,14 +103,15 @@
             "Next": "For Each Request Id",
             "ResultPath": "$.useCompletedRequestIds",
             "ResultSelector": {
-              "completedRequestIds.$": "$.ResultSet.Rows[1:].Data[0].VarCharValue"
+              "completedRequestIds.$": "$.ResultSet.Rows[1:].Data"
             }
           },
           "For Each Request Id": {
             "Type": "Map",
             "ItemsPath": "$.useCompletedRequestIds.completedRequestIds",
             "ItemSelector": {
-              "requestId.$": "$$.Map.Item.Value",
+              "requestId.$": "$$.Map.Item.Value[0].VarCharValue",
+              "requestRefId.$": "$$.Map.Item.Value[1].VarCharValue",
               "clientId.$": "$.clientId",
               "ReportQuery.$": "$.ReportQuery"
             },
@@ -124,7 +125,7 @@
                   "Type": "Task",
                   "Parameters": {
                     "Bucket": "${output_bucket}",
-                    "Prefix.$": "States.Format('${output_folder}/{}/{}/', $.clientId, $.requestId)"
+                    "Prefix.$": "States.Format('${output_folder}/{}/{}/{}/', $.clientId, $.requestId, $.requestRefId)"
                   },
                   "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
                   "Next": "Exit if Report Already Exists",
@@ -155,7 +156,7 @@
                       "Database.$": "$.ReportQuery.NamedQuery.Database"
                     },
                     "ResultConfiguration": {
-                      "OutputLocation.$": "States.Format('s3://${output_bucket}/${output_folder}/{}/{}/', $.clientId, $.requestId)"
+                      "OutputLocation.$": "States.Format('s3://${output_bucket}/${output_folder}/{}/{}/{}/', $.clientId, $.requestId, $.requestRefId)"
                     }
                   },
                   "Type": "Task",
