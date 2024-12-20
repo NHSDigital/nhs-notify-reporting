@@ -227,6 +227,8 @@ When executed manually via the AWS console, the step function can be run for any
 }
 ```
 
+Reports are written to the defined S3 bucket under `/completed_comms_report/<clientId>/<completedDate>/`
+
 ### Completed Batch Report
 
 The completed batch report can be triggered by executing the `<environment>-state-machine-completed-batch-report` step function.
@@ -240,6 +242,8 @@ When executed manually via the AWS console, the step function can be run for any
   "clientIds": ["any_client_id"]
 }
 ```
+
+Reports are written to the defined S3 bucket under `/completed_batch_report/<clientId>/<requestId>/<requestRefId>/`
 
 ## Contacts
 
