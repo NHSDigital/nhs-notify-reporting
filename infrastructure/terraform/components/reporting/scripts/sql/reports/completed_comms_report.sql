@@ -3,15 +3,15 @@ SELECT
     requestrefid,
     requestitemid,
     requestitemrefid,
-    requestitemcompleteddate,
+    requestitemcompletedtime,
     requestitemfailedreason,
     sendinggroupid,
     sendinggroupidversion,
     sendinggroupname,
-    sendinggroupcreateddate,
+    sendinggroupcreatedtime,
     requestitemstatus,
     requestitemplanid,
-    requestitemplancompleteddate,
+    requestitemplancompletedtime,
     requestitemplanstatus,
     communicationtype,
     channeltype,
@@ -20,6 +20,6 @@ FROM completed_comms
 WHERE
     clientid = ? AND
     (
-        (requestitemplancompleteddate = DATE(?)) OR
-        (requestitemplanid IS NULL AND requestitemcompleteddate = DATE(?))
+        (DATE(requestitemplancompletedtime) = DATE(?)) OR
+        (requestitemplanid IS NULL AND DATE(requestitemcompletedtime) = DATE(?))
     )
