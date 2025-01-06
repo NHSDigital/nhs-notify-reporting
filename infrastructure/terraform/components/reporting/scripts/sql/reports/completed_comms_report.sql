@@ -20,6 +20,6 @@ FROM completed_comms
 WHERE
     clientid = ? AND
     (
-        (DATE(requestitemplancompletedtime) = DATE(?)) OR
-        (requestitemplanid IS NULL AND DATE(requestitemcompletedtime) = DATE(?))
+        (DATE(from_iso8601_timestamp(requestitemplancompletedtime)) = DATE(?)) OR
+        (requestitemplanid IS NULL AND DATE(from_iso8601_timestamp(requestitemcompletedtime)) = DATE(?))
     )
