@@ -1,6 +1,6 @@
 resource "aws_scheduler_schedule" "sf_completed_comms_report_scheduler" {
   name       = "${local.csi}-completed-comms-report-scheduler"
-  description = "Schduler to trigger Step Function to generate the completed communications report"
+  description = "Scheduler to trigger Step Function to generate the completed communications report"
   group_name = "default"
 
   flexible_time_window {

@@ -1,6 +1,6 @@
 resource "aws_scheduler_schedule" "sf_completed_batch_report_scheduler" {
   name       = "${local.csi}-completed-batch-report-scheduler"
-  description = "Schduler to trigger Step Function to generate the completed batch report"
+  description = "Scheduler to trigger Step Function to generate the completed batch report"
   group_name = "default"
 
   flexible_time_window {
