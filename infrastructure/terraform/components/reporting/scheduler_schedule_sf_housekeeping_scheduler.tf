@@ -1,6 +1,6 @@
 resource "aws_scheduler_schedule" "sf_housekeeping_scheduler" {
   name       = "${local.csi}-housekeeping-scheduler"
-  description = "Schduler to trigger Step Function to run housekeeping queries"
+  description = "Scheduler to trigger Step Function to run housekeeping queries"
   group_name = "default"
 
   flexible_time_window {
