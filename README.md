@@ -43,6 +43,7 @@ This domain does not contain any application code. The reporting domain is execu
   - [Housekeeping](#housekeeping)
 - [Canned Reports](#canned-reports)
   - [Completed Communications Report](#completed-communications-report)
+  - [Completed Batch Report](#completed-batch-report)
 - [Watchdog Queries](#watchdog-queries)
 - [Contacts](#contacts)
 - [Licence](#licence)
@@ -212,13 +213,11 @@ Equivalent functionality is instead achieved via OPTIMISE and VACUUM commands ex
 
 The reporting domain has the ability to execute sql queries as canned reports and write the output back to a nominated S3 bucket in the core account.
 
-(Currently just one is supported - the completed communications report)
-
 ### Completed Communications Report
 
-The completed communications report can be triggered by executing the `state-machine-completed-comms-report` step function.
+The completed communications report can be triggered by executing the `<environment>-state-machine-completed-comms-report` step function.
 
-By default, and when executed on schedule, this will run for yesterday's date and for the client ids held in the `completed-comms-report/clientIds` parameter in AWS Parameter Store.
+By default, and when executed on schedule, this will run for yesterday's date and for the client ids held in the `<environment>/completed-comms-report/clientIds` parameter in AWS Parameter Store.
 
 When executed manually via the AWS console, the step function can be run for any completion date and set of clients by providing a JSON input to the step function as follows:
 
@@ -228,6 +227,24 @@ When executed manually via the AWS console, the step function can be run for any
   "clientIds": ["any_client_id"]
 }
 ```
+
+Reports are written to the defined S3 bucket under `/completed_comms_report/<clientId>/<completedDate>/`
+
+### Completed Batch Report
+
+The completed batch report can be triggered by executing the `<environment>-state-machine-completed-batch-report` step function.
+
+By default, and when executed on schedule, this will run for the client ids held in the `<environment>/completed-batch-report/clientIds` parameter in AWS Parameter Store.
+
+When executed manually via the AWS console, the step function can be run for any set of clients by providing a JSON input to the step function as follows:
+
+```json
+{
+  "clientIds": ["any_client_id"]
+}
+```
+
+Reports are written to the defined S3 bucket under `/completed_batch_report/<clientId>/<requestId>/<requestRefId>/`
 
 ## Watchdog Queries
 

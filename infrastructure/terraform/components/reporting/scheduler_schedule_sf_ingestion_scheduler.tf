@@ -1,6 +1,6 @@
 resource "aws_scheduler_schedule" "sf_ingestion_scheduler" {
   name       = "${local.csi}-ingestion-scheduler"
-  description = "Schduler to trigger Step Function to run ingestion queries"
+  description = "Scheduler to trigger Step Function to run ingestion queries"
   group_name = "default"
 
   flexible_time_window {

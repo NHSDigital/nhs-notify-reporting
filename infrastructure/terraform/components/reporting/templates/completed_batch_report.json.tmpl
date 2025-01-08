@@ -1,0 +1,176 @@
+{
+  "Comment": "Workflow to generate the completed batch report.",
+  "StartAt": "Select Client Ids",
+  "States": {
+    "Select Client Ids": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.clientIds",
+          "IsPresent": true,
+          "Next": "Get Client Ids From Args"
+        }
+      ],
+      "Default": "Get Client Ids From SSM"
+    },
+    "Get Client Ids From Args": {
+      "Type": "Pass",
+      "Next": "Exit if No Clients",
+      "ResultPath": "$.useClientIds",
+      "Parameters": {
+        "clientIds.$": "$.clientIds"
+      }
+    },
+    "Exit if No Clients": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.useClientIds.clientIds[0]",
+          "IsPresent": false,
+          "Next": "No Clients Found"
+        }
+      ],
+      "Default": "Get Completed Request Ids Query"
+    },
+    "No Clients Found": {
+      "Type": "Pass",
+      "End": true
+    },
+    "Get Client Ids From SSM": {
+      "Type": "Task",
+      "Parameters": {
+        "Name": "/${environment}/completed-batch-report/clientIds"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:ssm:getParameter",
+      "Next": "Exit if No Clients",
+      "ResultSelector": {
+        "clientIds.$": "States.StringToJson($.Parameter.Value)"
+      },
+      "ResultPath": "$.useClientIds"
+    },
+    "Get Completed Request Ids Query": {
+      "Type": "Task",
+      "Parameters": {
+        "NamedQueryId": "${batch_query_id}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+      "Next": "Get Report Query",
+      "ResultPath": "$.BatchQuery"
+    },
+    "Get Report Query": {
+      "Type": "Task",
+      "Parameters": {
+        "NamedQueryId": "${report_query_id}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+      "Next": "For Each Client Id",
+      "ResultPath": "$.ReportQuery"
+    },
+    "For Each Client Id": {
+      "Type": "Map",
+      "ItemsPath": "$.useClientIds.clientIds",
+      "ItemSelector": {
+        "clientId.$": "$$.Map.Item.Value",
+        "BatchQuery.$": "$.BatchQuery",
+        "ReportQuery.$": "$.ReportQuery"
+      },
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Execute Completed Request Ids Query",
+        "States": {
+          "Execute Completed Request Ids Query": {
+            "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+            "Parameters": {
+              "QueryString.$": "$.BatchQuery.NamedQuery.QueryString",
+              "ExecutionParameters.$": "States.Array($.clientId)",
+              "WorkGroup.$": "$.BatchQuery.NamedQuery.WorkGroup",
+              "QueryExecutionContext": {
+                "Database.$": "$.BatchQuery.NamedQuery.Database"
+              }
+            },
+            "Type": "Task",
+            "Next": "Get Completed Request Ids From Query Results",
+            "ResultPath": "$.BatchQueryExecution"
+          },
+          "Get Completed Request Ids From Query Results": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::athena:getQueryResults",
+            "Parameters": {
+              "QueryExecutionId.$": "$.BatchQueryExecution.QueryExecution.QueryExecutionId"
+            },
+            "Next": "For Each Request Id",
+            "ResultPath": "$.useCompletedRequestIds",
+            "ResultSelector": {
+              "completedRequestIds.$": "$.ResultSet.Rows[1:].Data"
+            }
+          },
+          "For Each Request Id": {
+            "Type": "Map",
+            "ItemsPath": "$.useCompletedRequestIds.completedRequestIds",
+            "ItemSelector": {
+              "requestId.$": "$$.Map.Item.Value[0].VarCharValue",
+              "requestRefId.$": "$$.Map.Item.Value[1].VarCharValue",
+              "clientId.$": "$.clientId",
+              "ReportQuery.$": "$.ReportQuery"
+            },
+            "ItemProcessor": {
+              "ProcessorConfig": {
+                "Mode": "INLINE"
+              },
+              "StartAt": "Check for Existing Report",
+              "States": {
+                "Check for Existing Report": {
+                  "Type": "Task",
+                  "Parameters": {
+                    "Bucket": "${output_bucket}",
+                    "Prefix.$": "States.Format('${output_folder}/{}/{}/{}/', $.clientId, $.requestId, $.requestRefId)"
+                  },
+                  "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+                  "Next": "Exit if Report Already Exists",
+                  "ResultPath": "$.reportExistsCheck"
+                },
+                "Exit if Report Already Exists": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.reportExistsCheck.KeyCount",
+                      "NumericEquals": 0,
+                      "Next": "Execute Report Query"
+                    }
+                  ],
+                  "Default": "Report Already Exists"
+                },
+                "Report Already Exists": {
+                  "Type": "Pass",
+                  "End": true
+                },
+                "Execute Report Query": {
+                  "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+                  "Parameters": {
+                    "QueryString.$": "$.ReportQuery.NamedQuery.QueryString",
+                    "ExecutionParameters.$": "States.Array($.clientId, $.requestId)",
+                    "WorkGroup.$": "$.ReportQuery.NamedQuery.WorkGroup",
+                    "QueryExecutionContext": {
+                      "Database.$": "$.ReportQuery.NamedQuery.Database"
+                    },
+                    "ResultConfiguration": {
+                      "OutputLocation.$": "States.Format('s3://${output_bucket}/${output_folder}/{}/{}/{}/', $.clientId, $.requestId, $.requestRefId)"
+                    }
+                  },
+                  "Type": "Task",
+                  "End": true
+                }
+              }
+            },
+            "End": true,
+            "ResultSelector": {}
+          }
+        }
+      },
+      "End": true,
+      "ResultSelector": {}
+    }
+  }
+}

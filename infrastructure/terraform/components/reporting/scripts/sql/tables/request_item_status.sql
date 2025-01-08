@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     sendinggroupid string,
     sendinggroupidversion string,
     sendinggroupname string,
-    sendinggroupcreateddate string,
+    sendinggroupcreatedtime timestamp,
     requestitemrefid string,
     requestitemid string,
     requestrefid string,

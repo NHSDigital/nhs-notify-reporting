@@ -1,13 +1,13 @@
-resource "aws_sfn_state_machine" "completed_comms_report" {
-  name     = "${local.csi}-state-machine-completed-comms-report"
-  role_arn = aws_iam_role.sfn_completed_comms_report.arn
+resource "aws_sfn_state_machine" "completed_batch_report" {
+  name     = "${local.csi}-state-machine-completed-batch-report"
+  role_arn = aws_iam_role.sfn_completed_batch_report.arn
 
-  definition = templatefile("${path.module}/templates/completed_comms_report.json.tmpl", {
-    date_query_id = "${aws_athena_named_query.yesterday.id}"
-    report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
+  definition = templatefile("${path.module}/templates/completed_batch_report.json.tmpl", {
+    batch_query_id = "${aws_athena_named_query.completed_batches.id}"
+    report_query_id = "${aws_athena_named_query.completed_batch_report.id}"
     environment = "${local.csi}"
     output_bucket = "comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
-    output_folder = "completed_comms_report"
+    output_folder = "completed_batch_report"
   })
 
   logging_configuration {
@@ -17,13 +17,13 @@ resource "aws_sfn_state_machine" "completed_comms_report" {
   }
 }
 
-resource "aws_iam_role" "sfn_completed_comms_report" {
-  name               = "${local.csi}-sf-completed-comms-report-role"
-  description        = "Role used by the State Machine to generate the completed communications report"
-  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_completed_comms_report.json
+resource "aws_iam_role" "sfn_completed_batch_report" {
+  name               = "${local.csi}-sf-completed-batch-report-role"
+  description        = "Role used by the State Machine to generate the completed batch report"
+  assume_role_policy = data.aws_iam_policy_document.sfn_assumerole_completed_batch_report.json
 }
 
-data "aws_iam_policy_document" "sfn_assumerole_completed_comms_report" {
+data "aws_iam_policy_document" "sfn_assumerole_completed_batch_report" {
   statement {
     sid    = "EcsAssumeRole"
     effect = "Allow"
@@ -42,19 +42,19 @@ data "aws_iam_policy_document" "sfn_assumerole_completed_comms_report" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "sfn_completed_comms_report" {
-  role       = aws_iam_role.sfn_completed_comms_report.name
-  policy_arn = aws_iam_policy.sfn_completed_comms_report.arn
+resource "aws_iam_role_policy_attachment" "sfn_completed_batch_report" {
+  role       = aws_iam_role.sfn_completed_batch_report.name
+  policy_arn = aws_iam_policy.sfn_completed_batch_report.arn
 }
 
-resource "aws_iam_policy" "sfn_completed_comms_report" {
-  name        = "${local.csi}-sfn-completed-comms-report-policy"
-  description = "Allow Step Function State Machine to generate the completed communications report"
+resource "aws_iam_policy" "sfn_completed_batch_report" {
+  name        = "${local.csi}-sfn-completed-batch-report-policy"
+  description = "Allow Step Function State Machine to generate the completed batch report"
   path        = "/"
-  policy      = data.aws_iam_policy_document.sfn_completed_comms_report.json
+  policy      = data.aws_iam_policy_document.sfn_completed_batch_report.json
 }
 
-data "aws_iam_policy_document" "sfn_completed_comms_report" {
+data "aws_iam_policy_document" "sfn_completed_batch_report" {
 
   statement {
     sid    = "AllowSSM"
@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      aws_ssm_parameter.completed_comms_report_client_ids.arn
+      aws_ssm_parameter.completed_batch_report_client_ids.arn
     ]
   }
 
@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3CurrentReadData"
+    sid    = "AllowS3CurrentRead"
     effect = "Allow"
 
     actions = [
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
   }
 
   statement {
-    sid    = "AllowS3CurrentWriteResults"
+    sid    = "AllowS3CurrentWrite"
     effect = "Allow"
 
     actions = [
