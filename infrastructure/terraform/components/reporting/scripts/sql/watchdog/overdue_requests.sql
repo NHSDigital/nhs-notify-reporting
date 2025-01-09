@@ -1,7 +1,7 @@
 SELECT clientid, campaignid, SUM(CASE WHEN totalitems > completeditems THEN 1 ELSE 0 END) FROM (
   SELECT
     clientid,
-    COALESCE(campaignid, '') AS campaignid,
+    COALESCE(campaignid, 'Unspecified') AS campaignid,
     requestid,
     COUNT(*) AS totalitems,
     SUM(CASE WHEN status IN ('FAILED', 'DELIVERED') THEN 1 ELSE 0 END) AS completeditems,
