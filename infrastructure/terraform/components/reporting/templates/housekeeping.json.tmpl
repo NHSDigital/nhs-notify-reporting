@@ -61,26 +61,7 @@
                 }
               },
               "Type": "Task",
-              "Next": "Transaction Success ${query_id}",
-              "Catch": [
-                {
-                  "ErrorEquals": [
-                    "States.ALL"
-                  ],
-                  "ResultPath": "$.error",
-                  "Next": "Transaction Failed ${query_id}"
-                }
-              ]
-            },
-            "Transaction Success ${query_id}": {
-              "Type": "Pass",
-              "Result": "Athena query succeeded.",
               "End": true
-            },
-            "Transaction Failed ${query_id}": {
-              "Type": "Fail",
-              "CausePath": "$.error.Cause",
-              "ErrorPath": "$.error.Error"
             }
           }
         }
@@ -112,26 +93,7 @@
                 }
               },
               "Type": "Task",
-              "Next": "Transaction Success ${query_id}",
-              "Catch": [
-                {
-                  "ErrorEquals": [
-                    "States.ALL"
-                  ],
-                  "ResultPath": "$.error",
-                  "Next": "Transaction Failed ${query_id}"
-                }
-              ]
-            },
-            "Transaction Success ${query_id}": {
-              "Type": "Pass",
-              "Result": "Athena query succeeded.",
               "End": true
-            },
-            "Transaction Failed ${query_id}": {
-              "Type": "Fail",
-              "CausePath": "$.error.Cause",
-              "ErrorPath": "$.error.Error"
             }
           }
         }

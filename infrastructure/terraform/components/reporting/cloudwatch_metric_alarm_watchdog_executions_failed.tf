@@ -1,8 +1,8 @@
-resource "aws_cloudwatch_metric_alarm" "completed_comms_report_executions_aborted" {
-  alarm_name                = "${local.csi}-completed-comms-report-execution-aborted"
+resource "aws_cloudwatch_metric_alarm" "watchdog_executions_failed" {
+  alarm_name                = "${local.csi}-watchdog-executions-failed"
   comparison_operator       = "GreaterThanOrEqualToThreshold"
   evaluation_periods        = 1
-  metric_name               = "ExecutionsAborted"
+  metric_name               = "ExecutionsFailed"
   namespace                 = "AWS/States"
   period                    = 60
   statistic                 = "Sum"
@@ -10,6 +10,6 @@ resource "aws_cloudwatch_metric_alarm" "completed_comms_report_executions_aborte
   alarm_description         = "This metric monitors failed step function executions"
 
   dimensions = {
-    StateMachineArn = aws_sfn_state_machine.completed_comms_report.arn
+    StateMachineArn = aws_sfn_state_machine.watchdog.arn
   }
 }
