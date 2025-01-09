@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "overdue_request_item_plans" {
 
   metric_query {
     id          = "sum_overdue_request_item_plans_count"
-    expression  = "SELECT SUM(OverdueRequestItemPlansCount) FROM \"Notify/Watchdog\" WHERE environment=${local.csi}"
+    expression  = "SELECT SUM(OverdueRequestItemPlansCount) FROM \"Notify/Watchdog\" WHERE environment='${var.environment}'"
     return_data = "true"
     period      = 3600
   }
