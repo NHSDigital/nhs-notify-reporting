@@ -1,0 +1,88 @@
+{
+  "Comment": "Workflow to run watchdog queries and raise alarms on detected anomalies.",
+  "StartAt": "For Each Watchdog Query",
+  "States": {
+    "For Each Watchdog Query": {
+      "Type": "Parallel",
+      "Branches": ${jsonencode(concat([
+        for query in watchdog_queries:
+        {
+          "StartAt": "Get Query ${query.query_id}",
+          "States": {
+            "Get Query ${query.query_id}": {
+              "Type": "Task",
+              "Parameters": {
+                "NamedQueryId": "${query.query_id}"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:athena:getNamedQuery",
+              "Next": "Execute Query ${query.query_id}"
+            },
+            "Execute Query ${query.query_id}": {
+              "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
+              "Parameters": {
+                "QueryString.$": "$.NamedQuery.QueryString",
+                "WorkGroup.$": "$.NamedQuery.WorkGroup",
+                "QueryExecutionContext": {
+                  "Database.$": "$.NamedQuery.Database"
+                }
+              },
+              "Type": "Task",
+              "Next": "Get Query Results ${query.query_id}",
+              "ResultPath": "$.WatchdogQueryExecution"
+            },
+            "Get Query Results ${query.query_id}": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::athena:getQueryResults",
+              "Parameters": {
+                "QueryExecutionId.$": "$.WatchdogQueryExecution.QueryExecution.QueryExecutionId"
+              },
+              "Next": "For Each Result Row ${query.query_id}",
+              "ResultPath": "$.WatchdogQueryResults",
+              "ResultSelector": {
+                "Rows.$": "$.ResultSet.Rows[1:].Data"
+              }
+            },
+            "For Each Result Row ${query.query_id}": {
+              "Type": "Map",
+              "ItemProcessor": {
+                "ProcessorConfig": {
+                  "Mode": "INLINE"
+                },
+                "StartAt": "Put Metric ${query.query_id}",
+                "States": {
+                  "Put Metric ${query.query_id}": {
+                    "Type": "Task",
+                    "Parameters": {
+                      "Namespace": "Notify/Watchdog",
+                      "MetricData": [
+                        {
+                          "MetricName": "${query.metric_name}",
+                          "Dimensions": [
+                            {
+                              "Name": "clientid",
+                              "Value.$": "$[0].VarCharValue"
+                            },
+                            {
+                              "Name": "campaignid",
+                              "Value.$": "$[1].VarCharValue"
+                            }
+                          ],
+                          "Value.$": "States.StringToJson($[2].VarCharValue)"
+                        }
+                      ]
+                    },
+                    "Resource": "arn:aws:states:::aws-sdk:cloudwatch:putMetricData",
+                    "End": true
+                  }
+                }
+              },
+              "ItemsPath": "$.WatchdogQueryResults.Rows",
+              "End": true
+            }
+          }
+        }
+      ]))},
+      "End": true
+    }
+  }
+}

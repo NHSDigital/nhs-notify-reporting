@@ -107,7 +107,7 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
   }
 
   statement {
-    sid    = "AllowS3CurrentRead"
+    sid    = "AllowS3CurrentReadData"
     effect = "Allow"
 
     actions = [
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
   }
 
   statement {
-    sid    = "AllowS3CurrentWrite"
+    sid    = "AllowS3CurrentWriteResults"
     effect = "Allow"
 
     actions = [
