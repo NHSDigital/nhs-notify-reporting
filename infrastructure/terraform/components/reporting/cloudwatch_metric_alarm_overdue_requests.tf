@@ -6,7 +6,7 @@ resource "aws_cloudwatch_metric_alarm" "overdue_requests" {
   alarm_description         = "This metric monitors unexpected/overdue requests"
 
   metric_query {
-    id          = "sum_overdue_requests_count"
+    id          = "max_overdue_requests_count"
     expression  = "SELECT MAX(OverdueRequestsCount) FROM \"Notify/Watchdog\" WHERE environment='${var.environment}'"
     return_data = "true"
     period      = 3600
