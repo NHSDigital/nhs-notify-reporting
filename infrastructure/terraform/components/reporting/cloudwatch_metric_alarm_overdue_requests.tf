@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "overdue_requests" {
 
   metric_query {
     id          = "max_overdue_requests_count"
-    expression  = "SELECT MAX(OverdueRequestsCount) FROM \"Notify/Watchdog\" WHERE environment='${var.environment}'"
+    expression  = "SELECT MAX(OverdueRequestsCount) FROM \"Notify/Watchdog\" WHERE environment='${var.environment}' GROUP BY clientid, campaignid"
     return_data = "true"
     period      = 3600
   }
