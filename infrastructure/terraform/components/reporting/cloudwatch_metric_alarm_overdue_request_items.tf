@@ -5,6 +5,10 @@ resource "aws_cloudwatch_metric_alarm" "overdue_request_items" {
   threshold                 = 1
   alarm_description         = "This metric monitors unexpected/overdue request items"
 
+  dimensions = {
+    environment = local.csi
+  }
+
   metric_query {
     id          = "sum_overdue_request_items_count"
     expression  = "SELECT SUM(OverdueRequestItemsCount) FROM \"Notify/Watchdog\""
