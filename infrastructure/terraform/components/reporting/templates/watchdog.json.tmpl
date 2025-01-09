@@ -61,9 +61,13 @@
                             {
                               "Name": "clientid",
                               "Value.$": "$[0].VarCharValue"
+                            },
+                            {
+                              "Name": "campaignid",
+                              "Value.$": "$[1].VarCharValue"
                             }
                           ],
-                          "Value.$": "States.StringToJson($[1].VarCharValue)"
+                          "Value.$": "States.StringToJson($[2].VarCharValue)"
                         }
                       ]
                     },
