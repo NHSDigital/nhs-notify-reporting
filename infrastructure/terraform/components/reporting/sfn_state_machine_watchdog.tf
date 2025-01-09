@@ -17,6 +17,7 @@ resource "aws_sfn_state_machine" "watchdog" {
         query_id = "${aws_athena_named_query.overdue_requests.id}"
       }
     ]
+    environment = "${local.csi}"
   })
 
   logging_configuration {
