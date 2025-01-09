@@ -59,6 +59,10 @@
                           "MetricName": "${query.metric_name}",
                           "Dimensions": [
                             {
+                              "Name": "environment",
+                              "Value": "${environment}"
+                            },
+                            {
                               "Name": "clientid",
                               "Value.$": "$[0].VarCharValue"
                             },
