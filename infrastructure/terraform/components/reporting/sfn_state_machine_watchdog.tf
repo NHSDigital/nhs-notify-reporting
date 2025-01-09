@@ -6,15 +6,15 @@ resource "aws_sfn_state_machine" "watchdog" {
     watchdog_queries = [
       {
         metric_name = "OverdueRequestItemPlansCount",
-        query_id = aws_athena_named_query.overdue_request_item_plans.id
+        query_id    = aws_athena_named_query.overdue_request_item_plans.id
       },
       {
         metric_name = "OverdueRequestItemsCount",
-        query_id = aws_athena_named_query.overdue_request_items.id
+        query_id    = aws_athena_named_query.overdue_request_items.id
       },
       {
         metric_name = "OverdueRequestsCount",
-        query_id = aws_athena_named_query.overdue_requests.id
+        query_id    = aws_athena_named_query.overdue_requests.id
       }
     ]
     environment = var.environment
