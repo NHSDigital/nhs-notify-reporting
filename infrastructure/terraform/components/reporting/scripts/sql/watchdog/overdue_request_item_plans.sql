@@ -1,6 +1,6 @@
 SELECT
   clientid,
-  campaignid,
+  COALESCE(campaignid, ''),
   COUNT(*) - SUM(CASE WHEN status IN ('FAILED', 'DELIVERED', 'SKIPPED') THEN 1 ELSE 0 END)
 FROM request_item_plan_status
 WHERE
