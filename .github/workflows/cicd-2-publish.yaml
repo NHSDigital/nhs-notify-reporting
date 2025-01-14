@@ -45,11 +45,6 @@ jobs:
           export TERRAFORM_VERSION="${{ steps.variables.outputs.terraform_version }}"
           export VERSION="${{ steps.variables.outputs.version }}"
           make list-variables
-      - name: "Install Dependencies"
-        run: |
-            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
-            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
   publish:
     name: "Publish packages"
     runs-on: ubuntu-latest

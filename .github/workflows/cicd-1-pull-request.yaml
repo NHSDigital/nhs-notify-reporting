@@ -70,11 +70,6 @@ jobs:
           export VERSION="${{ steps.variables.outputs.version }}"
           export DOES_PULL_REQUEST_EXIST="${{ steps.pr_exists.outputs.does_pull_request_exist }}"
           make list-variables
-      - name: "Install Dependencies"
-        run: |
-            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
-            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
   commit-stage: # Recommended maximum execution time is 2 minutes
     name: "Commit stage"
     needs: [metadata]
