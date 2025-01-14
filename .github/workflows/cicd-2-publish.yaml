@@ -45,6 +45,9 @@ jobs:
           export TERRAFORM_VERSION="${{ steps.variables.outputs.terraform_version }}"
           export VERSION="${{ steps.variables.outputs.version }}"
           make list-variables
+      - name: "Install Dependencies"
+        run: |
+            make config
   publish:
     name: "Publish packages"
     runs-on: ubuntu-latest
