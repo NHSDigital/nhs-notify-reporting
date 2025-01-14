@@ -47,7 +47,7 @@ jobs:
           make list-variables
       - name: "Install Dependencies"
         run: |
-            yum install asdf -y
+            apt install asdf -y
             make config
   publish:
     name: "Publish packages"
