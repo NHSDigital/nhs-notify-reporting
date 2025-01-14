@@ -104,13 +104,6 @@ jobs:
           export DEPLOY_ENVIRONMENT="${{ steps.variables.outputs.deploy_environment }}"
           export TERRAFORM_ACTION="${{ steps.variables.outputs.terraform_action }}"
           make list-variables
-      - name: "Install Dependencies"
-        run: |
-            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
-            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
-            tfenv install 1.10.1
-            tfenv use 1.10.1
   deploy:
     name: "Deploy to an environment"
     environment: ${{ needs.metadata.outputs.deploy_environment }}
@@ -129,6 +122,13 @@ jobs:
           role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ASSUME_ROLE_NAME }}"
           role-session-name: deployInfra
           aws-region: ${{ needs.metadata.outputs.aws_region }}
+      - name: "Install Dependencies"
+        run: |
+            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
+            tfenv install 1.10.1
+            tfenv use 1.10.1
       - name:  Terraform Plan
         if: >-
           always() &&
