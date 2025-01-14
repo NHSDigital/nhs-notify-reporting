@@ -104,6 +104,9 @@ jobs:
           export DEPLOY_ENVIRONMENT="${{ steps.variables.outputs.deploy_environment }}"
           export TERRAFORM_ACTION="${{ steps.variables.outputs.terraform_action }}"
           make list-variables
+      - name: "Install Dependencies"
+        run: |
+            make config
   deploy:
     name: "Deploy to an environment"
     environment: ${{ needs.metadata.outputs.deploy_environment }}
