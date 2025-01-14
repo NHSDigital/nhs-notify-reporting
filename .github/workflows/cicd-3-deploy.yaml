@@ -106,6 +106,7 @@ jobs:
           make list-variables
       - name: "Install Dependencies"
         run: |
+            yum install asdf -y
             make config
   deploy:
     name: "Deploy to an environment"

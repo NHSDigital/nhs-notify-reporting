@@ -72,6 +72,7 @@ jobs:
           make list-variables
       - name: "Install Dependencies"
         run: |
+            yum install asdf -y
             make config
   commit-stage: # Recommended maximum execution time is 2 minutes
     name: "Commit stage"
