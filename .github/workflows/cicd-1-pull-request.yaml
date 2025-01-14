@@ -72,8 +72,9 @@ jobs:
           make list-variables
       - name: "Install Dependencies"
         run: |
-            sudo apt install asdf -y
-            make config
+            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
+            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
   commit-stage: # Recommended maximum execution time is 2 minutes
     name: "Commit stage"
     needs: [metadata]
