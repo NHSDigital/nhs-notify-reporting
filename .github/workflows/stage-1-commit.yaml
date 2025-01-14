@@ -151,7 +151,9 @@ jobs:
       - name: "Install Dependencies"
         run: |
             git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-            echo ::add-path::$HOME/.tfenv/bin
+            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
+            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
+            tfenv install 1.10.1
       - name: "Terraform Compliance"
         uses: ./.github/actions/terraform_testing
         with:
