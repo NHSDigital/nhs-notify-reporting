@@ -4,6 +4,8 @@ resource "aws_cloudwatch_metric_alarm" "overdue_request_item_plans" {
   evaluation_periods        = 1
   threshold                 = 1
   alarm_description         = "This metric monitors unexpected/overdue request item plans"
+  metric_name               = "OverdueRequestItemPlansCount"
+  namespace                 = "Notify/Watchdog"
 
   metric_query {
     id          = "max_overdue_request_item_plans_count"
