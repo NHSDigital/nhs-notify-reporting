@@ -50,3 +50,54 @@ resource "aws_s3_bucket_logging" "results" {
   target_bucket = aws_s3_bucket.access_logs.bucket
   target_prefix = "nhs-notify/${aws_s3_bucket.results.bucket}/"
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "results" {
+  bucket                = aws_s3_bucket.results.id
+  expected_bucket_owner = local.this_account
+
+  rule {
+    id     = "default_current_version"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    transition {
+      days          = "90"
+      storage_class = "STANDARD_IA"
+    }
+
+    transition {
+      days          = "180"
+      storage_class = "GLACIER"
+    }
+
+    expiration {
+      days = "365"
+    }
+  }
+
+  rule {
+    id     = "default_non_current_version"
+    status = "Enabled"
+
+    filter {
+      prefix = ""
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = "90"
+      storage_class   = "STANDARD_IA"
+    }
+
+    noncurrent_version_transition {
+      noncurrent_days = "180"
+      storage_class   = "GLACIER"
+    }
+
+    noncurrent_version_expiration {
+      noncurrent_days = "365"
+    }
+  }
+}
