@@ -4,3 +4,6 @@ aws_account_id = "211125615884"
 core_account_ids = [
   "746418818434"
 ]
+
+# Allow Grafana cross account access
+observability_account_id = "677276089126"
