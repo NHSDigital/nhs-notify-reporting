@@ -16,6 +16,7 @@ FROM (
 		WHERE rip.createdtime >= DATE_ADD('month', -2, CURRENT_DATE)
 		AND rq.rqcreatedtime >= DATE_ADD('month', -2, CURRENT_DATE)
 		AND rip.ordernumber = 1
+    AND rip.channeltype = 'primary'
 	UNION ALL
   --Failure to fallback channel send
 	SELECT clientid, campaignid, communicationtype,
@@ -37,6 +38,7 @@ FROM (
       LAG(completedtime,3) OVER (PARTITION BY requestitemid ORDER BY ordernumber ASC) as prevfailedtime3
     FROM request_item_plan_status
     WHERE createdtime >= DATE_ADD('month', -2, CURRENT_DATE)
+    AND channeltype = 'primary'
 	)
 	WHERE ordernumber > 1
 )
