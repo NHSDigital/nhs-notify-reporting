@@ -50,6 +50,13 @@ _terraform: # Terraform command wrapper - mandatory: cmd=[command to execute]; o
 	source scripts/terraform/terraform.lib.sh
 	terraform-${cmd} # 'dir' and 'opts' are accessible by the function as environment variables, if set
 
+terraform-docs: # Terraform-docs check against Terraform files - optional: terraform_dir|dir=[path to a directory where the command will be executed, relative to the project's top-level directory, default is one of the module variables or the example directory, if not set], terraform_opts|opts=[options to pass to the Terraform fmt command, default is '-recursive'] @Quality
+	for dir in ./infrastructure/terraform/components/* ./infrastructure/terraform/modules/*; do \
+		if [ -d "$$dir" ]; then \
+			./scripts/terraform/terraform-docs.sh $$dir; \
+		fi \
+	done
+
 # ==============================================================================
 # Quality checks - please DO NOT edit this section!
 
@@ -57,6 +64,8 @@ terraform-shellscript-lint: # Lint all Terraform module shell scripts @Quality
 	for file in $$(find scripts/terraform -type f -name "*.sh"); do
 		file=$${file} scripts/shellscript-linter.sh
 	done
+
+
 
 # ==============================================================================
 # Configuration - please DO NOT edit this section!
@@ -72,6 +81,7 @@ ${VERBOSE}.SILENT: \
 	terraform-apply \
 	terraform-destroy \
 	terraform-fmt \
+	terraform-docs \
 	terraform-init \
 	terraform-install \
 	terraform-plan \
