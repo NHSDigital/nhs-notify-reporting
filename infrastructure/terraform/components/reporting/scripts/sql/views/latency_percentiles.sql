@@ -8,25 +8,25 @@ SELECT
 FROM (
   --Receipt to first channel send
   SELECT rip.clientid, rip.campaignid, rip.communicationtype, rq.rqcreatedtime AS starttime, rip.sendtime AS endtime FROM
-		(
-			SELECT requestid, MIN(createdtime) AS rqcreatedtime FROM request_item_status
-			GROUP BY requestid
-		) AS rq
-		INNER JOIN request_item_plan_status rip ON rq.requestid = rip.requestid
-		WHERE rip.createdtime >= DATE_ADD('month', -2, CURRENT_DATE)
-		AND rq.rqcreatedtime >= DATE_ADD('month', -2, CURRENT_DATE)
-		AND rip.ordernumber = 1
+    (
+      SELECT requestid, MIN(createdtime) AS rqcreatedtime FROM request_item_status
+      GROUP BY requestid
+    ) AS rq
+    INNER JOIN request_item_plan_status rip ON rq.requestid = rip.requestid
+    WHERE rip.createdtime >= DATE_ADD('month', -2, CURRENT_DATE)
+    AND rq.rqcreatedtime >= DATE_ADD('month', -2, CURRENT_DATE)
+    AND rip.ordernumber = 1
     AND rip.channeltype = 'primary'
-	UNION ALL
+  UNION ALL
   --Failure to fallback channel send
-	SELECT clientid, campaignid, communicationtype,
-		GREATEST(
-			COALESCE(prevfailedtime1, DATE('2000-01-01')),
-			COALESCE(prevfailedtime2, DATE('2000-01-01')),
-			COALESCE(prevfailedtime3, DATE('2000-01-01'))
-		) AS starttime,
-		sendtime AS endtime
-	FROM (
+  SELECT clientid, campaignid, communicationtype,
+    GREATEST(
+      COALESCE(prevfailedtime1, DATE('2000-01-01')),
+      COALESCE(prevfailedtime2, DATE('2000-01-01')),
+      COALESCE(prevfailedtime3, DATE('2000-01-01'))
+    ) AS starttime,
+    sendtime AS endtime
+  FROM (
     SELECT
       clientid,
       campaignid,
@@ -39,8 +39,8 @@ FROM (
     FROM request_item_plan_status
     WHERE createdtime >= DATE_ADD('month', -2, CURRENT_DATE)
     AND channeltype = 'primary'
-	)
-	WHERE ordernumber > 1
+  )
+  WHERE ordernumber > 1
 )
 CROSS JOIN UNNEST (ARRAY[0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99, 0.999]) AS t(percentile)
 WHERE starttime IS NOT NULL
