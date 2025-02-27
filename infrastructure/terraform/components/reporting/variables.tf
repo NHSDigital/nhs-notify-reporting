@@ -199,3 +199,8 @@ variable "enable_vault_lock_configuration" {
   description = "Enable vault lock, preventing the deletion of a vault that contains 1 or more Recovery Points"
   default     = false
 }
+
+variable "observability_account_id" {
+  type        = string
+  description = "The Observability Account ID that needs access"
+}

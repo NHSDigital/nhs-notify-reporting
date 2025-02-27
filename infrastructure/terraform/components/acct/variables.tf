@@ -56,8 +56,3 @@ variable "core_account_ids" {
   description = "List of core account IDs"
   default     = []
 }
-
-variable "observability_account_id" {
-  type        = string
-  description = "The Observability Account ID that needs access"
-}
