@@ -1,9 +1,9 @@
 resource "aws_cloudwatch_metric_alarm" "overdue_request_items" {
-  alarm_name                = "${local.csi}-overdue-request-items"
-  comparison_operator       = "GreaterThanOrEqualToThreshold"
-  evaluation_periods        = 1
-  threshold                 = 1
-  alarm_description         = "This metric monitors unexpected/overdue request items"
+  alarm_name          = "${local.csi}-overdue-request-items"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  threshold           = 1
+  alarm_description   = "This metric monitors unexpected/overdue request items"
 
   metric_query {
     id          = "max_overdue_request_items_count"

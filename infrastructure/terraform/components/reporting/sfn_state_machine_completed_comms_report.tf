@@ -3,11 +3,11 @@ resource "aws_sfn_state_machine" "completed_comms_report" {
   role_arn = aws_iam_role.sfn_completed_comms_report.arn
 
   definition = templatefile("${path.module}/templates/completed_comms_report.json.tmpl", {
-    date_query_id = "${aws_athena_named_query.yesterday.id}"
+    date_query_id   = "${aws_athena_named_query.yesterday.id}"
     report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
-    environment = "${local.csi}"
-    output_bucket = "comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
-    output_folder = "completed_comms_report"
+    environment     = "${local.csi}"
+    output_bucket   = "comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
+    output_folder   = "completed_comms_report"
   })
 
   logging_configuration {

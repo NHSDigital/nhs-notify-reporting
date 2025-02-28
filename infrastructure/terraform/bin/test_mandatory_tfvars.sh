@@ -30,6 +30,7 @@ declare mandatory_fields_but_global_group=(
   superuser_role_name
   app_deployer_role_name
   cloudtrail_log_group_name
+  observability_account_id
 )
 
 #looking for all fields in the respective "variables.tf" file to find the ones that don't have a defaults set, hence making them mandatory
@@ -45,7 +46,7 @@ for i in ${mandatory_fields[@]}; do
 done
 
 echo -e "${color_green}Checking for mandatory tfvars values in all global and group .tfvars files...${color_reset}"
-generic_tfvars=(./etc/global.tfvars ./etc/group_target-env.tfvars ./etc/eu-west-2.tfvars)
+generic_tfvars=(./etc/global.tfvars ./etc/group_nhs-notify-reporting-dev.tfvars ./etc/group_nhs-notify-reporting-prod.tfvars ./etc/eu-west-2.tfvars)
 merged_json=""
 
 for tfvars_file in "${generic_tfvars[@]}"; do

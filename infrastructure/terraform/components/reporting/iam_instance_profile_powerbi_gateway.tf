@@ -33,10 +33,10 @@ resource "aws_iam_role" "powerbi_gateway_role" {
 resource "aws_iam_policy" "powerbi_gateway_permissions_policy" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
-  name               = "${local.csi}-powerbi-gateway"
-  description        = "PowerBI Gateway Instance Permissions"
-  path               = "/"
-  policy             = data.aws_iam_policy_document.powerbi_gateway_permissions_policy[0].json
+  name        = "${local.csi}-powerbi-gateway"
+  description = "PowerBI Gateway Instance Permissions"
+  path        = "/"
+  policy      = data.aws_iam_policy_document.powerbi_gateway_permissions_policy[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "powerbi_gateway_permissions_policy_attachment" {
@@ -109,12 +109,12 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-        "athena:GetQueryResults",
-        "athena:GetQueryResultsStream",
-        "athena:GetQueryExecution",
-        "athena:StartQueryExecution",
-        "athena:GetWorkGroup",
-        "athena:GetNamedQuery"
+      "athena:GetQueryResults",
+      "athena:GetQueryResultsStream",
+      "athena:GetQueryExecution",
+      "athena:StartQueryExecution",
+      "athena:GetWorkGroup",
+      "athena:GetNamedQuery"
     ]
 
     resources = [
@@ -127,10 +127,10 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-        "athena:GetDatabase",
-        "athena:GetTableMetadata",
-        "athena:GetDataCatalog",
-        "athena:GetTable"
+      "athena:GetDatabase",
+      "athena:GetTableMetadata",
+      "athena:GetDataCatalog",
+      "athena:GetTable"
     ]
 
     resources = [
@@ -143,13 +143,13 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
     effect = "Allow"
 
     actions = [
-        "athena:ListDataCatalogs",
-        "athena:ListDatabases",
-        "athena:ListTableMetadata",
-        "athena:ListWorkGroups"
+      "athena:ListDataCatalogs",
+      "athena:ListDatabases",
+      "athena:ListTableMetadata",
+      "athena:ListWorkGroups"
     ]
 
-    resources = [ "*" ] # Access to List all above is required. Condition keys not supported for these resources.
+    resources = ["*"] # Access to List all above is required. Condition keys not supported for these resources.
   }
 
   statement {
