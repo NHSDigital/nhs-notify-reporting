@@ -1,7 +1,7 @@
 resource "aws_scheduler_schedule" "sf_watchdog_scheduler" {
-  name       = "${local.csi}-watchdog-scheduler"
+  name        = "${local.csi}-watchdog-scheduler"
   description = "Schduler to trigger Step Function to run watchdog queries"
-  group_name = "default"
+  group_name  = "default"
 
   flexible_time_window {
     mode = "OFF"

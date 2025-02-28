@@ -13,7 +13,7 @@ No requirements.
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | The name of the AWS Account to deploy into (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_app_deployer_role_name"></a> [app\_deployer\_role\_name](#input\_app\_deployer\_role\_name) | Name of the app deployer role that is allowed to deploy Comms Mgr applications but not create other IAM roles | `string` | n/a | yes |
 | <a name="input_app_deployer_role_permission_account_ids"></a> [app\_deployer\_role\_permission\_account\_ids](#input\_app\_deployer\_role\_permission\_account\_ids) | All AWS Account IDs for this project that have the AppDeployer role created | `map(string)` | `{}` | no |
-| <a name="input_batch_client_ids"></a> [batch\_client\_ids](#input\_batch\_client\_ids) | List of client ids that require additional batch identifier dimensions when aggregating data | `list(string)` | <pre>[<br/>  "NULL"<br/>]</pre> | no |
+| <a name="input_batch_client_ids"></a> [batch\_client\_ids](#input\_batch\_client\_ids) | List of client ids that require additional batch identifier dimensions when aggregating data | `list(string)` | <pre>[<br>  "NULL"<br>]</pre> | no |
 | <a name="input_cloudtrail_log_group_name"></a> [cloudtrail\_log\_group\_name](#input\_cloudtrail\_log\_group\_name) | The name of the Cloudtrail log group name on the account (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_component"></a> [component](#input\_component) | The name of the component | `string` | `"reporting"` | no |
 | <a name="input_continuous_s3backup_retention_days"></a> [continuous\_s3backup\_retention\_days](#input\_continuous\_s3backup\_retention\_days) | number of days to retain continous s3 restore points for PITR - Maximum 35 days | `number` | `35` | no |
@@ -33,6 +33,7 @@ No requirements.
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | The maximum number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | The minimum number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_module"></a> [module](#input\_module) | The variable encapsulating the name of this module | `string` | `"n/a"` | no |
+| <a name="input_observability_account_id"></a> [observability\_account\_id](#input\_observability\_account\_id) | The Observability Account ID that needs access | `string` | n/a | yes |
 | <a name="input_periodic_s3backup_retention_days"></a> [periodic\_s3backup\_retention\_days](#input\_periodic\_s3backup\_retention\_days) | number of days to retain weekly s3 backups | `number` | `90` | no |
 | <a name="input_periodic_s3backup_schedule"></a> [periodic\_s3backup\_schedule](#input\_periodic\_s3backup\_schedule) | Crontab formatted schedule for Periodic S3 Backups | `string` | `"cron(0 5 ? * 7 *)"` | no |
 | <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | List of CIDR blocks for private subnets. | `list(string)` | `[]` | no |

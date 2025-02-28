@@ -1,10 +1,10 @@
 resource "aws_ssm_maintenance_window_task" "patch_task" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
-  description     = "Windows Server 2022 Patch Task"
-  window_id       = aws_ssm_maintenance_window.patch_window[0].id
-  task_arn        = "AWS-RunPatchBaseline"
-  task_type       = "RUN_COMMAND"
+  description = "Windows Server 2022 Patch Task"
+  window_id   = aws_ssm_maintenance_window.patch_window[0].id
+  task_arn    = "AWS-RunPatchBaseline"
+  task_type   = "RUN_COMMAND"
 
   targets {
     key    = "WindowTargetIds"

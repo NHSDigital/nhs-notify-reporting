@@ -3,7 +3,7 @@ resource "aws_athena_named_query" "request_item_status_summary_batch" {
   description = "Updates request_item_status_summary_batch table based upon a moving time window"
   workgroup   = aws_athena_workgroup.ingestion.id
   database    = aws_glue_catalog_database.reporting.name
-  query       = templatefile("${path.module}/scripts/sql/ingestion/request_item_status_summary_batch.sql", {
+  query = templatefile("${path.module}/scripts/sql/ingestion/request_item_status_summary_batch.sql", {
     batch_client_ids = join(", ", [for id in var.batch_client_ids : format("'%s'", id)])
   })
 
