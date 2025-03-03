@@ -207,7 +207,7 @@ External access (including PowerBI) should be restricted to read-only access of 
 
 Because of the Terraform limitation documented above we're unable to declaratively enable housekeeping on the Iceberg tables.
 
-Equivalent functionality is instead achieved via OPTIMISE and VACUUM commands executed by a second step function.
+Equivalent functionality is instead achieved via OPTIMISE, VACUUM and Calculate Statistics commands executed by a dedicated housekeeping step function.
 
 ## Canned Reports
 
