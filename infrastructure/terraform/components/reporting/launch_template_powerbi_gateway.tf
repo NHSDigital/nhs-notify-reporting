@@ -57,7 +57,7 @@ resource "aws_launch_template" "powerbi_gateway" {
 
   tag_specifications {
     resource_type = "instance"
-    tags          = merge(local.deployment_default_tags,
+    tags = merge(local.deployment_default_tags,
       {
         "Patch Group" = "${local.csi}-windows-group"
       }

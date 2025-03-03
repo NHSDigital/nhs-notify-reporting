@@ -2,7 +2,7 @@ module "powerbi_gateway_vpc" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
   source  = "terraform-aws-modules/vpc/aws"
-  version = "5.5.1"  # Adjust to the latest version
+  version = "5.5.1" # Adjust to the latest version
 
   create_vpc = var.enable_powerbi_gateway
 
@@ -13,11 +13,11 @@ module "powerbi_gateway_vpc" {
   public_subnets  = var.public_subnet_cidrs
   private_subnets = var.private_subnet_cidrs
 
-  enable_nat_gateway = true
-  single_nat_gateway = false
-  enable_dns_support = true
+  enable_nat_gateway   = true
+  single_nat_gateway   = false
+  enable_dns_support   = true
   enable_dns_hostnames = true
-  create_igw = true
+  create_igw           = true
 }
 
 data "aws_availability_zones" "available" {

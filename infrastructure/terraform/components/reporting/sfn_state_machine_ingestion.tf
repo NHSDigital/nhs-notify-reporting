@@ -16,7 +16,7 @@ resource "aws_sfn_state_machine" "ingestion" {
       "${aws_athena_named_query.request_item_status_summary_batch.id}"
     ]
     hash_query_ids_2 = []
-    environment = "${local.csi}"
+    environment      = "${local.csi}"
   })
 
   logging_configuration {
