@@ -8,11 +8,11 @@ resource "aws_athena_workgroup" "core" {
 
     result_configuration {
       expected_bucket_owner = var.core_account_id
-      output_location       = "s3://comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/"
+      output_location       = "s3://comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress/"
 
       encryption_configuration {
         encryption_option = "SSE_KMS"
-        kms_key_arn       = "arn:aws:kms:eu-west-2:${var.core_account_id}:alias/comms-${var.core_env}-api-s3"
+        kms_key_arn       = "arn:aws:kms:${var.region}:${var.core_account_id}:alias/comms-${var.core_env}-api-s3"
       }
 
       acl_configuration {

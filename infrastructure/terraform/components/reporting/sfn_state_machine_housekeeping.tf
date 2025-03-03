@@ -19,6 +19,8 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_status_summary_vacuum.id}",
       "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}"
     ]
+    database_name = "${aws_glue_catalog_database.reporting.name}"
+    iam_role = "${aws_iam_role.sfn_housekeeping.arn}"
   })
 
   logging_configuration {
@@ -36,18 +38,19 @@ resource "aws_iam_role" "sfn_housekeeping" {
 
 data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
   statement {
-    sid    = "EcsAssumeRole"
+    sid    = "StateMachineAssumeRole"
     effect = "Allow"
 
     actions = [
-      "sts:AssumeRole",
+      "sts:AssumeRole"
     ]
 
     principals {
       type = "Service"
 
       identifiers = [
-        "states.amazonaws.com"
+        "states.amazonaws.com",
+        "glue.amazonaws.com"
       ]
     }
   }
@@ -56,6 +59,11 @@ data "aws_iam_policy_document" "sfn_assumerole_housekeeping" {
 resource "aws_iam_role_policy_attachment" "sfn_housekeeping" {
   role       = aws_iam_role.sfn_housekeeping.name
   policy_arn = aws_iam_policy.sfn_housekeeping.arn
+}
+
+resource "aws_iam_role_policy_attachment" "sfn_housekeeping_columnstats" {
+  role       = aws_iam_role.sfn_housekeeping.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole"
 }
 
 resource "aws_iam_policy" "sfn_housekeeping" {
@@ -81,7 +89,7 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
 
     resources = [
       aws_athena_workgroup.housekeeping.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -91,13 +99,14 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
 
     actions = [
       "glue:Get*",
-      "glue:UpdateTable"
+      "glue:UpdateTable",
+      "glue:StartColumnStatisticsTaskRun"
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*"
     ]
   }
 
@@ -157,6 +166,19 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
 
     resources = [
       "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
+    ]
+  }
+
+  statement {
+    sid    = "AllowPassRole"
+    effect = "Allow"
+
+    actions = [
+      "iam:PassRole"
+    ]
+
+    resources = [
+      aws_iam_role.sfn_housekeeping.arn
     ]
   }
 }

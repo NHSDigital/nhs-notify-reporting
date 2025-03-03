@@ -6,7 +6,7 @@ resource "aws_sfn_state_machine" "completed_batch_report" {
     batch_query_id  = "${aws_athena_named_query.completed_batches.id}"
     report_query_id = "${aws_athena_named_query.completed_batch_report.id}"
     environment     = "${local.csi}"
-    output_bucket   = "comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
+    output_bucket   = "comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress"
     output_folder   = "completed_batch_report"
   })
 
@@ -85,7 +85,7 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
     resources = [
       aws_athena_workgroup.core.arn,
       aws_athena_workgroup.user.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -98,11 +98,11 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_comms",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_comms",
     ]
   }
 
@@ -152,8 +152,8 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
     ]
 
     resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/*"
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress",
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress/*"
     ]
   }
 
@@ -187,7 +187,7 @@ data "aws_iam_policy_document" "sfn_completed_batch_report" {
     ]
 
     resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
+      "arn:aws:kms:${var.region}:${var.core_account_id}:key/*",
     ]
     condition {
       test     = "ForAnyValue:StringEquals"

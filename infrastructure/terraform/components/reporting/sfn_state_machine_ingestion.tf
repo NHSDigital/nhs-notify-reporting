@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "sfn_ingestion" {
 
     resources = [
       aws_athena_workgroup.ingestion.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -106,9 +106,9 @@ data "aws_iam_policy_document" "sfn_ingestion" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/*",
     ]
   }
 
@@ -157,9 +157,9 @@ data "aws_iam_policy_document" "sfn_ingestion" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:catalog",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:database/comms-${var.core_env}-api-rpt-reporting",
-      "arn:aws:glue:eu-west-2:${var.core_account_id}:table/comms-${var.core_env}-api-rpt-reporting/transaction_history",
+      "arn:aws:glue:${var.region}:${var.core_account_id}:catalog",
+      "arn:aws:glue:${var.region}:${var.core_account_id}:database/comms-${var.core_env}-api-rpt-reporting",
+      "arn:aws:glue:${var.region}:${var.core_account_id}:table/comms-${var.core_env}-api-rpt-reporting/transaction_history",
     ]
   }
 
@@ -176,7 +176,7 @@ data "aws_iam_policy_document" "sfn_ingestion" {
     ]
 
     resources = [
-      "arn:aws:kms:eu-west-2:${var.core_account_id}:key/*",
+      "arn:aws:kms:${var.region}:${var.core_account_id}:key/*",
     ]
     condition {
       test     = "ForAnyValue:StringEquals"
@@ -198,8 +198,8 @@ data "aws_iam_policy_document" "sfn_ingestion" {
     ]
 
     resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-reporting",
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
     ]
   }
 
