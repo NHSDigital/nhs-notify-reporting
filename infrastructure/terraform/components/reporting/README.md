@@ -33,6 +33,7 @@ No requirements.
 | <a name="input_max_size"></a> [max\_size](#input\_max\_size) | The maximum number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | The minimum number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_module"></a> [module](#input\_module) | The variable encapsulating the name of this module | `string` | `"n/a"` | no |
+| <a name="input_observability_account_id"></a> [observability\_account\_id](#input\_observability\_account\_id) | The Observability Account ID that needs access | `string` | n/a | yes |
 | <a name="input_periodic_s3backup_retention_days"></a> [periodic\_s3backup\_retention\_days](#input\_periodic\_s3backup\_retention\_days) | number of days to retain weekly s3 backups | `number` | `90` | no |
 | <a name="input_periodic_s3backup_schedule"></a> [periodic\_s3backup\_schedule](#input\_periodic\_s3backup\_schedule) | Crontab formatted schedule for Periodic S3 Backups | `string` | `"cron(0 5 ? * 7 *)"` | no |
 | <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | List of CIDR blocks for private subnets. | `list(string)` | `[]` | no |

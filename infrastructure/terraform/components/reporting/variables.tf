@@ -160,14 +160,14 @@ variable "scale_in_recurrence_schedule" {
 
 variable "core_account_ids" {
   description = "List of all corresponding core account id's that exist in the Non-Prod domain"
-  type = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "batch_client_ids" {
   description = "List of client ids that require additional batch identifier dimensions when aggregating data"
-  type = list(string)
-  default = ["NULL"]
+  type        = list(string)
+  default     = ["NULL"]
 }
 
 variable "enable_s3_backup" {
@@ -198,4 +198,9 @@ variable "enable_vault_lock_configuration" {
   type        = bool
   description = "Enable vault lock, preventing the deletion of a vault that contains 1 or more Recovery Points"
   default     = false
+}
+
+variable "observability_account_id" {
+  type        = string
+  description = "The Observability Account ID that needs access"
 }
