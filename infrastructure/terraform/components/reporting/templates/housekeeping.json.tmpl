@@ -1,41 +1,7 @@
 {
   "Comment": "Workflow to run housekeeping queries to maintain reporting tables.",
-  "StartAt": "Get Tables for Statistics",
+  "StartAt": "Optimize Pass",
   "States": {
-    "Get Tables for Statistics": {
-      "Type": "Task",
-      "Parameters": {
-        "DatabaseName": "${database_name}"
-      },
-      "Resource": "arn:aws:states:::aws-sdk:glue:getTables",
-      "OutputPath": "$.TableList[?(@.TableType=='EXTERNAL_TABLE')].Name",
-      "Next": "Calculate Statistics For Each Table"
-    },
-    "Calculate Statistics For Each Table": {
-      "Type": "Map",
-      "ItemProcessor": {
-        "ProcessorConfig": {
-          "Mode": "INLINE"
-        },
-        "StartAt": "Start Calculate Statistics For Table",
-        "States": {
-          "Start Calculate Statistics For Table": {
-            "Type": "Task",
-            "Parameters": {
-              "DatabaseName": "${database_name}",
-              "TableName.$": "$.tableName",
-              "Role": "${iam_role}"
-            },
-            "Resource": "arn:aws:states:::aws-sdk:glue:startColumnStatisticsTaskRun",
-            "End": true
-          }
-        }
-      },
-      "Next": "Optimize Pass",
-      "ItemSelector": {
-        "tableName.$": "$$.Map.Item.Value"
-      }
-    },
     "Optimize Pass": {
       "Type": "Parallel",
       "Branches": ${jsonencode(concat([
@@ -98,6 +64,40 @@
           }
         }
       ]))},
+      "Next": "Get Tables for Statistics"
+    },
+    "Get Tables for Statistics": {
+      "Type": "Task",
+      "Parameters": {
+        "DatabaseName": "${database_name}"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:glue:getTables",
+      "OutputPath": "$.TableList[?(@.TableType=='EXTERNAL_TABLE')].Name",
+      "Next": "Calculate Statistics For Each Table"
+    },
+    "Calculate Statistics For Each Table": {
+      "Type": "Map",
+      "ItemProcessor": {
+        "ProcessorConfig": {
+          "Mode": "INLINE"
+        },
+        "StartAt": "Start Calculate Statistics For Table",
+        "States": {
+          "Start Calculate Statistics For Table": {
+            "Type": "Task",
+            "Parameters": {
+              "DatabaseName": "${database_name}",
+              "TableName.$": "$.tableName",
+              "Role": "${iam_role}"
+            },
+            "Resource": "arn:aws:states:::aws-sdk:glue:startColumnStatisticsTaskRun",
+            "End": true
+          }
+        }
+      },
+      "ItemSelector": {
+        "tableName.$": "$$.Map.Item.Value"
+      },
       "End": true
     }
   }
