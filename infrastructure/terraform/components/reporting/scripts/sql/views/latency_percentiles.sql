@@ -46,7 +46,7 @@ CROSS JOIN UNNEST (ARRAY[0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 0.99
 WHERE starttime IS NOT NULL
 AND endtime IS NOT NULL
 AND starttime > DATE('2000-01-01')
-AND DAY_OF_month(starttime) <= 5
+AND DAY_OF_WEEK(starttime) <= 5
 AND HOUR(starttime) < 16
 AND HOUR(starttime) >= 9
 GROUP BY clientid, campaignid, communicationtype, percentile
