@@ -47,7 +47,7 @@ WHERE starttime IS NOT NULL
 AND endtime IS NOT NULL
 AND starttime > DATE('2000-01-01')
 AND DAY_OF_WEEK(starttime) <= 5
-AND HOUR(starttime) < 16
-AND HOUR(starttime) >= 9
+AND HOUR(AT_TIMEZONE(starttime, 'Europe/London')) < 18
+AND HOUR(AT_TIMEZONE(starttime, 'Europe/London')) >= 8
 GROUP BY clientid, campaignid, communicationtype, percentile
 ORDER BY clientid, campaignid, communicationtype, percentile
