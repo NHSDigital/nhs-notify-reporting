@@ -6,7 +6,7 @@ resource "aws_sfn_state_machine" "completed_comms_report" {
     date_query_id   = "${aws_athena_named_query.yesterday.id}"
     report_query_id = "${aws_athena_named_query.completed_comms_report.id}"
     environment     = "${local.csi}"
-    output_bucket   = "comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress"
+    output_bucket   = "comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress"
     output_folder   = "completed_comms_report"
   })
 
@@ -100,9 +100,9 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     resources = [
       "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_comms",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/completed_comms",
     ]
   }
 
@@ -152,8 +152,8 @@ data "aws_iam_policy_document" "sfn_completed_comms_report" {
     ]
 
     resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-ingress/*"
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress",
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-ingress/*"
     ]
   }
 

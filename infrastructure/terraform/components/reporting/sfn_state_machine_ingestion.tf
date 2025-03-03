@@ -198,8 +198,8 @@ data "aws_iam_policy_document" "sfn_ingestion" {
     ]
 
     resources = [
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting",
-      "arn:aws:s3:::comms-${var.core_account_id}-eu-west-2-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-reporting",
+      "arn:aws:s3:::comms-${var.core_account_id}-${var.region}-${var.core_env}-api-rpt-reporting/kinesis-firehose-output/reporting/parquet/transactions/*"
     ]
   }
 
