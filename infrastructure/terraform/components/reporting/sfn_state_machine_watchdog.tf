@@ -81,7 +81,7 @@ data "aws_iam_policy_document" "sfn_watchdog" {
 
     resources = [
       aws_athena_workgroup.user.arn,
-      "arn:aws:athena:eu-west-2:${local.this_account}:datacatalog/*"
+      "arn:aws:athena:${var.region}:${local.this_account}:datacatalog/*"
     ]
   }
 
@@ -94,11 +94,11 @@ data "aws_iam_policy_document" "sfn_watchdog" {
     ]
 
     resources = [
-      "arn:aws:glue:eu-west-2:${local.this_account}:catalog",
+      "arn:aws:glue:${var.region}:${local.this_account}:catalog",
       aws_glue_catalog_database.reporting.arn,
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
-      "arn:aws:glue:eu-west-2:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_plan_status",
+      "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/request_item_status_summary",
     ]
   }
 
