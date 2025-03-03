@@ -33,3 +33,6 @@ batch_client_ids = [
 ]
 
 enable_vault_lock_configuration = true
+
+# Allow Grafana cross account access
+observability_account_id = "677276089126"
