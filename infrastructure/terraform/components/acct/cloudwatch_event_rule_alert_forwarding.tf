@@ -1,6 +1,6 @@
 resource "aws_cloudwatch_event_rule" "alert_forwarding" {
   name        = "${local.csi}-forward-cloudwatch-alarms"
-  description = "Forwards CloudWatch Alarm state changes to Account B"
+  description = "Forwards CloudWatch Alarm state changes to Custom Event Bus in Observability Account"
 
   event_pattern = jsonencode({
     "source"      = ["aws.cloudwatch"],
