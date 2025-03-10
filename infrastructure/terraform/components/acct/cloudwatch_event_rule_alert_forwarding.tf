@@ -40,7 +40,7 @@ resource "aws_iam_policy" "alert_forwarding" {
     Statement = [{
       Effect   = "Allow",
       Action   = "events:PutEvents",
-      Resource = "arn:aws:events:eu-west-2:273354664196:event-bus/nhs-notify-main-obs-alerts-bus"
+      Resource = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-obs-alerts-bus"
     }]
   })
 }
