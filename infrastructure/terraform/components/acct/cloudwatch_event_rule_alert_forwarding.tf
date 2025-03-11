@@ -10,7 +10,7 @@ resource "aws_cloudwatch_event_rule" "alert_forwarding" {
 
 resource "aws_cloudwatch_event_target" "alert_forwarding" {
   rule     = aws_cloudwatch_event_rule.alert_forwarding.name
-  arn      = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-obs-alerts-bus"
+  arn      = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-obsconfig-alerts-bus"
   role_arn = aws_iam_role.alert_forwarding.arn
 }
 
@@ -37,7 +37,7 @@ resource "aws_iam_policy" "alert_forwarding" {
     Statement = [{
       Effect   = "Allow",
       Action   = "events:PutEvents",
-      Resource = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-obs-alerts-bus"
+      Resource = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-obsconfig-alerts-bus"
     }]
   })
 }
