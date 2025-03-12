@@ -46,6 +46,6 @@ resource "aws_iam_policy" "aws_backup_errors" {
 }
 
 resource "aws_iam_role_policy_attachment" "aws_backup_errors" {
-  role       = aws_iam_role.aws_backup_errors
-  policy_arn = aws_iam_policy.aws_backup_errors
+  role       = aws_iam_role.aws_backup_errors.name
+  policy_arn = aws_iam_policy.aws_backup_errors.arn
 }
