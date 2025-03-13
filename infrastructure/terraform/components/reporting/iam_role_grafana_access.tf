@@ -1,5 +1,5 @@
 resource "aws_iam_role" "grafana_access" {
-  name               = replace("${local.csi}-grafana-cross-access-role", "-${var.component}", "")
+  name               = replace("${local.csi}-obs-cross-access-role", "-${var.component}", "")
   description        = "IAM role for Grafana workspace to access this account"
   assume_role_policy = data.aws_iam_policy_document.observability_grafana_role_assume_role_policy.json
 }
