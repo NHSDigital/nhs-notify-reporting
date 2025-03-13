@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "observability_grafana_role_assume_role_policy" {
       variable = "aws:PrincipalArn"
 
       values = [
-        "arn:aws:iam::${var.observability_account_id}:role/*grafana-workspace-role"
+        "arn:aws:iam::${var.observability_account_id}:role/*obs-workspace-role"
       ]
     }
   }
