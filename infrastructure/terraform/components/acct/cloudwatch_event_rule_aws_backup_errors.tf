@@ -13,7 +13,7 @@ resource "aws_cloudwatch_event_rule" "aws_backup_errors" {
 
 resource "aws_cloudwatch_event_target" "aws_backup_errors" {
   rule     = aws_cloudwatch_event_rule.aws_backup_errors.name
-  arn      = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-acct-alerts-bus"
+  arn      = local.event_bus_arn
   role_arn = aws_iam_role.aws_backup_errors.arn
 }
 
@@ -40,7 +40,7 @@ resource "aws_iam_policy" "aws_backup_errors" {
     Statement = [{
       Effect   = "Allow",
       Action   = "events:PutEvents",
-      Resource = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-acct-alerts-bus"
+      Resource = local.event_bus_arn
     }]
   })
 }

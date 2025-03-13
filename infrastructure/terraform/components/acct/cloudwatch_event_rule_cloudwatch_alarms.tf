@@ -10,7 +10,7 @@ resource "aws_cloudwatch_event_rule" "cloudwatch_alarms" {
 
 resource "aws_cloudwatch_event_target" "cloudwatch_alarms" {
   rule     = aws_cloudwatch_event_rule.cloudwatch_alarms.name
-  arn      = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-acct-alerts-bus"
+  arn      = local.event_bus_arn
   role_arn = aws_iam_role.cloudwatch_alarms.arn
 }
 
@@ -37,7 +37,7 @@ resource "aws_iam_policy" "cloudwatch_alarms" {
     Statement = [{
       Effect   = "Allow",
       Action   = "events:PutEvents",
-      Resource = "arn:aws:events:eu-west-2:${var.observability_account_id}:event-bus/nhs-notify-main-acct-alerts-bus"
+      Resource = local.event_bus_arn
     }]
   })
 }
