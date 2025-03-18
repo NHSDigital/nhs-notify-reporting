@@ -42,7 +42,6 @@ function run-tfsec-natively() {
     --exclude-downloaded-modules \
     --config-file scripts/config/tfsec.yaml \
     --format text \
-    --soft-fail \
     "$dir_to_scan"
 
   check-tfsec-status

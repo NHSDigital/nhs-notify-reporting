@@ -4,7 +4,7 @@ resource "aws_athena_workgroup" "core" {
   force_destroy = true
 
   configuration {
-    enforce_workgroup_configuration = false
+    enforce_workgroup_configuration = true
 
     result_configuration {
       expected_bucket_owner = var.core_account_id

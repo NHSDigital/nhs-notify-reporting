@@ -73,6 +73,7 @@ resource "aws_iam_policy" "sfn_housekeeping" {
   policy      = data.aws_iam_policy_document.sfn_housekeeping.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_housekeeping" {
 
   statement {

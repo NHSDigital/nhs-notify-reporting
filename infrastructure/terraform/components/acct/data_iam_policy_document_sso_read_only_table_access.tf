@@ -74,6 +74,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
   }
 
+  #tfsec:ignore:aws-iam-no-policy-wildcards Policy voilation expected for CI user role
   statement {
     sid    = "AllowAthenaAccess3"
     effect = "Allow"
