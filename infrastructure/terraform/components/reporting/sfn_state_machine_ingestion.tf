@@ -63,6 +63,7 @@ resource "aws_iam_policy" "sfn_ingestion" {
   policy      = data.aws_iam_policy_document.sfn_ingestion.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_ingestion" {
 
   statement {

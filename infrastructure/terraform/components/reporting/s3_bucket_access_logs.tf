@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-s3-enable-bucket-logging Don't log access logs logs
 resource "aws_s3_bucket" "access_logs" {
   bucket        = "${local.csi_global}-bucket-logs"
   force_destroy = true

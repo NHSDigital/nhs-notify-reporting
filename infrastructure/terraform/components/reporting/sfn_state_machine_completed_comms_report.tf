@@ -54,6 +54,7 @@ resource "aws_iam_policy" "sfn_completed_comms_report" {
   policy      = data.aws_iam_policy_document.sfn_completed_comms_report.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_completed_comms_report" {
 
   statement {

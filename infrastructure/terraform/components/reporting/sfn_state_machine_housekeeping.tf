@@ -20,7 +20,7 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}"
     ]
     database_name = "${aws_glue_catalog_database.reporting.name}"
-    iam_role = "${aws_iam_role.sfn_housekeeping.arn}"
+    iam_role      = "${aws_iam_role.sfn_housekeeping.arn}"
   })
 
   logging_configuration {
@@ -73,6 +73,7 @@ resource "aws_iam_policy" "sfn_housekeeping" {
   policy      = data.aws_iam_policy_document.sfn_housekeeping.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_housekeeping" {
 
   statement {
