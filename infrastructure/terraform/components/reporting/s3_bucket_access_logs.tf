@@ -74,6 +74,10 @@ resource "aws_s3_bucket_public_access_block" "access_logs" {
   restrict_public_buckets = true
 }
 
+# From Support ticket: Where the client is looking to enable bucket keys on the target S3 bucket, the recommended approach would be:
+# 1. Remove the KMS key from the Athena workgroup's encryption configuration: Since the bucket keys will be handling the encryption, you don't need the additional layer of encryption from the workgroup-level KMS key. Removing it will simplify the configuration.
+# 2. Rely solely on the bucket keys for encryption: With the bucket keys enabled on the S3 bucket, Athena will automatically use that for encrypting and decrypting the query results. This will reduce the no of API calls.
+#tfsec:ignore:aws-s3-encryption-customer-key
 resource "aws_s3_bucket_server_side_encryption_configuration" "access_logs" {
   bucket = aws_s3_bucket.access_logs.bucket
 
