@@ -1,3 +1,4 @@
+#tfsec:ignore:aws-s3-enable-bucket-logging Bucket exists before anyother bucket can exist
 resource "aws_s3_bucket" "bucket" {
   bucket = var.bucket_name
 

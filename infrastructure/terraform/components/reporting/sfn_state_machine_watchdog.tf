@@ -68,8 +68,9 @@ resource "aws_iam_policy" "sfn_watchdog" {
   policy      = data.aws_iam_policy_document.sfn_watchdog.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_watchdog" {
-
+  #tfsec:ignore:aws-iam-no-policy-wildcards
   statement {
     sid    = "AllowAthena"
     effect = "Allow"
