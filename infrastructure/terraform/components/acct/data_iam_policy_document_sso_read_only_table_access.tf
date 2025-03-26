@@ -74,6 +74,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
   }
 
+  #tfsec:ignore:aws-iam-no-policy-wildcards Policy voilation expected for CI user role
   statement {
     sid    = "AllowAthenaAccess3"
     effect = "Allow"
@@ -85,7 +86,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
       "athena:ListWorkGroups"
     ]
 
-    resources = [ "*" ] # Access to List all above is required. Condition keys not supported for these resources.
+    resources = ["*"] # Access to List all above is required. Condition keys not supported for these resources.
   }
 
   statement {
@@ -105,7 +106,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
 
     condition {
-      test = "ForAnyValue:StringLike"
+      test     = "ForAnyValue:StringLike"
       variable = "kms:ResourceAliases"
       values = [
         "alias/${var.project}-*-reporting-s3"
