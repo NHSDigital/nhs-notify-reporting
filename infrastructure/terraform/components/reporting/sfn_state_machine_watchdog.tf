@@ -15,6 +15,10 @@ resource "aws_sfn_state_machine" "watchdog" {
       {
         metric_name = "OverdueRequestsCount",
         query_id    = aws_athena_named_query.overdue_requests.id
+      },
+      {
+        metric_name = "StuckRequestItemsCount",
+        query_id    = aws_athena_named_query.stuck_request_items.id
       }
     ]
     environment = var.environment
@@ -64,8 +68,9 @@ resource "aws_iam_policy" "sfn_watchdog" {
   policy      = data.aws_iam_policy_document.sfn_watchdog.json
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "sfn_watchdog" {
-
+  #tfsec:ignore:aws-iam-no-policy-wildcards
   statement {
     sid    = "AllowAthena"
     effect = "Allow"

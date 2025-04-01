@@ -259,6 +259,7 @@ Watchdog queries and corresponding metrics and alarms are currently setup for th
 | Request item plans unexpectedly incomplete | overdue_request_item_plans | OverdueRequestItemPlansCount | Sum across all clients > 0 | overdue-request-item-plans |
 | Request items incomplete after 2 weeks     | overdue_request_items      | OverdueRequestItemsCount     | Sum across all clients > 0 | overdue-request-items      |
 | Requests incomplete after 2 weeks          | overdue_requests           | OverdueRequestsCount         | Sum across all clients > 0 | overdue-requests           |
+| Request items stuck before being sent      | stuck_request_items        | StuckRequestItemsCount       | Sum across all clients > 0 | stuck-request-items        |
 
 ## Contacts
 

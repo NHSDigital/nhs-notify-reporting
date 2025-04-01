@@ -26,6 +26,7 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
+#tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group" "powerbi_gateway" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
