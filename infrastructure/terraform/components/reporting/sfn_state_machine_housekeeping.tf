@@ -73,7 +73,7 @@ resource "aws_iam_policy" "sfn_housekeeping" {
   policy      = data.aws_iam_policy_document.sfn_housekeeping.json
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
+#trivy:ignore:AVD-AWS-0342 IAM policy allows 'iam:PassRole' action
 data "aws_iam_policy_document" "sfn_housekeeping" {
 
   statement {
@@ -169,7 +169,6 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
       "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
     ]
   }
-
   statement {
     sid    = "AllowPassRole"
     effect = "Allow"
