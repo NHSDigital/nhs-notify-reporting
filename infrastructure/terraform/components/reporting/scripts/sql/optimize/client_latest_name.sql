@@ -1,0 +1,1 @@
+OPTIMIZE client_latest_name REWRITE DATA USING BIN_PACK

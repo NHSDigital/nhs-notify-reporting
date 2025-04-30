@@ -13,7 +13,8 @@ resource "aws_sfn_state_machine" "ingestion" {
       "${aws_athena_named_query.request_item_plan_completed_summary.id}",
       "${aws_athena_named_query.request_item_plan_completed_summary_batch.id}",
       "${aws_athena_named_query.request_item_status_summary.id}",
-      "${aws_athena_named_query.request_item_status_summary_batch.id}"
+      "${aws_athena_named_query.request_item_status_summary_batch.id}",
+      "${aws_athena_named_query.client_latest_name.id}"
     ]
     hash_query_ids_2 = []
     environment      = "${local.csi}"
