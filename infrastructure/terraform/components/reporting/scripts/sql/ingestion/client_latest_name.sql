@@ -5,7 +5,7 @@ USING (
     MAX_BY(clientname, createddate),
     from_iso8601_timestamp(createddate) AS createdtime
   FROM transaction_history
-  WHERE (sk LIKE 'REQUEST#%' OR sk LIKE 'REQUEST_ITEM#%' OR sk LIKE 'REQUEST_ITEM_PLAN#%')
+  WHERE (sk LIKE 'REQUEST#%')
     AND (
       -- Moving 1-week ingestion window
       DATE(CAST(__year AS VARCHAR) || '-' || CAST(__month AS VARCHAR) || '-' || CAST(__day  AS VARCHAR)) >= DATE_ADD('week', -1, CURRENT_DATE)
