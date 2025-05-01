@@ -3,7 +3,7 @@ USING (
   SELECT
     clientid,
     MAX_BY(clientname, createddate),
-    from_iso8601_timestamp(createddate) AS createdtime
+    from_iso8601_timestamp(MAX(createddate)) AS createdtime
   FROM transaction_history
   WHERE (sk LIKE 'REQUEST#%')
     AND (
