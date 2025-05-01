@@ -34,6 +34,8 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/dates",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/letters_invoice_units",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/latency_percentiles",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/daily_recipient_count",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/daily_recipient_distribution",
       ],
     )
   }

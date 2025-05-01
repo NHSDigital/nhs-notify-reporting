@@ -185,6 +185,8 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/dates",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/letters_invoice_units",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/latency_percentiles",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/daily_recipient_count",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/daily_recipient_distribution",
       ]
     )
   }
