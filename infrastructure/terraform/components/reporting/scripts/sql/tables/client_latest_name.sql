@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS ${table_name} (
     clientid string,
     clientname string,
-    timestamp bigint
+    createdtime timestamp
 )
 LOCATION '${s3_location}'
 TBLPROPERTIES (

@@ -15,7 +15,7 @@ resource "aws_athena_named_query" "client_latest_name_vacuum" {
   description = "Perform vacuum operation to remove old snapshots"
   workgroup   = aws_athena_workgroup.housekeeping.id
   database    = aws_glue_catalog_database.reporting.name
-  query       = file("${path.module}/scripts/sql/vacuum/request_item_plan_completed_summary_batch.sql")
+  query       = file("${path.module}/scripts/sql/vacuum/client_latest_name.sql")
 
   depends_on = [null_resource.client_latest_name_table]
 }
@@ -25,7 +25,7 @@ resource "aws_athena_named_query" "client_latest_name_optimize" {
   description = "Optimizes storage by rewriting data files "
   workgroup   = aws_athena_workgroup.housekeeping.id
   database    = aws_glue_catalog_database.reporting.name
-  query       = file("${path.module}/scripts/sql/optimize/request_item_plan_completed_summary_batch.sql")
+  query       = file("${path.module}/scripts/sql/optimize/client_latest_name.sql")
 
   depends_on = [null_resource.client_latest_name_table]
 }
