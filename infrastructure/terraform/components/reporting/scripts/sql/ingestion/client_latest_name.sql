@@ -15,8 +15,8 @@ USING (
 ON
   source.clientid = target.clientid
 WHEN MATCHED AND (source.createdtime > target.createdtime) THEN UPDATE SET
-  target.clientname = source.clientname
-  target.createdtime = source.createdtime
+  clientname = source.clientname,
+  createdtime = source.createdtime
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   clientname,
