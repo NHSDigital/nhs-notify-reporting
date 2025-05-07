@@ -4,7 +4,7 @@ USING (
     clientid,
     MAX_BY(clientname, createddate),
     from_iso8601_timestamp(MAX(createddate)) AS createdtime
-  FROM transaction_history
+  FROM ${source_table}
   WHERE (sk LIKE 'REQUEST#%')
     AND (
       -- Moving 1-week ingestion window
