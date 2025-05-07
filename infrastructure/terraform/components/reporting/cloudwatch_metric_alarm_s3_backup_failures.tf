@@ -10,6 +10,7 @@ resource "aws_cloudwatch_metric_alarm" "s3_backup_failures" {
   statistic           = "Sum"
   threshold           = 1
   alarm_description   = "This metric monitors AWS Backup Failures"
+  treat_missing_data  = "notBreaching"
 
   dimensions = {
     BackupVaultName = aws_backup_vault.s3_backup[0].name

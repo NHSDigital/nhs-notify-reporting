@@ -4,6 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "stuck_request_items" {
   evaluation_periods  = 1
   threshold           = 1
   alarm_description   = "Request items stuck in an ENRICHED or PENDING_ENRICHMENT state for longer than an expected time window"
+  treat_missing_data  = "notBreaching"
 
   metric_query {
     id          = "max_stuck_request_items_count"
