@@ -2,7 +2,7 @@ MERGE INTO client_latest_name as target
 USING (
   SELECT
     clientid,
-    MAX_BY(clientname, createddate),
+    MAX_BY(clientname, createddate) AS clientname,
     from_iso8601_timestamp(MAX(createddate)) AS createdtime
   FROM ${source_table}
   WHERE (sk LIKE 'REQUEST#%')
