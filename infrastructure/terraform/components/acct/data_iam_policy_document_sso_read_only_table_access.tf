@@ -28,6 +28,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status_summary",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status_summary_batch",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/client_latest_name",
         # Views
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_plan_completed_summary_all",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/request_item_status_summary_all",
@@ -74,7 +75,7 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
     ]
   }
 
-  #tfsec:ignore:aws-iam-no-policy-wildcards Policy voilation expected for CI user role
+  #trivy:ignore:aws-iam-no-policy-wildcards Policy voilation expected for CI user role
   statement {
     sid    = "AllowAthenaAccess3"
     effect = "Allow"

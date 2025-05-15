@@ -9,7 +9,8 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_plan_completed_summary_optimize.id}",
       "${aws_athena_named_query.request_item_plan_completed_summary_batch_optimize.id}",
       "${aws_athena_named_query.request_item_status_summary_optimize.id}",
-      "${aws_athena_named_query.request_item_status_summary_batch_optimize.id}"
+      "${aws_athena_named_query.request_item_status_summary_batch_optimize.id}",
+      "${aws_athena_named_query.client_latest_name_optimize.id}"
     ]
     vacuum_query_ids = [
       "${aws_athena_named_query.request_item_status_vacuum.id}",
@@ -17,7 +18,8 @@ resource "aws_sfn_state_machine" "housekeeping" {
       "${aws_athena_named_query.request_item_plan_completed_summary_vacuum.id}",
       "${aws_athena_named_query.request_item_plan_completed_summary_batch_vacuum.id}",
       "${aws_athena_named_query.request_item_status_summary_vacuum.id}",
-      "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}"
+      "${aws_athena_named_query.request_item_status_summary_batch_vacuum.id}",
+      "${aws_athena_named_query.client_latest_name_vacuum.id}"
     ]
     database_name = "${aws_glue_catalog_database.reporting.name}"
     iam_role      = "${aws_iam_role.sfn_housekeeping.arn}"
@@ -73,7 +75,7 @@ resource "aws_iam_policy" "sfn_housekeeping" {
   policy      = data.aws_iam_policy_document.sfn_housekeeping.json
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
+#trivy:ignore:AVD-AWS-0342 IAM policy allows 'iam:PassRole' action
 data "aws_iam_policy_document" "sfn_housekeeping" {
 
   statement {
@@ -169,7 +171,6 @@ data "aws_iam_policy_document" "sfn_housekeeping" {
       "*", # See https://docs.aws.amazon.com/step-functions/latest/dg/cw-logs.html & https://github.com/aws/aws-cdk/issues/7158
     ]
   }
-
   statement {
     sid    = "AllowPassRole"
     effect = "Allow"

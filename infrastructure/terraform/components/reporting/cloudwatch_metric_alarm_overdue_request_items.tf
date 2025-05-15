@@ -4,6 +4,7 @@ resource "aws_cloudwatch_metric_alarm" "overdue_request_items" {
   evaluation_periods  = 1
   threshold           = 1
   alarm_description   = "Request items that did not reach a terminal state within an expected time window"
+  treat_missing_data  = "notBreaching"
 
   metric_query {
     id          = "max_overdue_request_items_count"
