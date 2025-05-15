@@ -9,6 +9,7 @@ resource "aws_cloudwatch_metric_alarm" "completed_batch_report_executions_aborte
   threshold                 = 1
   alarm_description         = "This metric monitors failed step function executions"
   insufficient_data_actions = []
+  treat_missing_data        = "notBreaching"
 
   dimensions = {
     StateMachineArn = aws_sfn_state_machine.completed_batch_report.arn

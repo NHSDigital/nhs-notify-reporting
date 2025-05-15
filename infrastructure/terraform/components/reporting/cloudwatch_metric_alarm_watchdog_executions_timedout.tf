@@ -8,6 +8,7 @@ resource "aws_cloudwatch_metric_alarm" "watchdog_executions_timedout" {
   statistic           = "Sum"
   threshold           = 1
   alarm_description   = "This metric monitors step function execution timeouts"
+  treat_missing_data  = "notBreaching"
 
   dimensions = {
     StateMachineArn = aws_sfn_state_machine.watchdog.arn

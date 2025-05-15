@@ -1,0 +1,1 @@
+VACUUM client_latest_name

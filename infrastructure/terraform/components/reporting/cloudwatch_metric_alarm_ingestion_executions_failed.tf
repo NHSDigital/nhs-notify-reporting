@@ -8,6 +8,7 @@ resource "aws_cloudwatch_metric_alarm" "ingestion_executions_failed" {
   statistic           = "Sum"
   threshold           = 1
   alarm_description   = "This metric monitors failed step function executions"
+  treat_missing_data  = "notBreaching"
 
   dimensions = {
     StateMachineArn = aws_sfn_state_machine.ingestion.arn
