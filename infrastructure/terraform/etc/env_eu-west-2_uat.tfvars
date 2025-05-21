@@ -1,5 +1,7 @@
-environment  = "uat"
-account_name = "notify-reporting-dev"
+environment    = "uat"
+account_name   = "notify-reporting-dev"
+aws_account_id = "381492132479"
+
 
 core_account_id = "736102632839"
 core_env        = "uat"

@@ -1,5 +1,7 @@
-environment  = "prod"
-account_name = "notify-reporting-prod"
+environment    = "prod"
+account_name   = "notify-reporting-prod"
+aws_account_id = "211125615884"
+
 
 core_account_id = "746418818434"
 core_env        = "prod"
