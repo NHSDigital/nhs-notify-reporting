@@ -9,9 +9,20 @@ variable "account_ids" {
   default     = {}
 }
 
+variable "aws_account_id" {
+  type        = string
+  description = "The AWS Account ID (numeric)"
+}
+
 variable "account_name" {
   type        = string
   description = "The name of the AWS Account to deploy into (see globals.tfvars)"
+}
+
+variable "default_tags" {
+  type        = map(string)
+  description = "A map of default tags to apply to all taggable resources within the component"
+  default     = {}
 }
 
 variable "app_deployer_role_permission_account_ids" {
