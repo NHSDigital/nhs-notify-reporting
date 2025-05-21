@@ -13,6 +13,7 @@ No requirements.
 | <a name="input_account_name"></a> [account\_name](#input\_account\_name) | The name of the AWS Account to deploy into (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_app_deployer_role_name"></a> [app\_deployer\_role\_name](#input\_app\_deployer\_role\_name) | Name of the app deployer role that is allowed to deploy Comms Mgr applications but not create other IAM roles | `string` | n/a | yes |
 | <a name="input_app_deployer_role_permission_account_ids"></a> [app\_deployer\_role\_permission\_account\_ids](#input\_app\_deployer\_role\_permission\_account\_ids) | All AWS Account IDs for this project that have the AppDeployer role created | `map(string)` | `{}` | no |
+| <a name="input_aws_account_id"></a> [aws\_account\_id](#input\_aws\_account\_id) | The AWS Account ID (numeric) | `string` | n/a | yes |
 | <a name="input_batch_client_ids"></a> [batch\_client\_ids](#input\_batch\_client\_ids) | List of client ids that require additional batch identifier dimensions when aggregating data | `list(string)` | <pre>[<br/>  "NULL"<br/>]</pre> | no |
 | <a name="input_cloudtrail_log_group_name"></a> [cloudtrail\_log\_group\_name](#input\_cloudtrail\_log\_group\_name) | The name of the Cloudtrail log group name on the account (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_component"></a> [component](#input\_component) | The name of the component | `string` | `"reporting"` | no |
@@ -21,6 +22,7 @@ No requirements.
 | <a name="input_core_account_ids"></a> [core\_account\_ids](#input\_core\_account\_ids) | List of all corresponding core account id's that exist in the Non-Prod domain | `list(string)` | `[]` | no |
 | <a name="input_core_env"></a> [core\_env](#input\_core\_env) | The core environment that contains the corresponding Glue table/S3 buckets etc. | `string` | `"internal-dev"` | no |
 | <a name="input_default_kms_deletion_window_in_days"></a> [default\_kms\_deletion\_window\_in\_days](#input\_default\_kms\_deletion\_window\_in\_days) | Default number of days to set KMS key deletion window | `number` | `14` | no |
+| <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | A map of default tags to apply to all taggable resources within the component | `map(string)` | `{}` | no |
 | <a name="input_desired_capacity"></a> [desired\_capacity](#input\_desired\_capacity) | The desired number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_enable_powerbi_gateway"></a> [enable\_powerbi\_gateway](#input\_enable\_powerbi\_gateway) | Deploy EC2 instance for PowerBI On-Premises Gateway | `bool` | `true` | no |
 | <a name="input_enable_s3_backup"></a> [enable\_s3\_backup](#input\_enable\_s3\_backup) | Enable AWS S3 Backup of the data bucket | `bool` | `true` | no |
