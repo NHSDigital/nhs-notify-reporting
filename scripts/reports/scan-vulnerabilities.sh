@@ -40,6 +40,8 @@ function create-report() {
 
 function run-grype-natively() {
 
+  grype db update
+
   grype \
     sbom:"$PWD/sbom-repository-report.json" \
     --config "$PWD/scripts/config/grype.yaml" \
@@ -51,6 +53,10 @@ function run-grype-in-docker() {
 
   # shellcheck disable=SC1091
   source ./scripts/docker/docker.lib.sh
+
+  docker run --rm --platform linux/amd64 \
+    --volume /tmp/grype/db:/.cache/grype/db \
+    "$image" db update
 
   # shellcheck disable=SC2155
   local image=$(name=ghcr.io/anchore/grype docker-get-image-version-and-pull)
