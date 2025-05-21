@@ -54,12 +54,13 @@ function run-grype-in-docker() {
   # shellcheck disable=SC1091
   source ./scripts/docker/docker.lib.sh
 
+  # shellcheck disable=SC2155
+  local image=$(name=ghcr.io/anchore/grype docker-get-image-version-and-pull)
+
   docker run --rm --platform linux/amd64 \
     --volume /tmp/grype/db:/.cache/grype/db \
     "$image" db update
 
-  # shellcheck disable=SC2155
-  local image=$(name=ghcr.io/anchore/grype docker-get-image-version-and-pull)
   docker run --rm --platform linux/amd64 \
     --volume "$PWD":/workdir \
     --volume /tmp/grype/db:/.cache/grype/db \
