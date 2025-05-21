@@ -28,7 +28,7 @@ data "terraform_remote_state" "acct" {
     bucket = local.terraform_state_bucket
 
     key = format(
-      "%s/%s/%s/acct.tfstate",
+      "%s/%s/%s/%s/acct.tfstate",
       var.project,
       var.aws_account_id,
       "eu-west-2",
