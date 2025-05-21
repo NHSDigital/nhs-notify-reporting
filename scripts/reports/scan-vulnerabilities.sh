@@ -39,6 +39,7 @@ function create-report() {
 }
 
 function run-grype-natively() {
+
   grype \
     sbom:"$PWD/sbom-repository-report.json" \
     --config "$PWD/scripts/config/grype.yaml" \
