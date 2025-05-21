@@ -33,6 +33,3 @@ batch_client_ids = [
 ]
 
 enable_s3_backup = false
-
-# Allow Grafana cross account access
-observability_account_id = "273354664196"

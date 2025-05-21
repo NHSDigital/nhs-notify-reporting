@@ -28,6 +28,3 @@ enable_spot      = false
 spot_max_price   = "0.3"
 
 enable_s3_backup = false
-
-# Allow Grafana cross account access
-observability_account_id = "273354664196"
