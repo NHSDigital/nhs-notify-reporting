@@ -1,6 +1,9 @@
 # If using SBOM input, automatically generate CPEs when packages have none
 add-cpes-if-none: true
 
+db:
+  max-allowed-built-age: 168h  # 7 days
+
 # ignore:
 #   # This is the full set of supported rule fields:
 #   - vulnerability: CVE-2008-4318
