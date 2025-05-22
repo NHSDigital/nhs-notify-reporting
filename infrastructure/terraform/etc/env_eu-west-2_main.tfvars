@@ -28,3 +28,7 @@ min_size         = 1
 max_size         = 1
 enable_spot      = false
 spot_max_price   = "0.3"
+
+# Allow Grafana cross account access
+observability_account_id = "273354664196"
+oam_sink_id              = "e04b741a-9ba8-43e2-865d-3a76519b675e"

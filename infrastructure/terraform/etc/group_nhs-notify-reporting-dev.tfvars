@@ -8,7 +8,3 @@ core_account_ids = [
   "815490582396", # ref
   "736102632839"  # int & uat
 ]
-
-# Allow Grafana cross account access
-observability_account_id = "273354664196"
-oam_sink_id              = "e04b741a-9ba8-43e2-865d-3a76519b675e"
