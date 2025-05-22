@@ -1,5 +1,7 @@
-environment  = "ref"
-account_name = "notify-reporting-dev"
+environment    = "ref"
+account_name   = "notify-reporting-dev"
+aws_account_id = "381492132479"
+
 
 core_account_id = "815490582396"
 core_env        = "ref"
@@ -36,3 +38,4 @@ enable_s3_backup = false
 
 # Allow Grafana cross account access
 observability_account_id = "273354664196"
+oam_sink_id              = "e04b741a-9ba8-43e2-865d-3a76519b675e"
