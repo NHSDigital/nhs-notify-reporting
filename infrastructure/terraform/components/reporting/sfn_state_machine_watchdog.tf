@@ -19,6 +19,10 @@ resource "aws_sfn_state_machine" "watchdog" {
       {
         metric_name = "StuckRequestItemsCount",
         query_id    = aws_athena_named_query.stuck_request_items.id
+      },
+      {
+        metric_name = "DegradedLatenciesCount",
+        query_id    = aws_athena_named_query.degraded_latency.id
       }
     ]
     environment = var.environment

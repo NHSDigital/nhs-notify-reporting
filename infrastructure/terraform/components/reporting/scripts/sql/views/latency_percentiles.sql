@@ -48,9 +48,7 @@ WHERE starttime IS NOT NULL
 AND endtime IS NOT NULL
 AND starttime > DATE('2000-01-01')
 AND DAY_OF_WEEK(starttime) <= 5
-AND HOUR(AT_TIMEZONE(DATE_ADD('minute', 2, starttime), 'Europe/London')) < 18
-AND HOUR(AT_TIMEZONE(DATE_ADD('minute', -2, starttime), 'Europe/London')) < 18
-AND HOUR(AT_TIMEZONE(DATE_ADD('minute', 2, starttime), 'Europe/London')) >= 8
-AND HOUR(AT_TIMEZONE(DATE_ADD('minute', -2, starttime), 'Europe/London')) >= 8
+AND HOUR(AT_TIMEZONE(DATE_ADD('minute', 2, starttime), 'Europe/London')) BETWEEN 8 AND 17
+AND HOUR(AT_TIMEZONE(DATE_ADD('minute', -2, starttime), 'Europe/London')) BETWEEN 8 AND 17
 GROUP BY clientid, campaignid, communicationtype, percentile
 ORDER BY clientid, campaignid, communicationtype, percentile
