@@ -1,13 +1,13 @@
-resource "null_resource" "raw_latency_view" {
+resource "null_resource" "raw_latency_3m_view" {
   triggers = {
-    sql = filesha256("${path.module}/scripts/sql/views/raw_latency.sql")
+    sql = filesha256("${path.module}/scripts/sql/views/raw_latency_3m.sql")
   }
   provisioner "local-exec" {
     command = <<EOT
       ${path.module}/scripts/create_replace_view.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        raw_latency
+        raw_latency_3m
     EOT
   }
 
