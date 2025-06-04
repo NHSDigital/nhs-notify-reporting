@@ -12,6 +12,6 @@ resource "null_resource" "latency_percentiles_view" {
   }
 
   depends_on = [
-    null_resource.raw_latency_3m
+    null_resource.raw_latency_3m_view
   ]
 }
