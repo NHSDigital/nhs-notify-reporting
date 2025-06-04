@@ -9,6 +9,7 @@ WITH request_created_time AS (
   GROUP BY clientid, requestid
 ),
 first_channel_send AS (
+  --Time from batch receipt to first message send
   SELECT
     rip.clientid,
     rip.campaignid,
@@ -41,6 +42,7 @@ fallback_candidates AS (
   WINDOW win AS (PARTITION BY requestitemid ORDER BY ordernumber ASC)
 ),
 fallback_channel_send AS (
+  --Time from failover trigger to subsequent send
   SELECT
     clientid,
     campaignid,
@@ -65,6 +67,7 @@ FROM combined_events
 WHERE starttime IS NOT NULL
   AND endtime IS NOT NULL
   AND starttime > DATE('2000-01-01')
+  --Exclude unsociable hours, use 2 minute tolerance to eliminate spurious values due to race conditions
   AND DAY_OF_WEEK(starttime) <= 5
   AND HOUR(AT_TIMEZONE(DATE_ADD('minute', 2, starttime), 'Europe/London')) BETWEEN 8 AND 17
   AND HOUR(AT_TIMEZONE(DATE_ADD('minute', -2, starttime), 'Europe/London')) BETWEEN 8 AND 17;
