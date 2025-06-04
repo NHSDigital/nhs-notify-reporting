@@ -6,6 +6,6 @@ resource "aws_athena_named_query" "degraded_latency" {
   query       = file("${path.module}/scripts/sql/watchdog/degraded_latency.sql")
 
   depends_on = [
-    null_resource.raw_latency_3m
+    null_resource.raw_latency_3m_view
   ]
 }
