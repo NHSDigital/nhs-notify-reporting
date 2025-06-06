@@ -5,7 +5,7 @@ SELECT
 FROM request_item_plan_status
 WHERE
   (
-      (ordernumber = 1 AND createdtime < DATE_ADD('day', -2, CURRENT_DATE) AND communicationtype = 'NHSAPP') OR
+      (ordernumber = 1 AND createdtime < DATE_ADD('day', -4, CURRENT_DATE) AND communicationtype = 'NHSAPP') OR
       (ordernumber = 1 AND createdtime < DATE_ADD('day', -4, CURRENT_DATE) AND communicationtype = 'SMS') OR
       (ordernumber = 1 AND createdtime < DATE_ADD('day', -4, CURRENT_DATE) AND communicationtype = 'EMAIL') OR
       (ordernumber = 1 AND createdtime < DATE_ADD('day', -7, CURRENT_DATE) AND communicationtype = 'LETTER') OR
