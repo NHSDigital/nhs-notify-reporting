@@ -33,3 +33,4 @@ create_replace_view
 athena_named_query
 add_column
 declaratively
+degraded_latency
