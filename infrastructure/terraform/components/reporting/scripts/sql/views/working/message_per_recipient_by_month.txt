@@ -1,0 +1,31 @@
+WITH base_data AS (
+    SELECT
+        DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
+        nhsnumberhash,
+        communicationType,
+        COUNT(requestitemid) AS messagesDelivered
+    FROM request_item_status
+    CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationType)
+    WHERE status = 'DELIVERED'
+    GROUP BY
+        1, 2, 3
+),
+monthly_recipients AS (
+    SELECT
+        createdMonth,
+        COUNT(DISTINCT nhsnumberhash) AS totalMonthlyRecipients
+    FROM base_data
+    GROUP BY 1
+)
+
+SELECT
+    base.createdMonth,
+    base.communicationType,
+    recipients.totalMonthlyRecipients,
+    SUM(base.messagesDelivered) AS messagesDelivered,
+    (SUM(base.messagesDelivered) * 1.0) / (recipients.totalMonthlyRecipients * 1.0) AS messagePerOverallRecipient
+FROM base_data base
+JOIN monthly_recipients recipients
+    ON base.createdMonth = recipients.createdMonth
+GROUP BY
+    1, 2, 3

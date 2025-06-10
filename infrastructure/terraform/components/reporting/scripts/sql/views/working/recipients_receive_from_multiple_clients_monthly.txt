@@ -1,0 +1,24 @@
+WITH multi_client_recipients AS (
+    SELECT
+        DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
+        nhsnumberhash,
+        COUNT(DISTINCT clientid) AS numberOfClients
+    FROM request_item_status
+    CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationType)
+    WHERE
+        status = 'DELIVERED'
+        AND communicationType = 'NHSAPP'
+    GROUP BY
+        1, 2
+    HAVING COUNT(DISTINCT clientid) > 1
+)
+
+SELECT
+    createdMonth,
+    numberOfClients,
+    COUNT(nhsnumberhash) AS countOfRecipients
+FROM multi_client_recipients
+GROUP BY
+    1, 2
+ORDER BY
+    1, 2

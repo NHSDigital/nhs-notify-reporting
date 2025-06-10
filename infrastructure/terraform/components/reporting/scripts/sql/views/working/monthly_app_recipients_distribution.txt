@@ -1,0 +1,19 @@
+WITH monthly_messages AS (
+    SELECT
+        DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
+        nhsnumberhash,
+        COUNT(requestitemid) AS AppMessages
+    FROM request_item_status
+    CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationType)
+    WHERE
+        status = 'DELIVERED'
+        AND communicationType = 'NHSAPP'
+    GROUP BY 1, 2
+)
+
+SELECT
+    createdMonth,
+    AppMessages,
+    COUNT(*) AS countOfRecipients
+FROM monthly_messages
+GROUP BY 1, 2

@@ -1,0 +1,20 @@
+SELECT 
+    createdMonth,
+    nhsnumberhash,
+    communicationType,
+    clientid,
+    messagesDelivered,
+    SUM(messagesDelivered) OVER (PARTITION BY createdMonth, nhsnumberhash) AS monthlyTotalMessages
+FROM (
+    SELECT 
+        DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
+        nhsnumberhash,
+        communicationType,
+        clientid,
+        COUNT(requestitemid) AS messagesDelivered
+    FROM request_item_status
+        CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationType)
+    WHERE status = 'DELIVERED'
+    GROUP BY 
+        1, 2, 3, 4
+)

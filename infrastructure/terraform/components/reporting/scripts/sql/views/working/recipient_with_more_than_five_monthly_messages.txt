@@ -1,0 +1,26 @@
+SELECT
+    createdMonth,
+    monthlyTotalMessages,
+    nhsnumberhash,
+    clientid,
+    CASE WHEN communicationType = 'NHSAPP' THEN messagesDelivered ELSE 0 END AS AppDelivered,
+    CASE WHEN communicationType = 'EMAIL' THEN messagesDelivered ELSE 0 END AS EmailDelivered,
+    CASE WHEN communicationType = 'SMS' THEN messagesDelivered ELSE 0 END AS SMSDelivered,
+    CASE WHEN communicationType = 'LETTER' THEN messagesDelivered ELSE 0 END AS LetterDelivered
+FROM (
+    SELECT
+        DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
+        nhsnumberhash,
+        communicationType,
+        clientid,
+        COUNT(requestitemid) AS messagesDelivered,
+        SUM(COUNT(requestitemid)) OVER (
+            PARTITION BY DATE(DATE_TRUNC('month', createdtime)), nhsnumberhash
+        ) AS monthlyTotalMessages
+    FROM request_item_status
+    CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationType)
+    WHERE status = 'DELIVERED'
+    GROUP BY 1, 2, 3, 4
+)
+WHERE monthlyTotalMessages >= 5
+ORDER BY 1, 2, 3, 4, 5, 6, 7, 8
