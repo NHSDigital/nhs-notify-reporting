@@ -3,10 +3,10 @@ SELECT
     monthlyTotalMessages,
     nhsnumberhash,
     clientid,
-    CASE WHEN communicationType = 'NHSAPP' THEN messagesDelivered ELSE 0 END AS AppDelivered,
-    CASE WHEN communicationType = 'EMAIL' THEN messagesDelivered ELSE 0 END AS EmailDelivered,
-    CASE WHEN communicationType = 'SMS' THEN messagesDelivered ELSE 0 END AS SMSDelivered,
-    CASE WHEN communicationType = 'LETTER' THEN messagesDelivered ELSE 0 END AS LetterDelivered
+    SUM(CASE WHEN communicationType = 'NHSAPP' THEN messagesDelivered ELSE 0 END) AS AppDelivered,
+    SUM(CASE WHEN communicationType = 'EMAIL' THEN messagesDelivered ELSE 0 END) AS EmailDelivered,
+    SUM(CASE WHEN communicationType = 'SMS' THEN messagesDelivered ELSE 0 END) AS SMSDelivered,
+    SUM(CASE WHEN communicationType = 'LETTER' THEN messagesDelivered ELSE 0 END) AS LetterDelivered
 FROM (
     SELECT
         DATE(DATE_TRUNC('month', createdtime)) AS createdMonth,
@@ -23,4 +23,4 @@ FROM (
     GROUP BY 1, 2, 3, 4
 )
 WHERE monthlyTotalMessages >= 5
-ORDER BY 1, 2, 3, 4, 5, 6, 7, 8
+GROUP BY 1, 2, 3, 4
