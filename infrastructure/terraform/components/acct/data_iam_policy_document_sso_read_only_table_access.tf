@@ -35,7 +35,16 @@ data "aws_iam_policy_document" "sso_read_only_table_access" {
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/dates",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/letters_invoice_units",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/latency_percentiles",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/daily_recipient_count",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/daily_recipient_distribution",
         "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/raw_latency_3m",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/delivered_messages",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_app_recipients_distribution",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_app_recipients_multiple_clients",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_messages_per_recipient",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_recipient_with_more_than_five_messages",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_recipients_distribution",
+        "arn:aws:glue:${var.region}:${var.aws_account_id}:table/${var.project}-*-reporting-database/monthly_recipients_distribution_by_integrator",
       ],
     )
   }
