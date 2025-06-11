@@ -2,8 +2,6 @@ environment    = "prod"
 account_name   = "notify-reporting-prod"
 aws_account_id = "211125615884"
 
-parent_acct_environment = "prod"
-
 core_account_id = "746418818434"
 core_env        = "prod"
 

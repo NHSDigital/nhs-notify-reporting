@@ -2,6 +2,7 @@ environment    = "uat"
 account_name   = "notify-reporting-dev"
 aws_account_id = "381492132479"
 
+parent_acct_environment = "main"
 
 core_account_id = "736102632839"
 core_env        = "uat"

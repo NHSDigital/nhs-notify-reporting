@@ -220,5 +220,5 @@ variable "observability_account_id" {
 variable "parent_acct_environment" {
   type        = string
   description = "Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments"
-  default     = "main"
+  default     = "prod"
 }
