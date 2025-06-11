@@ -1,15 +1,15 @@
 SELECT
   createddate,
-  communicationType,
+  communicationtype,
   messagecount,
   COUNT(*) AS recipientcount
 FROM (
   SELECT
     createddate,
     nhsnumberhash,
-    communicationType,
+    communicationtype,
     COUNT(*) AS messagecount
-  FROM vw_delivered_messages_flat
+  FROM delivered_messages
   GROUP BY 1, 2, 3
 )
 GROUP BY 1, 2, 3
