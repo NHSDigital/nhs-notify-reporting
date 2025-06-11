@@ -1,17 +1,15 @@
-CREATE OR REPLACE VIEW ${view_name} AS
 SELECT
   createddate,
-  communicationtype,
+  communicationType,
   messagecount,
-  COUNT(nhsnumberhash) AS recipientcount
+  COUNT(*) AS recipientcount
 FROM (
   SELECT
-    DATE(createdtime) AS createddate,
+    createddate,
     nhsnumberhash,
-    communicationtype,
-    COUNT(requestitemid) AS messagecount
-  FROM request_item_status CROSS JOIN UNNEST(completedcommunicationtypes) AS t(communicationtype)
-  WHERE status='DELIVERED'
+    communicationType,
+    COUNT(*) AS messagecount
+  FROM vw_delivered_messages_flat
   GROUP BY 1, 2, 3
 )
 GROUP BY 1, 2, 3
