@@ -12,6 +12,6 @@ resource "null_resource" "daily_recipient_count_view" {
   }
 
   depends_on = [
-    null_resource.request_item_status_table
+    null_resource.delivered_messages_view
   ]
 }

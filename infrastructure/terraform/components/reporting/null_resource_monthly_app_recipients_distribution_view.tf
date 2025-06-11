@@ -1,13 +1,13 @@
-resource "null_resource" "daily_recipient_distribution_view" {
+resource "null_resource" "monthly_app_recipients_distribution_view" {
   triggers = {
-    sql = filesha256("${path.module}/scripts/sql/views/daily_recipient_distribution.sql")
+    sql = filesha256("${path.module}/scripts/sql/views/monthly_app_recipients_distribution.sql")
   }
   provisioner "local-exec" {
     command = <<EOT
       ${path.module}/scripts/create_replace_view.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        daily_recipient_distribution
+        monthly_app_recipients_distribution
     EOT
   }
 
