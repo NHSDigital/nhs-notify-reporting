@@ -2,6 +2,7 @@ environment    = "main"
 account_name   = "notify-reporting-dev"
 aws_account_id = "381492132479"
 
+parent_acct_environment = "main"
 
 core_account_id = "257995483745"
 core_env        = "internal-dev"
