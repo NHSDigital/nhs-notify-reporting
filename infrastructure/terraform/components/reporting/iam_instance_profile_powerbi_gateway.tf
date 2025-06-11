@@ -189,6 +189,13 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/daily_recipient_count",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/daily_recipient_distribution",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/raw_latency_3m",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/delivered_messages",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_app_recipients_distribution",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_app_recipients_multiple_clients",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_messages_per_recipient",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipient_with_more_than_five_messages",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipients_distribution",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipients_distribution_by_integrator",
       ]
     )
   }
