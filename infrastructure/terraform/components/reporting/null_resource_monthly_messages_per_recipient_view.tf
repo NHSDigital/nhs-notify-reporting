@@ -1,17 +1,17 @@
-resource "null_resource" "latency_percentiles_view" {
+resource "null_resource" "monthly_messages_per_recipient_view" {
   triggers = {
-    sql = filesha256("${path.module}/scripts/sql/views/latency_percentiles.sql")
+    sql = filesha256("${path.module}/scripts/sql/views/monthly_messages_per_recipient.sql")
   }
   provisioner "local-exec" {
     command = <<EOT
       ${path.module}/scripts/create_replace_view.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        latency_percentiles
+        monthly_messages_per_recipient
     EOT
   }
 
   depends_on = [
-    null_resource.raw_latency_3m_view
+    null_resource.delivered_messages_view
   ]
 }

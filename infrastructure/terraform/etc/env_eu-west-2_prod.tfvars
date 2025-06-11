@@ -1,5 +1,6 @@
-environment  = "prod"
-account_name = "notify-reporting-prod"
+environment    = "prod"
+account_name   = "notify-reporting-prod"
+aws_account_id = "211125615884"
 
 core_account_id = "746418818434"
 core_env        = "prod"
@@ -36,3 +37,4 @@ enable_vault_lock_configuration = true
 
 # Allow Grafana cross account access
 observability_account_id = "677276089126"
+oam_sink_id              = "14dab7f7-c89f-46b5-9cf7-45d9643133c4"

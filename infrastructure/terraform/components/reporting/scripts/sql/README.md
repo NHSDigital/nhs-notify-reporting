@@ -280,7 +280,7 @@ For correct results, the ingestion window must be large enough to encompass all 
         sendinggroupid,
 
         --Facts
-        count(distinct requestitemid) AS requestitemcount
+        COUNT(DISTINCT requestitemid) AS requestitemcount
     FROM <projection_table>
     WHERE (status = 'DELIVERED' OR status = 'FAILED') AND
     (

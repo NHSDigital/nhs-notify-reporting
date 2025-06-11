@@ -13,7 +13,7 @@ USING (
     failedreason,
     contactdetailsource,
     channeltype,
-    count(distinct requestitemid) AS requestitemcount
+    COUNT(DISTINCT requestitemid) AS requestitemcount
   FROM request_item_plan_status
   WHERE (status = 'DELIVERED' OR status = 'FAILED') AND
   (
