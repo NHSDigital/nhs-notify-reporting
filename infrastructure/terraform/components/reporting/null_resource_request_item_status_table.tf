@@ -93,7 +93,7 @@ resource "null_resource" "request_item_status_sendinggroupcreatedtime_column" {
   depends_on = [null_resource.request_item_status_sendinggroupname_column]
 }
 
-resource "null_resource" "request_item_status_requestitembillingrefid_column" {
+resource "null_resource" "request_item_status_billingref_column" {
   triggers = {
     always_run = timestamp()
   }
@@ -102,7 +102,7 @@ resource "null_resource" "request_item_status_requestitembillingrefid_column" {
       ${path.module}/scripts/add_column.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        request_item_status requestitembillingrefid string
+        request_item_status billingref string
     EOT
   }
 
