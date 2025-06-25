@@ -8,6 +8,8 @@ resource "aws_athena_workgroup" "core" {
   force_destroy = true
 
   configuration {
+    # The Completed Comms and Completed Batch reports, both rely on being able to specify the 'output_location'.
+    # 'enforce_workgroup_configuration = true' silently ignores the output_location specified by the reports and saves everything to the root of the bucket. 
     enforce_workgroup_configuration = false
 
     result_configuration {
