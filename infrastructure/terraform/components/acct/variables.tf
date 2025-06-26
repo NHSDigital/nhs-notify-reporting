@@ -86,3 +86,9 @@ variable "cost_anomaly_threshold" {
   description = "The threshold percentage for cost anomaly detection"
   default     = 10
 }
+
+variable "kms_deletion_window" {
+  type        = string
+  description = "When a kms key is deleted, how long should it wait in the pending deletion state?"
+  default     = "30"
+}
