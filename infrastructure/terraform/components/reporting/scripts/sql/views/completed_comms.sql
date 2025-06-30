@@ -23,6 +23,8 @@ LEFT OUTER JOIN request_item_plan_status rip ON
     ri.requestitemid = rip.requestitemid AND
     ri.clientid = rip.clientid
 WHERE
-    rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') OR
-    (ri.status IN ('FAILED') AND rip.requestitemplanid IS NULL)
+    (rip.status IN ('FAILED', 'DELIVERED', 'SKIPPED') OR (ri.status IN ('FAILED') AND rip.requestitemplanid IS NULL)) AND
+    --Prevent scanning of all possible created dates
+    (ri.createdtime IS NULL OR ri.createdtime >= DATE(DATE_ADD('day', -90, CURRENT_DATE))) AND
+    (rip.createdtime IS NULL OR rip.createdtime >= DATE(DATE_ADD('day', -90, CURRENT_DATE)))
 ORDER BY clientid, requestid, requestitemid, requestitemplanid
