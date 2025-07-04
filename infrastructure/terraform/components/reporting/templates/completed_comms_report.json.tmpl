@@ -168,7 +168,7 @@
             "Type": "Task",
             "Parameters": {
               "Bucket": "${output_bucket}",
-              "Prefix.$": "States.Format('${output_folder}/{}/{}/x/', $.clientId, $.completedDate)"
+              "Prefix.$": "States.Format('${output_folder}/{}/{}/', $.clientId, $.completedDate)"
             },
             "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
             "Next": "Error if Report Not Created",
