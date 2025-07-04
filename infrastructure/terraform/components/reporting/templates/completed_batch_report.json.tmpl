@@ -160,7 +160,35 @@
                     }
                   },
                   "Type": "Task",
+                  "Next": "Check for Created Report"
+                },
+                "Check for Created Report": {
+                  "Type": "Task",
+                  "Parameters": {
+                    "Bucket": "${output_bucket}",
+                    "Prefix.$": "States.Format('${output_folder}/{}/{}/x/', $.clientId, $.completedDate)"
+                  },
+                  "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+                  "Next": "Error if Report Not Created",
+                  "ResultPath": "$.reportCreatedCheck"
+                },
+                "Error if Report Not Created": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.reportCreatedCheck.KeyCount",
+                      "NumericEquals": 0,
+                      "Next": "Report Not Created"
+                    }
+                  ],
+                  "Default": "Report Created"
+                },
+                "Report Created": {
+                  "Type": "Pass",
                   "End": true
+                },
+                "Report Not Created": {
+                  "Type": "Fail"
                 }
               }
             },
