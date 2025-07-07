@@ -8,7 +8,6 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     requestrefid string,
     requestid string,
     requestitemplanid string,
-    billingref string,
     communicationtype string,
     supplier string,
     createdtime timestamp,

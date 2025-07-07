@@ -20,7 +20,6 @@ USING (
         requestitemid,
         requestrefid,
         requestid,
-        billingref,
         to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
         from_iso8601_timestamp(createddate) AS createdtime,
         from_iso8601_timestamp(completeddate) AS completedtime,
@@ -29,6 +28,7 @@ USING (
         status,
         failedreason,
         patientodscode,
+        billingref,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND
@@ -52,7 +52,6 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   requestitemrefid = source.requestitemrefid,
   requestrefid = source.requestrefid,
   requestid = source.requestid,
-  billingref = source.billingref,
   nhsnumberhash = source.nhsnumberhash,
   createdtime = source.createdtime,
   completedtime = source.completedtime,
@@ -61,6 +60,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   status = source.status,
   failedreason = source.failedreason,
   patientodscode = source.patientodscode,
+  billingref = source.billingref,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -73,7 +73,6 @@ WHEN NOT MATCHED THEN INSERT (
   requestitemid,
   requestrefid,
   requestid,
-  billingref,
   nhsnumberhash,
   createdtime,
   completedtime,
@@ -82,6 +81,7 @@ WHEN NOT MATCHED THEN INSERT (
   status,
   failedreason,
   patientodscode,
+  billingref,
   timestamp
 )
 VALUES (
@@ -95,7 +95,6 @@ VALUES (
   source.requestitemid,
   source.requestrefid,
   source.requestid,
-  source.billingref,
   source.nhsnumberhash,
   source.createdtime,
   source.completedtime,
@@ -104,5 +103,6 @@ VALUES (
   source.status,
   source.failedreason,
   source.patientodscode,
+  source.billingref,
   source.timestamp
 )

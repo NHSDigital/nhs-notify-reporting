@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     status string,
     failedreason string,
     patientodscode string,
+    billingref string,
     timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
