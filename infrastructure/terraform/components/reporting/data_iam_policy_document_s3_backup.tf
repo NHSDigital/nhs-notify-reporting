@@ -65,7 +65,7 @@ data "aws_iam_policy_document" "s3_backup" {
 
   statement {
     actions = [
-      "backup:tagResource",
+      "backup:TagResource",
     ]
     resources = [
       "*"
