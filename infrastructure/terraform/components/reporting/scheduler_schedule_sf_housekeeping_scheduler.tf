@@ -7,7 +7,7 @@ resource "aws_scheduler_schedule" "sf_housekeeping_scheduler" {
     mode = "OFF"
   }
 
-  schedule_expression          = "cron(0 2 ? * SUN *)"
+  schedule_expression          = "cron(0 2 ? * * *)"
   schedule_expression_timezone = "Europe/London"
 
   target {
