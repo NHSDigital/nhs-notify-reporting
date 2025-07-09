@@ -205,6 +205,12 @@ variable "periodic_s3backup_schedule" {
   default     = "cron(0 5 ? * 7 *)" # Runs every Saturday at 5 AM UTC
 }
 
+variable "destination_backup_vault_arn" {
+  type        = string
+  description = "ARN of the destination backup vault to copy periodic backups to"
+  default     = ""
+}
+
 variable "enable_vault_lock_configuration" {
   type        = bool
   description = "Enable vault lock, preventing the deletion of a vault that contains 1 or more Recovery Points"

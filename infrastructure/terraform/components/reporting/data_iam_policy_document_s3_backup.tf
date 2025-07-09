@@ -56,6 +56,24 @@ data "aws_iam_policy_document" "s3_backup" {
 
   statement {
     actions = [
+      "backup:CopyIntoBackupVault",
+    ]
+    resources = [
+      var.destination_backup_vault_arn
+    ]
+  }
+
+  statement {
+    actions = [
+      "backup:tagResource",
+    ]
+    resources = [
+      "*"
+    ]
+  }
+
+  statement {
+    actions = [
       "cloudwatch:GetMetricData", # List action, cannot be scoped
       "events:ListRules"          # List action, cannot be scoped
     ]
