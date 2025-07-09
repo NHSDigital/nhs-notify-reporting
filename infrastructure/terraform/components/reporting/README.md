@@ -24,6 +24,7 @@ No requirements.
 | <a name="input_default_kms_deletion_window_in_days"></a> [default\_kms\_deletion\_window\_in\_days](#input\_default\_kms\_deletion\_window\_in\_days) | Default number of days to set KMS key deletion window | `number` | `14` | no |
 | <a name="input_default_tags"></a> [default\_tags](#input\_default\_tags) | A map of default tags to apply to all taggable resources within the component | `map(string)` | `{}` | no |
 | <a name="input_desired_capacity"></a> [desired\_capacity](#input\_desired\_capacity) | The desired number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
+| <a name="input_destination_backup_vault_arn"></a> [destination\_backup\_vault\_arn](#input\_destination\_backup\_vault\_arn) | ARN of the destination backup vault to copy periodic backups to | `string` | `""` | no |
 | <a name="input_enable_powerbi_gateway"></a> [enable\_powerbi\_gateway](#input\_enable\_powerbi\_gateway) | Deploy EC2 instance for PowerBI On-Premises Gateway | `bool` | `true` | no |
 | <a name="input_enable_s3_backup"></a> [enable\_s3\_backup](#input\_enable\_s3\_backup) | Enable AWS S3 Backup of the data bucket | `bool` | `true` | no |
 | <a name="input_enable_spot"></a> [enable\_spot](#input\_enable\_spot) | run Power BI On-Premises Gateway as spot instances | `bool` | `false` | no |
