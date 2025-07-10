@@ -19,6 +19,13 @@ resource "aws_backup_plan" "s3_backup" {
     schedule                 = var.periodic_s3backup_schedule
     enable_continuous_backup = false
 
+    copy_action {
+      destination_vault_arn = var.destination_backup_vault_arn
+      lifecycle {
+        delete_after = var.periodic_s3backup_retention_days
+      }
+    }
+
     lifecycle {
       delete_after = var.periodic_s3backup_retention_days
     }
