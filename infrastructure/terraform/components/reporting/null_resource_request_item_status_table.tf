@@ -108,3 +108,19 @@ resource "null_resource" "request_item_status_billingref_column" {
 
   depends_on = [null_resource.request_item_status_sendinggroupcreatedtime_column]
 }
+
+resource "null_resource" "request_item_status_failedreasoncode_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_status failedreasoncode string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_status_billingref_column]
+}

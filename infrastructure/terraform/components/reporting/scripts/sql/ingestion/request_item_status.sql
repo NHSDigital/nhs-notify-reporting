@@ -29,6 +29,7 @@ USING (
         failedreason,
         patientodscode,
         billingref,
+        failedreasoncode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM#%') AND
@@ -61,6 +62,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   failedreason = source.failedreason,
   patientodscode = source.patientodscode,
   billingref = source.billingref,
+  failedreasoncode = source.failedreasoncode,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -82,6 +84,7 @@ WHEN NOT MATCHED THEN INSERT (
   failedreason,
   patientodscode,
   billingref,
+  failedreasoncode,
   timestamp
 )
 VALUES (
@@ -104,5 +107,6 @@ VALUES (
   source.failedreason,
   source.patientodscode,
   source.billingref,
+  source.failedreasoncode,
   source.timestamp
 )

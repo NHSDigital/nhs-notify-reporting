@@ -17,7 +17,9 @@ SELECT
     rip.status as requestitemplanstatus,
     rip.communicationtype as communicationtype,
     rip.channeltype as channeltype,
-    rip.failedreason as requestitemplanfailedreason
+    rip.failedreason as requestitemplanfailedreason,
+    rip.failedreasoncode as requestitemplanfailedreasoncode,
+    ri.failedreasoncode as requestitemfailedreasoncode,
 FROM request_item_status ri
 LEFT OUTER JOIN request_item_plan_status rip ON
     ri.requestitemid = rip.requestitemid AND
