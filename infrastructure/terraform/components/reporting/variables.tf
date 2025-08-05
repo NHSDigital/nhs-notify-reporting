@@ -217,14 +217,20 @@ variable "enable_vault_lock_configuration" {
   default     = false
 }
 
-variable "observability_account_id" {
+variable "shared_infra_account_id" {
   type        = string
-  description = "The Observability Account ID that needs access"
-  default     = null
+  description = "The AWS Account ID of the shared infrastructure account"
+  default     = "000000000000"
 }
 
 variable "parent_acct_environment" {
   type        = string
   description = "Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments"
-  default     = "prod"
+  default     = "main"
+}
+
+variable "is_primary_environment" {
+  type        = bool
+  description = "Is this the primary environment for the project? Used to determine if certain resources should be created."
+  default     = false
 }

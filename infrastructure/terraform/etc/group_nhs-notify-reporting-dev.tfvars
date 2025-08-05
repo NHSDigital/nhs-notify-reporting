@@ -9,8 +9,5 @@ core_account_ids = [
   "736102632839"  # int & uat
 ]
 
-# Allow Grafana cross account access
-observability_account_id = "099709604300"
-
 budget_amount          = 500
 cost_anomaly_threshold = 20

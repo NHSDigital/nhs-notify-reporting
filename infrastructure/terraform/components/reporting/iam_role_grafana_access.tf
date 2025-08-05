@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "observability_grafana_role_assume_role_policy" {
     principals {
       type = "AWS"
       identifiers = [
-        "arn:aws:iam::${var.observability_account_id}:root"
+        "arn:aws:iam::${var.shared_infra_account_id}:root"
       ]
     }
     condition {
@@ -19,7 +19,7 @@ data "aws_iam_policy_document" "observability_grafana_role_assume_role_policy" {
       variable = "aws:PrincipalArn"
 
       values = [
-        "arn:aws:iam::${var.observability_account_id}:role/*obs-workspace-role"
+        "arn:aws:iam::${var.shared_infra_account_id}:role/*obs-workspace-role"
       ]
     }
   }

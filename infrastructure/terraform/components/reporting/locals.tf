@@ -84,5 +84,5 @@ locals {
     ]
   ]) : []
 
-  log_destination_arn = "arn:aws:logs:${var.region}:${var.observability_account_id}:destination:nhs-main-obs-firehose-logs"
+  log_destination_arn = "arn:aws:logs:${var.region}:${var.shared_infra_account_id}:destination:nhs-main-obs-firehose-logs"
 }
