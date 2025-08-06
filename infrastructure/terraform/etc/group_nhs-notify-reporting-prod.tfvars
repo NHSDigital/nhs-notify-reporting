@@ -10,3 +10,17 @@ observability_account_id = "142549683766"
 
 budget_amount          = 900
 cost_anomaly_threshold = 20
+
+bounded_contexts = [
+  {
+    name = "reporting"
+    additional_policies = [
+      "athena:*",
+      "firehose:*",
+      "glue:*",
+      "kinesis:*"
+    ]
+  }
+]
+
+shared_infra_account_id  = "142549683766"
