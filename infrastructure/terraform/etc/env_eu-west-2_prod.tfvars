@@ -5,6 +5,10 @@ aws_account_id = "211125615884"
 core_account_id = "746418818434"
 core_env        = "prod"
 
+core_account_ids = [
+  "746418818434"
+]
+
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
 
