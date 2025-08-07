@@ -34,4 +34,3 @@ enable_s3_backup = false
 
 # Allow Grafana cross account access
 shared_infra_account_id  = "099709604300"
-oam_sink_id              = "66ebe791-9d3c-41cf-85a5-09765d71767f"

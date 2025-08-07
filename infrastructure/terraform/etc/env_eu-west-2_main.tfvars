@@ -38,7 +38,6 @@ spot_max_price   = "0.3"
 
 # Allow Grafana cross account access
 shared_infra_account_id  = "099709604300"
-oam_sink_id              = "66ebe791-9d3c-41cf-85a5-09765d71767f"
 
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:390844765011:backup-vault:nhs-notify-reporting-dev-backup-vault"
 
