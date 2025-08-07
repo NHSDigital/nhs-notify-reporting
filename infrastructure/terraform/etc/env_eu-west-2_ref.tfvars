@@ -37,5 +37,4 @@ batch_client_ids = [
 
 enable_s3_backup = false
 
-# Allow Grafana cross account access
 shared_infra_account_id  = "099709604300"

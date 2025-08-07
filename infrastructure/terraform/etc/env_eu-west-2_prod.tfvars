@@ -39,7 +39,6 @@ batch_client_ids = [
 
 enable_vault_lock_configuration = true
 
-# Allow Grafana cross account access
 shared_infra_account_id  = "142549683766"
 
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:369399915558:backup-vault:nhs-notify-reporting-prod-backup-vault"

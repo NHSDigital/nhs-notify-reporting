@@ -32,5 +32,4 @@ spot_max_price   = "0.3"
 
 enable_s3_backup = false
 
-# Allow Grafana cross account access
 shared_infra_account_id  = "099709604300"
