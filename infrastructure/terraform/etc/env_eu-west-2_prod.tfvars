@@ -42,5 +42,3 @@ enable_vault_lock_configuration = true
 shared_infra_account_id  = "142549683766"
 
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:369399915558:backup-vault:nhs-notify-reporting-prod-backup-vault"
-
-is_primary_environent = true
