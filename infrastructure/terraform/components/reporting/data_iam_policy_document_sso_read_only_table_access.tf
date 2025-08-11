@@ -1,5 +1,4 @@
 data "aws_iam_policy_document" "sso_read_only_table_access" {
-
   statement {
     sid    = "AllowGlueAccess"
     effect = "Allow"
