@@ -30,8 +30,25 @@ USING (
         channeltype,
         ordernumber,
         recipientcontactid,
+        templatekv[2] AS templatename,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
+      --CROSS JOIN needed to unpack template name from struct
+      CROSS JOIN UNNEST(
+          CASE
+              WHEN supplier IS NULL THEN ARRAY[ROW(NULL, NULL)]
+              ELSE
+                COALESCE(
+                    MAP_ENTRIES(
+                        MAP_FILTER(
+                            CAST(CAST(templates.suppliers AS json) AS map<varchar, varchar>),
+                            (k, v) -> UPPER(k) = UPPER(supplier)
+                        )
+                    ),
+                    ARRAY[ROW(NULL, NULL)]
+                )
+          END
+      ) AS t(templatekv)
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
       (
         -- Moving 1-week ingestion window
@@ -63,6 +80,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   channeltype = source.channeltype,
   ordernumber = source.ordernumber,
   recipientcontactid =  source.recipientcontactid,
+  templatename = source.templatename,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -85,6 +103,7 @@ WHEN NOT MATCHED THEN INSERT (
   channeltype,
   ordernumber,
   recipientcontactid,
+  templatename,
   timestamp
 )
 VALUES (
@@ -108,5 +127,6 @@ VALUES (
   source.channeltype,
   source.ordernumber,
   source.recipientcontactid,
+  source.templatename,
   source.timestamp
 )
