@@ -15,7 +15,8 @@ SELECT
     requestitemplanstatus,
     communicationtype,
     channeltype,
-    requestitemplanfailedreason
+    requestitemplanfailedreason,
+    templatename
 FROM completed_comms
 WHERE
     clientid = ? AND
