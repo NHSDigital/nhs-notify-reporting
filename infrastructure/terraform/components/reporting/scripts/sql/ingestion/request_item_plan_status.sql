@@ -30,7 +30,7 @@ USING (
         channeltype,
         ordernumber,
         recipientcontactid,
-        templatekv[2] AS templatename,
+        templatekv[2] AS templateid,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       --CROSS JOIN needed to unpack template name from struct
@@ -80,7 +80,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   channeltype = source.channeltype,
   ordernumber = source.ordernumber,
   recipientcontactid =  source.recipientcontactid,
-  templatename = source.templatename,
+  templateid = source.templateid,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -103,7 +103,7 @@ WHEN NOT MATCHED THEN INSERT (
   channeltype,
   ordernumber,
   recipientcontactid,
-  templatename,
+  templateid,
   timestamp
 )
 VALUES (
@@ -127,6 +127,6 @@ VALUES (
   source.channeltype,
   source.ordernumber,
   source.recipientcontactid,
-  source.templatename,
+  source.templateid,
   source.timestamp
 )
