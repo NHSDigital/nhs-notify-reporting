@@ -30,7 +30,7 @@ USING (
         channeltype,
         ordernumber,
         recipientcontactid,
-        CAST(CAST(th.templates.suppliers AS json) AS map<varchar, varchar>)[LOWER(supplier)] AS templateid,
+        CAST(CAST(templates.suppliers AS json) AS map<varchar, varchar>)[LOWER(supplier)] AS templateid,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
