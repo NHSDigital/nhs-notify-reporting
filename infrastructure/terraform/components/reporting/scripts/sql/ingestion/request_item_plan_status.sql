@@ -30,25 +30,9 @@ USING (
         channeltype,
         ordernumber,
         recipientcontactid,
-        templatekv[2] AS templateid,
+        CAST(CAST(th.templates.suppliers AS json) AS map<varchar, varchar>)[LOWER(supplier)] AS templateid,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
-      --CROSS JOIN needed to unpack template name from struct
-      CROSS JOIN UNNEST(
-          CASE
-              WHEN supplier IS NULL THEN ARRAY[ROW(NULL, NULL)]
-              ELSE
-                COALESCE(
-                    MAP_ENTRIES(
-                        MAP_FILTER(
-                            CAST(CAST(templates.suppliers AS json) AS map<varchar, varchar>),
-                            (k, v) -> UPPER(k) = UPPER(supplier)
-                        )
-                    ),
-                    ARRAY[ROW(NULL, NULL)]
-                )
-          END
-      ) AS t(templatekv)
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
       (
         -- Moving 1-week ingestion window
