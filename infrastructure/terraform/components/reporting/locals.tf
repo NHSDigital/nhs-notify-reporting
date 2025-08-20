@@ -83,4 +83,6 @@ locals {
       "arn:aws:glue:${var.region}:${account_id}:catalog",
     ]
   ]) : []
+
+  log_destination_arn = "arn:aws:logs:${var.region}:${var.shared_infra_account_id}:destination:nhs-main-obs-firehose-logs"
 }

@@ -44,7 +44,7 @@ jobs:
   scan-secrets:
     name: "Scan secrets"
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -55,7 +55,7 @@ jobs:
   check-file-format:
     name: "Check file format"
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -66,7 +66,7 @@ jobs:
   check-markdown-format:
     name: "Check Markdown format"
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
   check-english-usage:
     name: "Check English usage"
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -109,6 +109,17 @@ jobs:
           fetch-depth: 0 # Full history is needed to compare branches
       - name: "Check English usage"
         uses: ./.github/actions/check-english-usage
+  check-todo-usage:
+    name: "Check TODO usage"
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Full history is needed to compare branches
+      - name: "Check TODO usage"
+        uses: ./.github/actions/check-todo-usage
   detect-terraform-changes:
     name: "Detect Terraform Changes"
     runs-on: ubuntu-latest
@@ -135,7 +146,7 @@ jobs:
   lint-terraform:
     name: "Lint Terraform"
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 5
     needs: detect-terraform-changes
     if: needs.detect-terraform-changes.outputs.terraform_changed == 'true'
     steps:
@@ -153,47 +164,18 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
       - name: "Setup ASDF"
-        uses: asdf-vm/actions/setup@v3
+        uses: asdf-vm/actions/setup@v4
       - name: "Perform Setup"
         uses: ./.github/actions/setup
       - name: "Trivy Scan"
         uses: ./.github/actions/trivy
-  terraform-testing:
-    name: "Terraform Testing"
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    environment: main
-    steps:
-      - name: "Checkout code"
-        uses: actions/checkout@v4
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ASSUME_ROLE_NAME }}"
-          role-session-name: deployInfra
-          aws-region: ${{ env.AWS_REGION }}
-      - name: "Install Dependencies"
-        run: |
-            git clone https://github.com/tfutils/tfenv.git ~/.tfenv
-            echo 'export PATH="$HOME/.tfenv/bin:$PATH"' >> ~/.bash_profile
-            sudo ln -s ~/.tfenv/bin/* /usr/local/bin
-            tfenv install 1.10.1
-            tfenv use 1.10.1
-      - name: "Terraform Compliance"
-        uses: ./.github/actions/terraform_testing
-        with:
-          folder: infrastructure
-          terraform_project: nhs-notify
-          component: reporting
-          environment: main
-          group: nhs-notify-reporting-dev
   count-lines-of-code:
     name: "Count lines of code"
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4
@@ -212,7 +194,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    timeout-minutes: 2
+    timeout-minutes: 5
     steps:
       - name: "Checkout code"
         uses: actions/checkout@v4

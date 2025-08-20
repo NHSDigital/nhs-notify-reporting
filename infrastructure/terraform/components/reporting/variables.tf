@@ -205,20 +205,26 @@ variable "periodic_s3backup_schedule" {
   default     = "cron(0 5 ? * 7 *)" # Runs every Saturday at 5 AM UTC
 }
 
+variable "destination_backup_vault_arn" {
+  type        = string
+  description = "ARN of the destination backup vault to copy periodic backups to"
+  default     = ""
+}
+
 variable "enable_vault_lock_configuration" {
   type        = bool
   description = "Enable vault lock, preventing the deletion of a vault that contains 1 or more Recovery Points"
   default     = false
 }
 
-variable "observability_account_id" {
+variable "shared_infra_account_id" {
   type        = string
-  description = "The Observability Account ID that needs access"
-  default     = null
+  description = "The AWS Account ID of the shared infrastructure account"
+  default     = "000000000000"
 }
 
 variable "parent_acct_environment" {
   type        = string
   description = "Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments"
-  default     = "prod"
+  default     = "main"
 }

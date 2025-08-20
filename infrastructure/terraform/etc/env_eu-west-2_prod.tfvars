@@ -5,6 +5,10 @@ aws_account_id = "211125615884"
 core_account_id = "746418818434"
 core_env        = "prod"
 
+core_account_ids = [
+  "746418818434"
+]
+
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
 
@@ -35,6 +39,6 @@ batch_client_ids = [
 
 enable_vault_lock_configuration = true
 
-# Allow Grafana cross account access
-observability_account_id = "677276089126"
-oam_sink_id              = "14dab7f7-c89f-46b5-9cf7-45d9643133c4"
+shared_infra_account_id  = "142549683766"
+
+destination_backup_vault_arn = "arn:aws:backup:eu-west-2:369399915558:backup-vault:nhs-notify-reporting-prod-backup-vault"

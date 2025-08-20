@@ -16,7 +16,7 @@
     "Get Client Ids From Args": {
       "Type": "Pass",
       "Next": "Exit if No Clients",
-      "ResultPath": "$.useClientIds",
+      "ResultPath": "$.UseClientIds",
       "Parameters": {
         "clientIds.$": "$.clientIds"
       }
@@ -25,7 +25,7 @@
       "Type": "Choice",
       "Choices": [
         {
-          "Variable": "$.useClientIds.clientIds[0]",
+          "Variable": "$.UseClientIds.clientIds[0]",
           "IsPresent": false,
           "Next": "No Clients Found"
         }
@@ -33,8 +33,7 @@
       "Default": "Get Completed Request Ids Query"
     },
     "No Clients Found": {
-      "Type": "Pass",
-      "End": true
+      "Type": "Succeed"
     },
     "Get Client Ids From SSM": {
       "Type": "Task",
@@ -46,7 +45,7 @@
       "ResultSelector": {
         "clientIds.$": "States.StringToJson($.Parameter.Value)"
       },
-      "ResultPath": "$.useClientIds"
+      "ResultPath": "$.UseClientIds"
     },
     "Get Completed Request Ids Query": {
       "Type": "Task",
@@ -68,7 +67,7 @@
     },
     "For Each Client Id": {
       "Type": "Map",
-      "ItemsPath": "$.useClientIds.clientIds",
+      "ItemsPath": "$.UseClientIds.clientIds",
       "ItemSelector": {
         "clientId.$": "$$.Map.Item.Value",
         "BatchQuery.$": "$.BatchQuery",
@@ -101,14 +100,14 @@
               "QueryExecutionId.$": "$.BatchQueryExecution.QueryExecution.QueryExecutionId"
             },
             "Next": "For Each Request Id",
-            "ResultPath": "$.useCompletedRequestIds",
+            "ResultPath": "$.UseCompletedRequestIds",
             "ResultSelector": {
               "completedRequestIds.$": "$.ResultSet.Rows[1:].Data"
             }
           },
           "For Each Request Id": {
             "Type": "Map",
-            "ItemsPath": "$.useCompletedRequestIds.completedRequestIds",
+            "ItemsPath": "$.UseCompletedRequestIds.completedRequestIds",
             "ItemSelector": {
               "requestId.$": "$$.Map.Item.Value[0].VarCharValue",
               "requestRefId.$": "$$.Map.Item.Value[1].VarCharValue",
@@ -129,13 +128,13 @@
                   },
                   "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
                   "Next": "Exit if Report Already Exists",
-                  "ResultPath": "$.reportExistsCheck"
+                  "ResultPath": "$.ReportExistsCheck"
                 },
                 "Exit if Report Already Exists": {
                   "Type": "Choice",
                   "Choices": [
                     {
-                      "Variable": "$.reportExistsCheck.KeyCount",
+                      "Variable": "$.ReportExistsCheck.KeyCount",
                       "NumericEquals": 0,
                       "Next": "Execute Report Query"
                     }
@@ -143,8 +142,7 @@
                   "Default": "Report Already Exists"
                 },
                 "Report Already Exists": {
-                  "Type": "Pass",
-                  "End": true
+                  "Type": "Succeed"
                 },
                 "Execute Report Query": {
                   "Resource": "arn:aws:states:::athena:startQueryExecution.sync",
@@ -160,7 +158,35 @@
                     }
                   },
                   "Type": "Task",
-                  "End": true
+                  "Next": "Check for Created Report",
+                  "ResultPath": "$.ReportQueryExecution"
+                },
+                "Check for Created Report": {
+                  "Type": "Task",
+                  "Parameters": {
+                    "Bucket": "${output_bucket}",
+                    "Prefix.$": "States.Format('${output_folder}/{}/{}/{}/', $.clientId, $.requestId, $.requestRefId)"
+                  },
+                  "Resource": "arn:aws:states:::aws-sdk:s3:listObjectsV2",
+                  "Next": "Error if Report Not Created",
+                  "ResultPath": "$.ReportCreatedCheck"
+                },
+                "Error if Report Not Created": {
+                  "Type": "Choice",
+                  "Choices": [
+                    {
+                      "Variable": "$.ReportCreatedCheck.KeyCount",
+                      "NumericEquals": 0,
+                      "Next": "Report Not Created"
+                    }
+                  ],
+                  "Default": "Report Created"
+                },
+                "Report Created": {
+                  "Type": "Succeed"
+                },
+                "Report Not Created": {
+                  "Type": "Fail"
                 }
               }
             },

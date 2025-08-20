@@ -8,6 +8,16 @@
 .version
 version.json
 *.code-workspace
+# dependencies
+node_modules
+.node-version
+*/node_modules
+/.pnp
+.pnp.js
+/build
+dist
+.DS_Store
+.reports
 !project.code-workspace
 *.rej
 *.porig

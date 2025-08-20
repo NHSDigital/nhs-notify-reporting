@@ -1,0 +1,32 @@
+name: Github Release Created
+
+on:
+  release:
+    types: ["published"] # Inherits all input defaults
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-main:
+    name: Deploy changes to int in Dev AWS Account
+
+    permissions:
+      id-token: write
+      contents: read
+
+    strategy:
+      max-parallel: 1
+      matrix:
+        component: [reporting]
+
+    uses: ./.github/workflows/reusable_internal_repo_build.yaml
+    secrets: inherit
+    with:
+      releaseVersion: ${{ github.event.release.tag_name }}
+      targetWorkflow: "dispatch-deploy-static-notify-reporting-env.yaml"
+      targetEnvironment: "int"
+      targetAccountGroup: "nhs-notify-reporting-dev"
+      targetComponent: ${{ matrix.component }}
+      terraformAction: "apply"

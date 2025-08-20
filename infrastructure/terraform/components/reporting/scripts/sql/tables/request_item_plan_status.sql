@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     channeltype string,
     ordernumber int,
     recipientcontactid string,
+    templateid string,
     timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))

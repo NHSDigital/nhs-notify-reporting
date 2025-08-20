@@ -7,6 +7,12 @@ parent_acct_environment = "main"
 core_account_id = "257995483745"
 core_env        = "internal-dev"
 
+core_account_ids = [
+  "257995483745", # dev
+  "815490582396", # ref
+  "736102632839"  # int & uat
+]
+
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
 
@@ -30,6 +36,6 @@ max_size         = 1
 enable_spot      = false
 spot_max_price   = "0.3"
 
-# Allow Grafana cross account access
-observability_account_id = "273354664196"
-oam_sink_id              = "e04b741a-9ba8-43e2-865d-3a76519b675e"
+shared_infra_account_id  = "099709604300"
+
+destination_backup_vault_arn = "arn:aws:backup:eu-west-2:390844765011:backup-vault:nhs-notify-reporting-dev-backup-vault"
