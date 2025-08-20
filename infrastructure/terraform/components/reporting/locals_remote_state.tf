@@ -11,7 +11,7 @@ data "terraform_remote_state" "bootstrap" {
 
     key = format(
       "%s/%s/%s/%s/bootstrap.tfstate",
-      var.project,
+      "nhs",
       var.aws_account_id,
       "eu-west-2",
       "bootstrap"
@@ -29,7 +29,7 @@ data "terraform_remote_state" "acct" {
 
     key = format(
       "%s/%s/%s/%s/acct.tfstate",
-      var.project,
+      "nhs",
       var.aws_account_id,
       "eu-west-2",
       var.parent_acct_environment
