@@ -11,7 +11,7 @@ data "terraform_remote_state" "bootstrap" {
 
     key = format(
       "%s/%s/%s/%s/bootstrap.tfstate",
-      "nhs",
+      var.project,
       var.aws_account_id,
       "eu-west-2",
       "bootstrap"
