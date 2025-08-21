@@ -7,7 +7,7 @@ data "terraform_remote_state" "bootstrap" {
   backend = "s3"
 
   config = {
-    bucket = local.terraform_state_bucket
+    bucket = local.terraform_state_bucket_acct
 
     key = format(
       "%s/%s/%s/%s/bootstrap.tfstate",
@@ -25,7 +25,7 @@ data "terraform_remote_state" "acct" {
   backend = "s3"
 
   config = {
-    bucket = local.terraform_state_bucket
+    bucket = local.terraform_state_bucket_acct
 
     key = format(
       "%s/%s/%s/%s/acct.tfstate",
