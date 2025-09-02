@@ -34,6 +34,7 @@ jobs:
   deploy-main:
     needs: check-merge-or-workflow-dispatch
     name: Deploy changes to main in dev AWS account
+    runs-on: ubuntu-latest
     if: needs.check-merge-or-workflow-dispatch.outputs.deploy == 'true'
 
     permissions:
@@ -50,7 +51,6 @@ jobs:
         uses: actions/checkout@v5.0.0
 
       - name: Updating Main Environment
-        secrets: inherit
         env:
           PR_TRIGGER_PAT: ${{ secrets.PR_TRIGGER_PAT }}
         run: |

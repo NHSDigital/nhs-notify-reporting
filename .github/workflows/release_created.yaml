@@ -11,6 +11,7 @@ concurrency:
 jobs:
   deploy-main:
     name: Deploy changes to int in Dev AWS Account
+    runs-on: ubuntu-latest
 
     permissions:
       id-token: write
@@ -26,7 +27,6 @@ jobs:
         uses: actions/checkout@v5.0.0
 
       - name: Updating Main Environment
-        secrets: inherit
         env:
           PR_TRIGGER_PAT: ${{ secrets.PR_TRIGGER_PAT }}
         run: |
