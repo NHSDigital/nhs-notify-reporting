@@ -35,6 +35,11 @@ batch_client_ids = [
   "perf-test-client-2"
 ]
 
+email_filter_client_ids = [
+  "perf-test-client-1",
+  "perf-test-client-2"
+]
+
 enable_s3_backup = false
 
 shared_infra_account_id  = "099709604300"

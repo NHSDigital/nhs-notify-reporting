@@ -9,7 +9,7 @@ WITH email_only_sending_groups AS (
 )
 SELECT * FROM request_item_status_summary_all
 WHERE NOT (
-  clientid = '688040bc-92ea-4037-89f4-d105c9ae59a4'
+  clientid IN (${email_filter_client_ids})
   AND EXISTS (
     SELECT 1
     FROM email_only_sending_groups

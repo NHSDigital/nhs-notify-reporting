@@ -15,6 +15,7 @@ No requirements.
 | <a name="input_app_deployer_role_permission_account_ids"></a> [app\_deployer\_role\_permission\_account\_ids](#input\_app\_deployer\_role\_permission\_account\_ids) | All AWS Account IDs for this project that have the AppDeployer role created | `map(string)` | `{}` | no |
 | <a name="input_aws_account_id"></a> [aws\_account\_id](#input\_aws\_account\_id) | The AWS Account ID (numeric) | `string` | n/a | yes |
 | <a name="input_batch_client_ids"></a> [batch\_client\_ids](#input\_batch\_client\_ids) | List of client ids that require additional batch identifier dimensions when aggregating data | `list(string)` | <pre>[<br/>  "NULL"<br/>]</pre> | no |
+| <a name="input_email_filter_client_ids"></a> [email\_filter\_client\_ids](#input\_email\_filter\_client\_ids) | List of client ids that need email-only sending groups to be hidden in certain views | `list(string)` | <pre>[<br/>  "NULL"<br/>]</pre> | no |
 | <a name="input_cloudtrail_log_group_name"></a> [cloudtrail\_log\_group\_name](#input\_cloudtrail\_log\_group\_name) | The name of the Cloudtrail log group name on the account (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_component"></a> [component](#input\_component) | The name of the component | `string` | `"reporting"` | no |
 | <a name="input_continuous_s3backup_retention_days"></a> [continuous\_s3backup\_retention\_days](#input\_continuous\_s3backup\_retention\_days) | number of days to retain continous s3 restore points for PITR - Maximum 35 days | `number` | `35` | no |
