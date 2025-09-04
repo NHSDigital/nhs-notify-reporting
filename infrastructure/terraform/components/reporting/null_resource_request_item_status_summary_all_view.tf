@@ -1,6 +1,5 @@
 resource "null_resource" "request_item_status_summary_all_view" {
   triggers = {
-    always_run = timestamp()
     sql = filesha256("${path.module}/scripts/sql/views/request_item_status_summary_all.sql")
   }
   provisioner "local-exec" {
