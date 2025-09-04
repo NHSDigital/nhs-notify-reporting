@@ -181,6 +181,12 @@ variable "batch_client_ids" {
   default     = ["NULL"]
 }
 
+variable "email_filter_client_ids" {
+  description = "List of client ids that need email-only sending groups to be hidden in certain views"
+  type        = list(string)
+  default     = ["NULL"]
+}
+
 variable "enable_s3_backup" {
   type        = bool
   description = "Enable AWS S3 Backup of the data bucket"

@@ -5,3 +5,5 @@ cd9c0efec38c5d63053dd865e5d4e207c0760d91:docs/guides/Perform_static_analysis.md:
 4f4e8c15629b2cb09356a7fed4d72953590227ce:docs/Gemfile.lock:ipv4:4
 e2fd9d99d561c274cfd11b85a99a0cb1ae00f97d:infrastructure/terraform/components/reporting/templates/cloudinit_config.ps1:ipv4:28
 8cd75c04961cd6ce8477b7dad9c6daa67f03cd19:infrastructure/terraform/components/reporting/templates/cloudinit_config.tmpl:ipv4:32
+9b7b5b4539e13109e15c474684911b5a349c1b6d:infrastructure/terraform/components/reporting/scripts/sql/views/request_item_status_summary_all_emailfilter.sql:generic-api-key:12
+

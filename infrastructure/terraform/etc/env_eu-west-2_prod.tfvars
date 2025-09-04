@@ -37,6 +37,11 @@ batch_client_ids = [
   "688040bc-92ea-4037-89f4-d105c9ae59a4"
 ]
 
+email_filter_client_ids = [
+  "c10ab104-86ae-48dc-b243-4906760952d3",
+  "688040bc-92ea-4037-89f4-d105c9ae59a4"
+]
+
 enable_vault_lock_configuration = true
 
 shared_infra_account_id  = "142549683766"
