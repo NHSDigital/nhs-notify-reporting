@@ -39,7 +39,6 @@ while (( "$#" )); do
 done
 
 query_string=$(cat "$sql_file")
-echo $query_string
 
 $(dirname "$0")/execute_query.sh "${query_string}" ${workgroup} ${glue_database}
 
