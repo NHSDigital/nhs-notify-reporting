@@ -9,7 +9,7 @@ resource "null_resource" "request_item_status_summary_all_email_filter_view" {
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
         request_item_status_summary_all_email_filter \
-        email_filter_client_ids ${local.email_filter_client_ids}
+        email_filter_client_ids "${local.email_filter_client_ids}"
     EOT
   }
 
