@@ -1,5 +1,5 @@
 CREATE OR REPLACE VIEW ${view_name} AS
-SELECT clientid, campaignid, supplier, YEAR(invoicetime) AS invoiceyear, MONTH(invoicetime) AS invoicemonth, COUNT(*) AS unitcount
+SELECT clientid, campaignid, supplier, YEAR_OF_WEEK(invoicetime) AS invoiceyear, WEEK(invoicetime) AS invoiceweek, COUNT(*) AS unitcount
 FROM (
     SELECT clientid, campaignid, supplier,
         CASE
