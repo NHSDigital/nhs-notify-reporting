@@ -21,13 +21,24 @@ if [[ -z "${view_name}" ]]; then
     exit 1
 fi
 
+shift 3
+if (( $# % 2 != 0 )); then
+  echo "Extra arguments must come in pairs (got $#)."
+  exit 1
+fi
+
 sql_file="./scripts/sql/views/${view_name}.sql"
-sql_file_updated="./scripts/sql/views/${view_name}_updated.sql"
 
-#Substituting placeholders with actual values and piping to a new sql file to be used as query string
-sed "s#\${view_name}#${view_name}#g" $sql_file > $sql_file_updated
+#Substituting placeholders with actual values
+sed -i "s#\${view_name}#${view_name}#g" $sql_file
 
-query_string=$(cat "$sql_file_updated")
+# Variable args as k/v pairs
+while (( "$#" )); do
+  sed -i "s#\${$1}#$2#g" $sql_file
+  shift 2
+done
+
+query_string=$(cat "$sql_file")
 
 $(dirname "$0")/execute_query.sh "${query_string}" ${workgroup} ${glue_database}
 
