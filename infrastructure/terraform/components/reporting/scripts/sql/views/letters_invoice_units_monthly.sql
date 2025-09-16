@@ -11,6 +11,8 @@ FROM (
                     WHEN DAY_OF_WEEK(sendtime)=7 THEN DATE_ADD('day', 3, sendtime)
                     ELSE DATE_ADD('day', 2, sendtime)
                 END
+            WHEN supplier='PRECISIONPROCO' THEN
+                DATE_ADD('day', 2, sendtime)
             ELSE sendtime
         END AS invoicetime
     FROM request_item_plan_status
