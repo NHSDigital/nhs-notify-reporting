@@ -58,7 +58,7 @@ jobs:
       deploy_environment: ${{ steps.variables.outputs.deploy_environment }}
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: "Set CI/CD variables"
         id: variables
         run: |
@@ -114,9 +114,9 @@ jobs:
       CI_PIPELINE_IID: ${{ needs.metadata.outputs.ci_pipeline_iid }}
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/${{ secrets.AWS_ASSUME_ROLE_NAME }}"
           role-session-name: deployInfra
