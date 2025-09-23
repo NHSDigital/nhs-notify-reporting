@@ -14,6 +14,7 @@ SELECT
   failedreason,
   contactdetailsource,
   channeltype,
+  templateid,
   requestitemcount
 FROM request_item_plan_completed_summary
 WHERE clientid NOT IN (SELECT DISTINCT clientid FROM request_item_plan_completed_summary_batch)
@@ -33,5 +34,6 @@ SELECT
   failedreason,
   contactdetailsource,
   channeltype,
+  templateid,
   requestitemcount
 FROM request_item_plan_completed_summary_batch
