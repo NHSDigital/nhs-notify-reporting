@@ -333,6 +333,5 @@ A data migration query is usually very similar to the corresponding ingestion qu
 Key differences include:
 
 - The sliding time window is omitted so that all available rows in the source table are available
-- The migration queries use a `UNION ALL` operator to pull from both `transaction_history_old` and `transaction_history` tables
-- Historic indiosyncrasies are accounted for (such as the change from second-precision to millisecond-precision timestamps between `transaction_history_old` and `transaction_history` tables)
+- Historic indiosyncrasies are accounted for (such as some legacy timestamps that were not ISO8601 compliant)
 - Migration queries may include specific amendments to rectify historic data quality issues
