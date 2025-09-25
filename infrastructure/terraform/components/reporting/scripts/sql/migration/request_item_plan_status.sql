@@ -11,28 +11,6 @@ USING (
     FROM (
       SELECT
         clientid,
-        NULL as campaignid,
-        sendinggroupid,
-        sendinggroupidversion,
-        requestitemrefid,
-        requestitemid,
-        requestrefid,
-        requestid,
-        requestitemplanid,
-        communicationtype,
-        supplier,
-        from_iso8601_timestamp(createddate) AS createdtime,
-        from_iso8601_timestamp(completeddate) AS completedtime,
-        status,
-        failedreason,
-        NULL as contactdetailsource,
-        NULL as channeltype,
-        CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
-      FROM transaction_history_old
-      WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%')
-      UNION ALL
-      SELECT
-        clientid,
         campaignid,
         sendinggroupid,
         sendinggroupidversion,

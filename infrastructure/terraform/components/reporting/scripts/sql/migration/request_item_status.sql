@@ -11,27 +11,6 @@ USING (
     FROM (
       SELECT
         clientid,
-        NULL AS campaignid,
-        sendinggroupid,
-        sendinggroupidversion,
-        requestitemrefid,
-        requestitemid,
-        requestrefid,
-        requestid,
-        to_base64(sha256(cast((? || '.' || nhsnumber) AS varbinary))) AS nhsnumberhash,
-        from_iso8601_timestamp(createddate) AS createdtime,
-        from_iso8601_timestamp(completeddate) AS completedtime,
-        completedcommunicationtypes,
-        failedcommunicationtypes,
-        status,
-        failedreason,
-        NULL AS patientodscode,
-        CAST("$classification".timestamp AS BIGINT) * 1000 AS timestamp --transaction_history_old has second granularity timestamps
-      FROM transaction_history_old
-      WHERE (sk LIKE 'REQUEST_ITEM#%')
-      UNION ALL
-      SELECT
-        clientid,
         campaignid,
         sendinggroupid,
         sendinggroupidversion,
