@@ -22,7 +22,7 @@ resource "aws_backup_plan" "s3_backup" {
     copy_action {
       destination_vault_arn = var.destination_backup_vault_arn
       lifecycle {
-        delete_after = var.periodic_s3backup_retention_days
+        delete_after = var.periodic_s3backup_copy_retention_days
       }
     }
 
