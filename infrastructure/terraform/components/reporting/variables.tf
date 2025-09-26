@@ -196,13 +196,19 @@ variable "enable_s3_backup" {
 variable "continuous_s3backup_retention_days" {
   type        = number
   description = "number of days to retain continous s3 restore points for PITR - Maximum 35 days"
-  default     = 35
+  default     = 31
 }
 
 variable "periodic_s3backup_retention_days" {
   type        = number
   description = "number of days to retain weekly s3 backups"
-  default     = 90
+  default     = 31
+}
+
+variable "periodic_s3backup_copy_retention_days" {
+  type        = number
+  description = "number of days to retain weekly s3 backups in the destination vault"
+  default     = 31
 }
 
 variable "periodic_s3backup_schedule" {
