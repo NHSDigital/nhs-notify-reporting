@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "athena_workgroup_processed_bytes_core" {
   period              = 300
   statistic           = "Sum"
   threshold           = 1000000000
-  alarm_description   = "Alarm for spikes in Athena Workgroup ProcessedBytes."
+  alarm_description   = "Alarm for spikes in Athena Workgroup ProcessedBytes (core)."
   treat_missing_data  = "notBreaching"
 
   dimensions = {
