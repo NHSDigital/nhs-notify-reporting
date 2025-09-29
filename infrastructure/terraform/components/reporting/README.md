@@ -17,7 +17,7 @@ No requirements.
 | <a name="input_batch_client_ids"></a> [batch\_client\_ids](#input\_batch\_client\_ids) | List of client ids that require additional batch identifier dimensions when aggregating data | `list(string)` | <pre>[<br/>  "NULL"<br/>]</pre> | no |
 | <a name="input_cloudtrail_log_group_name"></a> [cloudtrail\_log\_group\_name](#input\_cloudtrail\_log\_group\_name) | The name of the Cloudtrail log group name on the account (see globals.tfvars) | `string` | n/a | yes |
 | <a name="input_component"></a> [component](#input\_component) | The name of the component | `string` | `"reporting"` | no |
-| <a name="input_continuous_s3backup_retention_days"></a> [continuous\_s3backup\_retention\_days](#input\_continuous\_s3backup\_retention\_days) | number of days to retain continous s3 restore points for PITR - Maximum 35 days | `number` | `35` | no |
+| <a name="input_continuous_s3backup_retention_days"></a> [continuous\_s3backup\_retention\_days](#input\_continuous\_s3backup\_retention\_days) | number of days to retain continous s3 restore points for PITR - Maximum 35 days | `number` | `31` | no |
 | <a name="input_core_account_id"></a> [core\_account\_id](#input\_core\_account\_id) | The core account that contains the corresponding Glue Catalog | `string` | `1234567890` | no |
 | <a name="input_core_account_ids"></a> [core\_account\_ids](#input\_core\_account\_ids) | List of all corresponding core account id's that exist in the Non-Prod domain | `list(string)` | `[]` | no |
 | <a name="input_core_env"></a> [core\_env](#input\_core\_env) | The core environment that contains the corresponding Glue table/S3 buckets etc. | `string` | `"internal-dev"` | no |
@@ -38,7 +38,8 @@ No requirements.
 | <a name="input_min_size"></a> [min\_size](#input\_min\_size) | The minimum number of instances in the Power BI On-Premises Gateway Auto Scaling group. | `number` | `1` | no |
 | <a name="input_module"></a> [module](#input\_module) | The variable encapsulating the name of this module | `string` | `"n/a"` | no |
 | <a name="input_parent_acct_environment"></a> [parent\_acct\_environment](#input\_parent\_acct\_environment) | Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments | `string` | `"main"` | no |
-| <a name="input_periodic_s3backup_retention_days"></a> [periodic\_s3backup\_retention\_days](#input\_periodic\_s3backup\_retention\_days) | number of days to retain weekly s3 backups | `number` | `90` | no |
+| <a name="input_periodic_s3backup_copy_retention_days"></a> [periodic\_s3backup\_copy\_retention\_days](#input\_periodic\_s3backup\_copy\_retention\_days) | number of days to retain weekly s3 backups in the destination vault | `number` | `31` | no |
+| <a name="input_periodic_s3backup_retention_days"></a> [periodic\_s3backup\_retention\_days](#input\_periodic\_s3backup\_retention\_days) | number of days to retain weekly s3 backups | `number` | `31` | no |
 | <a name="input_periodic_s3backup_schedule"></a> [periodic\_s3backup\_schedule](#input\_periodic\_s3backup\_schedule) | Crontab formatted schedule for Periodic S3 Backups | `string` | `"cron(0 5 ? * 7 *)"` | no |
 | <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | List of CIDR blocks for private subnets. | `list(string)` | `[]` | no |
 | <a name="input_project"></a> [project](#input\_project) | The name of the Project we are bootstrapping tfscaffold for | `string` | n/a | yes |
