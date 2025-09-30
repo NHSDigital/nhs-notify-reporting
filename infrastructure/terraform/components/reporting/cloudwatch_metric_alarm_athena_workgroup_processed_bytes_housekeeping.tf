@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "athena_workgroup_processed_bytes_houseke
         WorkGroup = aws_athena_workgroup.housekeeping.name
       }
     }
-    return_data = false
+    return_data = true
   }
 
   metric_query {

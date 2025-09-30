@@ -17,7 +17,7 @@ resource "aws_cloudwatch_metric_alarm" "athena_workgroup_processed_bytes_user" {
         WorkGroup = aws_athena_workgroup.user.name
       }
     }
-    return_data = false
+    return_data = true
   }
 
   metric_query {
