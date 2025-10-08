@@ -260,7 +260,7 @@ Watchdog queries and corresponding metrics and alarms are currently setup for th
 | Request items incomplete after 2 weeks      | overdue_request_items      | OverdueRequestItemsCount     | Sum across all clients > 0 | overdue-request-items      |
 | Requests incomplete after 2 weeks           | overdue_requests           | OverdueRequestsCount         | Sum across all clients > 0 | overdue-requests           |
 | Request items stuck before being sent       | stuck_request_items        | StuckRequestItemsCount       | Sum across all clients > 0 | stuck-request-items        |
-| Degraded latency compared to historic trend | degraded_latency           | DegradedLatenciesCount       | Sum across all clients > 0 | degraded-latency           |
+| Degraded latency compared to historic trend | degraded_latency           | DegradedLatenciesCount       | Count of clients > 1       | degraded-latency           |
 
 ## Contacts
 

@@ -30,8 +30,7 @@ Python
 rawContent
 readme
 sed
-sql
-SQL
+SQL|sql
 Syft
 Terraform
 toolchain
