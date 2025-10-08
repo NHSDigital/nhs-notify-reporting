@@ -20,7 +20,8 @@ resource "aws_cloudwatch_metric_alarm" "degraded_latency" {
 
   metric_query {
     id          = "degraded_client_campaign_count"
-    expression  = "SUM(CEIL(degraded_latencies_count_max / (degraded_latencies_count_max + 1)))"
+    # Not particularly intuitive but needed to compare equivalent types TS[]
+    expression = "SUM( IF( degraded_latencies_count_max > (degraded_latencies_count_max * 0), 1, 0 ) )"
     return_data = true
   }
 }
