@@ -8,12 +8,12 @@ resource "aws_cloudwatch_metric_alarm" "degraded_latency" {
 
   metric_query {
     id     = "degraded_latencies_count_max"
-    expression = <<-SQL
+    expression = <<-EOT
       SELECT MAX(DegradedLatenciesCount)
       FROM "Notify/Watchdog"
       WHERE environment='${var.environment}'
       GROUP BY environment, clientid, campaignid
-    SQL
+    EOT
     return_data = false
     period = 3600
   }
