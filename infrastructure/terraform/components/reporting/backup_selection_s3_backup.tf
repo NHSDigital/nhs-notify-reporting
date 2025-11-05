@@ -5,7 +5,9 @@ resource "aws_backup_selection" "s3_backup" {
   name         = "${local.csi}-s3"
   plan_id      = aws_backup_plan.s3_backup[0].id
 
-  resources = [
-    aws_s3_bucket.data.arn,
-  ]
+  selection_tag {
+    key   = "Enable-Backup"
+    type  = "STRINGEQUALS"
+    value = true
+  }
 }
