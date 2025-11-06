@@ -1,6 +1,8 @@
 resource "aws_s3_bucket" "data" {
   bucket        = "${local.csi_global}-data"
   force_destroy = "false"
+
+  tags = merge(local.default_tags, { "Enable-Backup" = var.enable_s3_backup })
 }
 
 resource "aws_s3_bucket_ownership_controls" "data" {
