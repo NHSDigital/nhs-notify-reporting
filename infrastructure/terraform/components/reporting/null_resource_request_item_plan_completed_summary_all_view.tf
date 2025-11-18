@@ -13,8 +13,6 @@ resource "null_resource" "request_item_plan_completed_summary_all_view" {
 
   depends_on = [
     null_resource.request_item_plan_completed_summary_table,
-    null_resource.request_item_plan_completed_summary_batch_table,
-    null_resource.request_item_plan_completed_summary_templateid_column,
-    null_resource.request_item_plan_completed_summary_batch_templateid_column
+    null_resource.request_item_plan_completed_summary_batch_table
   ]
 }
