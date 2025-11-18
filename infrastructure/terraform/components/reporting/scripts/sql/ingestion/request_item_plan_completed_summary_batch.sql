@@ -15,7 +15,6 @@ USING (
     failedreason,
     contactdetailsource,
     channeltype,
-    templateid,
     COUNT(DISTINCT requestitemid) AS requestitemcount
   FROM request_item_plan_status
   WHERE (status = 'DELIVERED' OR status = 'FAILED') AND
@@ -38,8 +37,7 @@ USING (
     status,
     failedreason,
     contactdetailsource,
-    channeltype,
-    templateid
+    channeltype
 ) as source
 ON
   -- Allow match on null dimensions
@@ -56,8 +54,7 @@ ON
   COALESCE(source.status, '') = COALESCE(target.status, '') AND
   COALESCE(source.failedreason, '') = COALESCE(target.failedreason, '') AND
   COALESCE(source.contactdetailsource, '') = COALESCE(target.contactdetailsource, '') AND
-  COALESCE(source.channeltype, '') = COALESCE(target.channeltype, '') AND
-  COALESCE(source.templateid, '') = COALESCE(target.templateid, '')
+  COALESCE(source.channeltype, '') = COALESCE(target.channeltype, '')
 WHEN MATCHED AND (source.requestitemcount > target.requestitemcount) THEN UPDATE SET requestitemcount = source.requestitemcount
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -74,7 +71,6 @@ WHEN NOT MATCHED THEN INSERT (
   failedreason,
   contactdetailsource,
   channeltype,
-  templateid,
   requestitemcount
 )
 VALUES (
@@ -92,6 +88,5 @@ VALUES (
   source.failedreason,
   source.contactdetailsource,
   source.channeltype,
-  source.templateid,
   source.requestitemcount
 )

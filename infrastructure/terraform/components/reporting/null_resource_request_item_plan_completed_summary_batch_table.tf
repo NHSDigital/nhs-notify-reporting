@@ -12,19 +12,3 @@ resource "null_resource" "request_item_plan_completed_summary_batch_table" {
     EOT
   }
 }
-
-resource "null_resource" "request_item_plan_completed_summary_batch_templateid_column" {
-  triggers = {
-    always_run = timestamp()
-  }
-  provisioner "local-exec" {
-    command = <<EOT
-      ${path.module}/scripts/add_column.sh \
-        ${aws_athena_workgroup.setup.name} \
-        ${aws_glue_catalog_database.reporting.name} \
-        request_item_plan_completed_summary_batch templateid string
-    EOT
-  }
-
-  depends_on = [null_resource.request_item_plan_completed_summary_batch_table]
-}
