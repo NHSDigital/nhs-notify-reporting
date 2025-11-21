@@ -19,7 +19,7 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 }
 
 # Install PowerBI On-Premises Gateway and Desktop
-choco install -y powerbigateway --version=3000.230.14 --ignore-checksums
+choco install -y powerbigateway --version=3000.294.7 --ignore-checksums
 choco install -y powerbi --ignore-checksums
 
 # Install vim
@@ -29,7 +29,7 @@ choco install -y vim
 choco install -y powershell-core
 
 # Install Amazon Athena ODBC 2.x Driver
-`$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
+`$athenaDriverUrl = "https://downloads.athena.us-east-1.amazonaws.com/drivers/ODBC/v2.0.5.1/Windows/AmazonAthenaODBC-2.0.5.1.msi"
 `$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
 Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
 
