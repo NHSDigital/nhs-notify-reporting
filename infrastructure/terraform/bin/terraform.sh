@@ -581,7 +581,6 @@ readonly backend_config="terraform {
     region         = \"${region}\"
     bucket         = \"${bucket}\"
     key            = \"${backend_key}\"
-    dynamodb_table = \"${project}-tfscaffold-${aws_account_id}-eu-west-2\"
     use_lockfile   = true
   }
 }";
