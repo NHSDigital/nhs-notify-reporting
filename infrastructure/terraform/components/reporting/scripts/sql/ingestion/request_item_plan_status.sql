@@ -33,7 +33,7 @@ USING (
         COALESCE(
           templateid,
           CAST(CAST(templates.suppliers AS json) AS map<varchar, varchar>)[LOWER(supplier)]
-         ) AS templateid,
+        ) AS templateid,
         failedreasoncode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
