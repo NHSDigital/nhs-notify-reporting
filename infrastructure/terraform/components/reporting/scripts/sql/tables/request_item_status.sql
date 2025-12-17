@@ -18,7 +18,8 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     failedreason string,
     patientodscode string,
     billingref string,
-    timestamp bigint
+    timestamp bigint,
+    templateid string
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
 LOCATION '${s3_location}'
