@@ -37,7 +37,6 @@ env:
   TERM: xterm-256color
 
 permissions:
-  id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
 
 jobs:
@@ -166,7 +165,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
       - name: "Setup ASDF"
-        uses: asdf-vm/actions/setup@v4
+        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
       - name: "Perform Setup"
         uses: ./.github/actions/setup
       - name: "Trivy IaC Scan"
@@ -181,7 +180,7 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
       - name: "Setup ASDF"
-        uses: asdf-vm/actions/setup@v4
+        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
       - name: "Perform Setup"
         uses: ./.github/actions/setup
       - name: "Trivy Package Scan"
