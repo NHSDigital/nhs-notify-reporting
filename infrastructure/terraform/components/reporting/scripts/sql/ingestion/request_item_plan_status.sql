@@ -73,8 +73,8 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   templateid = source.templateid,
   failedreasoncode = source.failedreasoncode,
   timestamp = source.timestamp,
-  specificationid = specificationid,
-  specificationbillingid = specificationbillingid
+  specificationid = source.specificationid,
+  specificationbillingid = source.specificationbillingid
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
