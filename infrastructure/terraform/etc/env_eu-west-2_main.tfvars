@@ -29,7 +29,7 @@ private_subnet_cidrs = [
 ]
 
 instance_type    = "t3.medium"
-root_volume_size = 30
+root_volume_size = 80
 desired_capacity = 1
 min_size         = 1
 max_size         = 1
