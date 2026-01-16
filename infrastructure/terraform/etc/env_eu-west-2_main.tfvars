@@ -28,14 +28,6 @@ private_subnet_cidrs = [
   "10.0.6.0/24"
 ]
 
-instance_type    = "t3.medium"
-root_volume_size = 80
-desired_capacity = 1
-min_size         = 1
-max_size         = 1
-enable_spot      = false
-spot_max_price   = "0.3"
-
 shared_infra_account_id  = "099709604300"
 
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:390844765011:backup-vault:nhs-notify-reporting-dev-backup-vault"
