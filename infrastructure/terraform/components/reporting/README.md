@@ -45,7 +45,7 @@ No requirements.
 | <a name="input_project"></a> [project](#input\_project) | The name of the Project we are bootstrapping tfscaffold for | `string` | n/a | yes |
 | <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | List of CIDR blocks for public subnets. | `list(string)` | `[]` | no |
 | <a name="input_region"></a> [region](#input\_region) | The AWS Region | `string` | n/a | yes |
-| <a name="input_root_volume_size"></a> [root\_volume\_size](#input\_root\_volume\_size) | Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server | `number` | `30` | no |
+| <a name="input_root_volume_size"></a> [root\_volume\_size](#input\_root\_volume\_size) | Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server | `number` | `80` | no |
 | <a name="input_scale_in_recurrence_schedule"></a> [scale\_in\_recurrence\_schedule](#input\_scale\_in\_recurrence\_schedule) | The cron expression for the scale in schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_scale_out_recurrence_schedule"></a> [scale\_out\_recurrence\_schedule](#input\_scale\_out\_recurrence\_schedule) | The cron expression for the scale out schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_shared_infra_account_id"></a> [shared\_infra\_account\_id](#input\_shared\_infra\_account\_id) | The AWS Account ID of the shared infrastructure account | `string` | `"000000000000"` | no |
