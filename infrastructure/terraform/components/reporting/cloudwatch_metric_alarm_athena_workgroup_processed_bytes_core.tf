@@ -22,7 +22,7 @@ resource "aws_cloudwatch_metric_alarm" "athena_workgroup_processed_bytes_core" {
 
   metric_query {
     id          = "ad1"
-    expression  = "ANOMALY_DETECTION_BAND(m1, 2)"
+    expression  = "ANOMALY_DETECTION_BAND(m1, 4)"
     label       = "Anomaly Detection Band"
     return_data = true
   }
