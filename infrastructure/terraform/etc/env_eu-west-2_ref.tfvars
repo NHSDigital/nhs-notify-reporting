@@ -22,14 +22,6 @@ private_subnet_cidrs = [
   "10.0.6.0/24"
 ]
 
-instance_type    = "t3.medium"
-root_volume_size = 30
-desired_capacity = 1
-min_size         = 1
-max_size         = 1
-enable_spot      = false
-spot_max_price   = "0.3"
-
 batch_client_ids = [
   "perf-test-client-1",
   "perf-test-client-2"

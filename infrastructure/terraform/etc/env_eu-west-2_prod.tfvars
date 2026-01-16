@@ -26,11 +26,6 @@ private_subnet_cidrs = [
 
 instance_type    = "t3.xlarge"
 root_volume_size = 200
-desired_capacity = 1
-min_size         = 1
-max_size         = 1
-enable_spot      = false
-spot_max_price   = "0.3"
 
 batch_client_ids = [
   "c10ab104-86ae-48dc-b243-4906760952d3",
