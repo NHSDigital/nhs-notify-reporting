@@ -3,7 +3,7 @@ resource "aws_ssm_maintenance_window" "patch_window" {
 
   name                       = "${local.csi}-windows-patch-window"
   description                = "Windows Server 2022 Patch Window"
-  schedule                   = "cron(0 3 ? * SUN *)" # Every Sunday at 3 AM
+  schedule                   = "cron(0 3 ? * * *)" # Every day at 3 AM
   duration                   = 4
   cutoff                     = 1
   allow_unassociated_targets = true
