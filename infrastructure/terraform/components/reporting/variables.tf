@@ -154,7 +154,7 @@ variable "spot_max_price" {
 variable "root_volume_size" {
   type        = number
   description = "Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server"
-  default     = 30
+  default     = 80
 }
 
 variable "scale_out_recurrence_schedule" {
