@@ -24,8 +24,8 @@ private_subnet_cidrs = [
   "10.0.6.0/24"
 ]
 
-instance_type    = "t3.medium"
-root_volume_size = 30
+instance_type    = "t3.xlarge"
+root_volume_size = 200
 desired_capacity = 1
 min_size         = 1
 max_size         = 1
