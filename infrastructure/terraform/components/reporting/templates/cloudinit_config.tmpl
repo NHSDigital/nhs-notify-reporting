@@ -29,7 +29,7 @@ choco install -y vim
 choco install -y powershell-core
 
 # Install Amazon Athena ODBC 2.x Driver
-`$athenaDriverUrl = "https://s3.amazonaws.com/athena-downloads/drivers/ODBC/v2.0.3.0/Windows/AmazonAthenaODBC-2.0.3.0.msi"
+`$athenaDriverUrl = "https://downloads.athena.us-east-1.amazonaws.com/drivers/ODBC/v2.0.6.0/Windows/AmazonAthenaODBC-2.0.6.0.msi"
 `$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
 Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
 
