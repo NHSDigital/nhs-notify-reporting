@@ -15,9 +15,6 @@ core_account_ids = [
 
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
-min_size               = 2
-max_size               = 2
-
 
 public_subnet_cidrs = [
   "10.0.1.0/24",
