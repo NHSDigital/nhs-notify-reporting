@@ -26,6 +26,6 @@ resource "aws_ssm_maintenance_window_task" "patch_task" {
   }
 
   priority        = 1
-  max_concurrency = "2"
+  max_concurrency = "1"
   max_errors      = "1"
 }
