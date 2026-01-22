@@ -13,6 +13,9 @@ core_account_ids = [
 enable_powerbi_gateway = true
 min_size               = 2
 max_size               = 2
+desired_capacity       = 2
+instance_type          = "t3.xlarge"
+root_volume_size       = 200
 
 public_subnet_cidrs = [
   "10.0.1.0/24",
@@ -25,9 +28,6 @@ private_subnet_cidrs = [
   "10.0.5.0/24",
   "10.0.6.0/24"
 ]
-
-instance_type    = "t3.xlarge"
-root_volume_size = 200
 
 batch_client_ids = [
   "c10ab104-86ae-48dc-b243-4906760952d3",

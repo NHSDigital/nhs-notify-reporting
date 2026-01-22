@@ -17,6 +17,7 @@ core_account_ids = [
 enable_powerbi_gateway = true
 min_size               = 2
 max_size               = 2
+desired_capacity       = 2
 
 
 public_subnet_cidrs = [
