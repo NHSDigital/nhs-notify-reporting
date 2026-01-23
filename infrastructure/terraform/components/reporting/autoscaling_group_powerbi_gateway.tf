@@ -4,7 +4,7 @@ resource "aws_autoscaling_group" "powerbi_gateway" {
   name = local.csi
 
   launch_template {
-    id      = aws_launch_template.powerbi_gateway[0].id
+    id      = aws_launch_template.powerbi_gateway_asg[0].id
     version = "$Latest"
   }
 
@@ -22,8 +22,4 @@ resource "aws_autoscaling_group" "powerbi_gateway" {
   health_check_type         = "EC2"
   health_check_grace_period = 300
   wait_for_capacity_timeout = "0"
-
-  enabled_metrics = [
-    "GroupInServiceInstances"
-  ]
 }

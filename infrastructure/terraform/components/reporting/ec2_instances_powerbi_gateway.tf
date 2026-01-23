@@ -3,7 +3,7 @@ resource "aws_instance" "powerbi_gateway_standalone" {
   count = var.enable_powerbi_gateway ? var.powerbi_gateway_instance_count : 0
 
   launch_template {
-    id      = aws_launch_template.powerbi_gateway[0].id
+    id      = aws_launch_template.powerbi_gateway_standalone[0].id
     version = "$Latest"
   }
 
