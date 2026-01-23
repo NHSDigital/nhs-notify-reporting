@@ -1,9 +1,20 @@
-resource "aws_ssm_maintenance_window" "patch_window" {
+resource "aws_ssm_maintenance_window" "patch_window_sunday" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
-  name                       = "${local.csi}-windows-patch-window"
+  name                       = "${local.csi}-windows-patch-window-sun"
   description                = "Windows Server 2022 Sunday Patch Window"
   schedule                   = "cron(0 3 ? * SUN *)" # Every Sunday at 3 AM
+  duration                   = 4
+  cutoff                     = 1
+  allow_unassociated_targets = true
+}
+
+resource "aws_ssm_maintenance_window" "patch_window_wednesday" {
+  count = var.enable_powerbi_gateway ? 1 : 0
+
+  name                       = "${local.csi}-windows-patch-window-wed"
+  description                = "Windows Server 2022 Wednesday Patch Window"
+  schedule                   = "cron(0 3 ? * WED *)" # Every Wednesday at 3 AM
   duration                   = 4
   cutoff                     = 1
   allow_unassociated_targets = true

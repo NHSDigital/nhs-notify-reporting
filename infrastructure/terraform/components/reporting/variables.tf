@@ -103,6 +103,12 @@ variable "enable_powerbi_gateway" {
   default     = true
 }
 
+variable "powerbi_gateway_instance_count" {
+  description = "Number of standalone Power BI On-Premises Gateway instances created directly from the launch template."
+  type        = number
+  default     = 2
+}
+
 variable "public_subnet_cidrs" {
   description = "List of CIDR blocks for public subnets."
   type        = list(string)
