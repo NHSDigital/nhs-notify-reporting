@@ -11,9 +11,6 @@ core_account_ids = [
 
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
-min_size               = 2
-max_size               = 2
-desired_capacity       = 2
 instance_type          = "t3.xlarge"
 root_volume_size       = 200
 
