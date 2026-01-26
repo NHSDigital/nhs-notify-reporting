@@ -1,8 +1,8 @@
-resource "aws_launch_template" "powerbi_gateway_asg" {
+resource "aws_launch_template" "powerbi_gateway" {
   count = var.enable_powerbi_gateway ? 1 : 0
 
-  name                                 = "${local.csi}-asg"
-  description                          = "Template for the Power BI On-Premises Gateway (ASG)"
+  name                                 = local.csi
+  description                          = "Template for the Power BI On-Premises Gateway"
   update_default_version               = true
   image_id                             = "resolve:ssm:/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
   instance_type                        = var.instance_type

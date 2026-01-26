@@ -4,7 +4,7 @@ resource "aws_autoscaling_group" "powerbi_gateway" {
   name = local.csi
 
   launch_template {
-    id      = aws_launch_template.powerbi_gateway_asg[0].id
+    id      = aws_launch_template.powerbi_gateway[0].id
     version = "$Latest"
   }
 
