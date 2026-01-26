@@ -8,7 +8,7 @@ resource "aws_ssm_maintenance_window_task" "patch_task_sunday" {
 
   targets {
     key = "WindowTargetIds"
-    values = [aws_ssm_maintenance_window_target.windows_instances_sunday_standalone[0].id]
+    values = [aws_ssm_maintenance_window_target.windows_instances_sunday[0].id]
   }
 
   task_invocation_parameters {
