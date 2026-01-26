@@ -4,7 +4,7 @@ resource "aws_launch_template" "powerbi_gateway_standalone" {
   name                                 = "${local.csi}-standalone"
   description                          = "Template for the Power BI On-Premises Gateway (standalone instances)"
   update_default_version               = true
-  image_id                             = "resolve:ssm:/aws/service/ami-windows-latest/TPM-Windows_Server-2025-English-Full-Base"
+  image_id                             = "resolve:ssm:/aws/service/ami-windows-latest/Windows_Server-2022-English-Full-Base"
   instance_type                        = var.instance_type
   user_data                            = data.cloudinit_config.powerbi_gateway[0].rendered
   instance_initiated_shutdown_behavior = var.enable_spot ? "terminate" : "stop"
