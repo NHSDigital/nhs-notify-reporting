@@ -1,4 +1,3 @@
-# Standalone EC2 instances launched directly from the Power BI gateway launch template.
 resource "aws_instance" "powerbi_gateway_standalone" {
   count = var.enable_powerbi_gateway ? var.powerbi_gateway_instance_count : 0
 
