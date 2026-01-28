@@ -41,11 +41,12 @@ No requirements.
 | <a name="input_periodic_s3backup_copy_retention_days"></a> [periodic\_s3backup\_copy\_retention\_days](#input\_periodic\_s3backup\_copy\_retention\_days) | number of days to retain weekly s3 backups in the destination vault | `number` | `31` | no |
 | <a name="input_periodic_s3backup_retention_days"></a> [periodic\_s3backup\_retention\_days](#input\_periodic\_s3backup\_retention\_days) | number of days to retain weekly s3 backups | `number` | `31` | no |
 | <a name="input_periodic_s3backup_schedule"></a> [periodic\_s3backup\_schedule](#input\_periodic\_s3backup\_schedule) | Crontab formatted schedule for Periodic S3 Backups | `string` | `"cron(0 5 ? * 7 *)"` | no |
+| <a name="input_powerbi_gateway_instance_count"></a> [powerbi\_gateway\_instance\_count](#input\_powerbi\_gateway\_instance\_count) | Number of standalone Power BI On-Premises Gateway instances created directly from the launch template. | `number` | `2` | no |
 | <a name="input_private_subnet_cidrs"></a> [private\_subnet\_cidrs](#input\_private\_subnet\_cidrs) | List of CIDR blocks for private subnets. | `list(string)` | `[]` | no |
 | <a name="input_project"></a> [project](#input\_project) | The name of the Project we are bootstrapping tfscaffold for | `string` | n/a | yes |
 | <a name="input_public_subnet_cidrs"></a> [public\_subnet\_cidrs](#input\_public\_subnet\_cidrs) | List of CIDR blocks for public subnets. | `list(string)` | `[]` | no |
 | <a name="input_region"></a> [region](#input\_region) | The AWS Region | `string` | n/a | yes |
-| <a name="input_root_volume_size"></a> [root\_volume\_size](#input\_root\_volume\_size) | Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server | `number` | `30` | no |
+| <a name="input_root_volume_size"></a> [root\_volume\_size](#input\_root\_volume\_size) | Size of root volume for the Power BI On-Premises Gateway instances - 30GB minimum for Windows Server | `number` | `80` | no |
 | <a name="input_scale_in_recurrence_schedule"></a> [scale\_in\_recurrence\_schedule](#input\_scale\_in\_recurrence\_schedule) | The cron expression for the scale in schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_scale_out_recurrence_schedule"></a> [scale\_out\_recurrence\_schedule](#input\_scale\_out\_recurrence\_schedule) | The cron expression for the scale out schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_shared_infra_account_id"></a> [shared\_infra\_account\_id](#input\_shared\_infra\_account\_id) | The AWS Account ID of the shared infrastructure account | `string` | `"000000000000"` | no |
