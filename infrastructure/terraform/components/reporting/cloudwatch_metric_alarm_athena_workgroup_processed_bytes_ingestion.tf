@@ -7,7 +7,7 @@ resource "aws_cloudwatch_metric_alarm" "athena_workgroup_processed_bytes_ingesti
   threshold_metric_id = "ad1"
 
   metric_query {
-    id          = "m1"
+    id = "m1"
     metric {
       metric_name = "ProcessedBytes"
       namespace   = "AWS/Athena"

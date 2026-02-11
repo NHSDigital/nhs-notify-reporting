@@ -7,19 +7,19 @@ resource "aws_cloudwatch_metric_alarm" "degraded_latency" {
   treat_missing_data  = "notBreaching"
 
   metric_query {
-    id     = "degraded_latencies_count_max"
-    expression = <<-EOT
+    id          = "degraded_latencies_count_max"
+    expression  = <<-EOT
       SELECT MAX(DegradedLatenciesCount)
       FROM "Notify/Watchdog"
       WHERE environment='${var.environment}'
       GROUP BY environment, clientid, campaignid
     EOT
     return_data = false
-    period = 3600
+    period      = 3600
   }
 
   metric_query {
-    id          = "degraded_client_campaign_count"
+    id = "degraded_client_campaign_count"
     # Not particularly intuitive but needed to perform arithmetic on TS[] to count distinct series
     expression  = "SUM(CEIL(degraded_latencies_count_max / (MAX(degraded_latencies_count_max) + 1)))"
     return_data = true
