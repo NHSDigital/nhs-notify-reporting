@@ -124,3 +124,35 @@ resource "null_resource" "request_item_plan_status_specificationbillingid_column
 
   depends_on = [null_resource.request_item_plan_status_specificationid_column]
 }
+
+resource "null_resource" "request_item_plan_status_messagelength_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_plan_status messagelength string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_plan_status_specificationbillingid_column]
+}
+
+resource "null_resource" "request_item_plan_status_messagelengthunits_column" {
+  triggers = {
+    always_run = timestamp()
+  }
+  provisioner "local-exec" {
+    command = <<EOT
+      ${path.module}/scripts/add_column.sh \
+        ${aws_athena_workgroup.setup.name} \
+        ${aws_glue_catalog_database.reporting.name} \
+        request_item_plan_status messagelengthunits string
+    EOT
+  }
+
+  depends_on = [null_resource.request_item_plan_status_messagelength_column]
+}
