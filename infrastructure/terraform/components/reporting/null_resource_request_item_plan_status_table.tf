@@ -134,7 +134,7 @@ resource "null_resource" "request_item_plan_status_messagelength_column" {
       ${path.module}/scripts/add_column.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        request_item_plan_status messagelength string
+        request_item_plan_status messagelength int
     EOT
   }
 
