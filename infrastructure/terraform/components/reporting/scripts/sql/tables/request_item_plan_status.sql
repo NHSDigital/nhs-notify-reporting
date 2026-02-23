@@ -20,9 +20,9 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     ordernumber int,
     recipientcontactid string,
     templateid string,
-    timestamp bigint,
     specificationid string,
-    specificationbillingid string
+    specificationbillingid string,
+    timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))
 LOCATION '${s3_location}'

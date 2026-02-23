@@ -106,7 +106,7 @@ resource "null_resource" "request_item_plan_status_specificationid_column" {
     EOT
   }
 
-  depends_on = [null_resource.request_item_plan_status_templateid_column]
+  depends_on = [null_resource.request_item_plan_status_failedreasoncode_column]
 }
 
 resource "null_resource" "request_item_plan_status_specificationbillingid_column" {
@@ -122,5 +122,5 @@ resource "null_resource" "request_item_plan_status_specificationbillingid_column
     EOT
   }
 
-  depends_on = [null_resource.request_item_plan_status_templateid_column]
+  depends_on = [null_resource.request_item_plan_status_specificationid_column]
 }
