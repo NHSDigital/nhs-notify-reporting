@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS ${table_name} (
     specificationbillingid string,
     messagelength int,
     messagelengthunits string,
+    senderodscode string,
     timestamp bigint
 )
 PARTITIONED BY (bucket(32, clientid), month(createdtime), month(completedtime))

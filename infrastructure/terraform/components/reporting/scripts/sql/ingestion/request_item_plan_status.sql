@@ -39,6 +39,7 @@ USING (
         specificationbillingid,
         messagelength,
         messagelengthunits,
+        senderodscode,
         CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
@@ -78,6 +79,7 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   specificationbillingid = source.specificationbillingid,
   messagelength = source.messagelength,
   messagelengthunits = source.messagelengthunits,
+  senderodscode = source.senderodscode,
   timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
@@ -106,6 +108,7 @@ WHEN NOT MATCHED THEN INSERT (
   specificationbillingid,
   messagelength,
   messagelengthunits,
+  senderodscode,
   timestamp
 )
 VALUES (
@@ -135,5 +138,6 @@ VALUES (
   source.specificationbillingid,
   source.messagelength,
   source.messagelengthunits,
+  source.senderodscode,
   source.timestamp
 )
