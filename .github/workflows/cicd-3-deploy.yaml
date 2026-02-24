@@ -15,7 +15,7 @@ on:
         default: apply
         type: string
       tag:
-        description: "This is the tag that is oging to be deployed"
+        description: "This is the tag that is going to be deployed"
         required: true
         default: "latest"
 
