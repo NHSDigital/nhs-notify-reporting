@@ -50,6 +50,7 @@ No requirements.
 | <a name="input_scale_in_recurrence_schedule"></a> [scale\_in\_recurrence\_schedule](#input\_scale\_in\_recurrence\_schedule) | The cron expression for the scale in schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_scale_out_recurrence_schedule"></a> [scale\_out\_recurrence\_schedule](#input\_scale\_out\_recurrence\_schedule) | The cron expression for the scale out schedule. Set to null if no recurrence is needed. | `string` | `null` | no |
 | <a name="input_shared_infra_account_id"></a> [shared\_infra\_account\_id](#input\_shared\_infra\_account\_id) | The AWS Account ID of the shared infrastructure account | `string` | `"000000000000"` | no |
+| <a name="input_sms_nudge_client_id"></a> [sms\_nudge\_client\_id](#input\_sms\_nudge\_client\_id) | Client id for the SMS Nudge umbrella client used to filter smsnudge views | `string` | `"NULL"` | no |
 | <a name="input_spot_max_price"></a> [spot\_max\_price](#input\_spot\_max\_price) | max spot price for Power BI On-Premises Gateway instances | `string` | `"0.3"` | no |
 | <a name="input_superuser_role_name"></a> [superuser\_role\_name](#input\_superuser\_role\_name) | Name of the superuser role that is allowed to create other IAM roles | `string` | n/a | yes |
 ## Modules
