@@ -25,3 +25,5 @@ private_subnet_cidrs = [
 enable_s3_backup = false
 
 shared_infra_account_id  = "099709604300"
+
+sms_nudge_client_id = "fb3c1b53-b74a-4143-bfbc-5260821d1848"

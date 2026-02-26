@@ -40,4 +40,6 @@ enable_vault_lock_configuration = true
 
 shared_infra_account_id  = "142549683766"
 
+sms_nudge_client_id = "fb3c1b53-b74a-4143-bfbc-5260821d1848"
+
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:369399915558:backup-vault:nhs-notify-reporting-prod-backup-vault"
