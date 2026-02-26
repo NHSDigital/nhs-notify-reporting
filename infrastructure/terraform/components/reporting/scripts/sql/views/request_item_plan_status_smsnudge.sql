@@ -12,4 +12,5 @@ LEFT JOIN request_item_status_smsnudge_staging ris
   ON rip.requestitemid = ris.requestitemid
 LEFT JOIN request_item_status original_ri
   ON original_ri.requestitemid = ris.originatingrequestitemid
+  AND original_ri.clientid = ris.originatingclientid
 WHERE rip.clientid = ${sms_nudge_client_id}
