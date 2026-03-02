@@ -193,6 +193,12 @@ variable "email_filter_client_ids" {
   default     = ["NULL"]
 }
 
+variable "sms_nudge_client_id" {
+  description = "Client id for the SMS Nudge umbrella client used to filter smsnudge views"
+  type        = string
+  default     = "NULL"
+}
+
 variable "enable_s3_backup" {
   type        = bool
   description = "Enable AWS S3 Backup of the data bucket"
