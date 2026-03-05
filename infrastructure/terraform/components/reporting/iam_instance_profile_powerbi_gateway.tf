@@ -201,6 +201,7 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipient_with_more_than_five_messages",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipients_distribution",
         "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/monthly_recipients_distribution_by_integrator",
+        "arn:aws:glue:${var.region}:${local.this_account}:table/${aws_glue_catalog_database.reporting.name}/billing_transactions",
       ]
     )
   }
