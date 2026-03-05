@@ -4,7 +4,8 @@ FROM (
       LAG(ri.requestitemid,1) OVER (PARTITION BY ri.nhsnumberhash, rip.communicationtype ORDER BY ri.createdtime) AS firstrequestitemid
     FROM request_item_status ri
     INNER JOIN request_item_plan_status rip ON
-      rip.requestitemid = ri.requestitemid
+      rip.requestitemid = ri.requestitemid AND
+      rip.clientid = ri.clientid
     WHERE (rip.communicationtype = 'EMAIL' OR rip.communicationtype = 'SMS')
 ) AS tx
 INNER JOIN request_item_plan_status rip_success ON

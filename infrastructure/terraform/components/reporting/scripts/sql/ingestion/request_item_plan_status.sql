@@ -35,9 +35,12 @@ USING (
           CAST(CAST(templates.suppliers AS json) AS map<varchar, varchar>)[LOWER(supplier)]
         ) AS templateid,
         failedreasoncode,
-        CAST("$classification".timestamp AS BIGINT) AS timestamp,
         specificationid,
-        specificationbillingid
+        specificationbillingid,
+        messagelength,
+        messagelengthunits,
+        senderodscode,
+        CAST("$classification".timestamp AS BIGINT) AS timestamp
       FROM ${source_table}
       WHERE (sk LIKE 'REQUEST_ITEM_PLAN#%') AND
       (
@@ -72,9 +75,12 @@ WHEN MATCHED AND (source.timestamp > target.timestamp) THEN UPDATE SET
   recipientcontactid =  source.recipientcontactid,
   templateid = source.templateid,
   failedreasoncode = source.failedreasoncode,
-  timestamp = source.timestamp,
   specificationid = source.specificationid,
-  specificationbillingid = source.specificationbillingid
+  specificationbillingid = source.specificationbillingid,
+  messagelength = source.messagelength,
+  messagelengthunits = source.messagelengthunits,
+  senderodscode = source.senderodscode,
+  timestamp = source.timestamp
 WHEN NOT MATCHED THEN INSERT (
   clientid,
   campaignid,
@@ -98,9 +104,12 @@ WHEN NOT MATCHED THEN INSERT (
   recipientcontactid,
   templateid,
   failedreasoncode,
-  timestamp,
   specificationid,
-  specificationbillingid
+  specificationbillingid,
+  messagelength,
+  messagelengthunits,
+  senderodscode,
+  timestamp
 )
 VALUES (
   source.clientid,
@@ -125,7 +134,10 @@ VALUES (
   source.recipientcontactid,
   source.templateid,
   source.failedreasoncode,
-  source.timestamp,
   source.specificationid,
-  source.specificationbillingid
+  source.specificationbillingid,
+  source.messagelength,
+  source.messagelengthunits,
+  source.senderodscode,
+  source.timestamp
 )
