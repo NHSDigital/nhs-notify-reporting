@@ -3,10 +3,10 @@ SELECT
   rip.*,
   ris.originatingclientid,
   ris.originatingcampaignid,
-  ris.originatingbillingrefid,
+  ris.originatingbillingref,
   ris.originatingrequestitemid,
   ris.originatingrequestitemplanid,
-  original_ri.sendinggroupid AS originalsendinggroupid
+  original_ri.sendinggroupid AS originatingsendinggroupid
 FROM request_item_plan_status rip
 LEFT JOIN request_item_status_smsnudge_staging ris
   ON rip.requestitemid = ris.requestitemid
