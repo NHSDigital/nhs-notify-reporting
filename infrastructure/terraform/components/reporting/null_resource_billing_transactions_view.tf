@@ -15,6 +15,7 @@ resource "null_resource" "billing_transactions_view" {
 
   depends_on = [
     null_resource.request_item_plan_status_table,
-    null_resource.request_item_status_table
+    null_resource.request_item_status_table,
+    null_resource.request_item_plan_status_smsnudge_view
   ]
 }
