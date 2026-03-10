@@ -3,7 +3,7 @@ SELECT
   ris.*,
   NULLIF(split_part(ris.billingref, '|', 1), '') AS originatingclientid,
   NULLIF(split_part(ris.billingref, '|', 2), '') AS originatingcampaignid,
-  NULLIF(split_part(ris.billingref, '|', 3), '') AS originatingbillingrefid,
+  NULLIF(split_part(ris.billingref, '|', 3), '') AS originatingbillingref,
   NULLIF(split_part(ris.requestitemrefid, '_', 1), '') AS originatingrequestitemid,
   NULLIF(split_part(ris.requestitemrefid, '_', 2), '') AS originatingrequestitemplanid
 FROM request_item_status ris

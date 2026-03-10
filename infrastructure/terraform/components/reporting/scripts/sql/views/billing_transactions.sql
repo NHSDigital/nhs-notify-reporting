@@ -22,7 +22,7 @@ WITH joined_request_item_plans AS (
     DATE(completedtime) AS billingdate,
     originatingclientid AS clientid,
     originatingcampaignid AS campaignid,
-    originatingbillingrefid AS billingref,
+    originatingbillingref AS billingref,
     NULL AS senderodscode,
     communicationtype,
     specificationid,
