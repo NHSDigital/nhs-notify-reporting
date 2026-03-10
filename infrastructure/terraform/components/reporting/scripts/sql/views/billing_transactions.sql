@@ -1,3 +1,4 @@
+CREATE OR REPLACE VIEW ${view_name} AS
 WITH joined_request_item_plans AS (
   SELECT
     DATE(rip.completedtime) AS billingdate,
