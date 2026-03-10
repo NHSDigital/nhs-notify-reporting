@@ -19,19 +19,22 @@ WITH joined_request_item_plans AS (
   WHERE ri.clientid != ${sms_nudge_client_id}
   UNION ALL
   SELECT
-    DATE(completedtime) AS billingdate,
-    originatingclientid AS clientid,
-    originatingcampaignid AS campaignid,
-    originatingbillingref AS billingref,
-    NULL AS senderodscode,
-    communicationtype,
-    specificationid,
-    specificationbillingid,
-    messagelength,
-    messagelengthunits,
-    status,
-    sendtime
-  FROM request_item_plan_status_smsnudge
+    DATE(rip.completedtime) AS billingdate,
+    rip.originatingclientid AS clientid,
+    rip.originatingcampaignid AS campaignid,
+    rip.originatingbillingref AS billingref,
+    orip.senderodscode,
+    rip.communicationtype,
+    rip.specificationid,
+    rip.specificationbillingid,
+    rip.messagelength,
+    rip.messagelengthunits,
+    rip.status,
+    rip.sendtime
+  FROM request_item_plan_status_smsnudge rip
+  INNER JOIN request_item_plan_status orip
+    ON rip.originatingclientid = orip.clientid
+    AND rip.originatingrequestitemplanid = orip.requestitemplanid
 )
 
 SELECT
