@@ -8,7 +8,8 @@ resource "null_resource" "billing_transactions_view" {
       ${path.module}/scripts/create_replace_view.sh \
         ${aws_athena_workgroup.setup.name} \
         ${aws_glue_catalog_database.reporting.name} \
-        billing_transactions
+        billing_transactions \
+        sms_nudge_client_id "${local.sms_nudge_client_id}"
     EOT
   }
 
