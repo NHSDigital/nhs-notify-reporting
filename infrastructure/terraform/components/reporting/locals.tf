@@ -64,6 +64,7 @@ locals {
   powerbi_gateway_script = var.enable_powerbi_gateway ? templatefile("${path.module}/templates/cloudinit_config.tmpl", {
     odbc_dsn_name       = "${local.csi}-dsn"
     odbc_description    = "AWS Simba Athena ODBC Connection for ${local.csi}"
+    athena_driver_url   = var.athena_driver_url
     region              = var.region
     catalog             = "AWSDataCatalog"
     database            = aws_glue_catalog_database.reporting.name

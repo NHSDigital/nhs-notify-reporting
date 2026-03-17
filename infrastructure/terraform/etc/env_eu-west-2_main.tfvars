@@ -15,6 +15,8 @@ core_account_ids = [
 
 # PowerBI On-Premises Gateway variables:
 enable_powerbi_gateway = true
+instance_type          = "t3.xlarge"
+root_volume_size       = 200
 
 public_subnet_cidrs = [
   "10.0.1.0/24",
