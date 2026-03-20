@@ -54,12 +54,6 @@ locals {
 
   this_account = local.base_parameter_bundle.account_ids[local.base_parameter_bundle.account_name]
 
-  # Check if each required SSM parameter exists individually
-  recovery_key  = length(aws_ssm_parameter.powerbi_gateway_recovery_key) > 0 ? aws_ssm_parameter.powerbi_gateway_recovery_key[0].name : null
-  client_secret = length(aws_ssm_parameter.powerbi_gateway_client_secret) > 0 ? aws_ssm_parameter.powerbi_gateway_client_secret[0].name : null
-  client_id     = length(aws_ssm_parameter.powerbi_gateway_client_id) > 0 ? aws_ssm_parameter.powerbi_gateway_client_id[0].name : null
-  tenant_id     = length(aws_ssm_parameter.powerbi_gateway_tenant_id) > 0 ? aws_ssm_parameter.powerbi_gateway_tenant_id[0].name : null
-
   # Create the powerbi_gateway_script only if var.enable_powerbi_gateway is true
   powerbi_gateway_script = var.enable_powerbi_gateway ? templatefile("${path.module}/templates/cloudinit_config.tmpl", {
     odbc_dsn_name       = "${local.csi}-dsn"
@@ -71,10 +65,6 @@ locals {
     workgroup           = aws_athena_workgroup.user.name
     authentication_type = "Instance Profile"
     gateway_name        = "${local.csi}-gateway"
-    recovery_key        = local.recovery_key
-    client_secret       = local.client_secret
-    client_id           = local.client_id
-    tenant_id           = local.tenant_id
   }) : null
 
   use_core_glue_catalog_resources = length(var.core_account_ids) > 0 ? true : false
