@@ -8,6 +8,7 @@ resource "aws_instance" "powerbi_gateway_standalone" {
   }
 
   tags = {
-    Name = format("%s-powerbi-gateway-standalone-%02d", local.csi, count.index + 1)
+    "Name"        = format("%s-powerbi-gateway-standalone-%02d", local.csi, count.index + 1)
+    "Patch Group" = aws_ssm_patch_group.windows_patch_group[0].patch_group
   }
 }
