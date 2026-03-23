@@ -222,22 +222,4 @@ data "aws_iam_policy_document" "powerbi_gateway_permissions_policy" {
       aws_kms_key.s3.arn
     ]
   }
-
-  statement {
-    sid    = "AllowSSMAccess"
-    effect = "Allow"
-
-    actions = [
-      "ssm:GetParameter",
-      "ssm:GetParameters",
-      "ssm:GetParameterHistory",
-    ]
-
-    resources = [
-      aws_ssm_parameter.powerbi_gateway_recovery_key[0].arn,
-      aws_ssm_parameter.powerbi_gateway_client_id[0].arn,
-      aws_ssm_parameter.powerbi_gateway_client_secret[0].arn,
-      aws_ssm_parameter.powerbi_gateway_tenant_id[0].arn
-    ]
-  }
 }
