@@ -1,6 +1,8 @@
 resource "aws_s3_bucket" "results" {
   bucket        = "${local.csi_global}-results"
   force_destroy = "true"
+
+  tags = merge(local.default_tags, { "Enable-Backup" = false })
 }
 
 resource "aws_s3_bucket_ownership_controls" "results" {
@@ -56,48 +58,19 @@ resource "aws_s3_bucket_lifecycle_configuration" "results" {
   expected_bucket_owner = local.this_account
 
   rule {
-    id     = "default_current_version"
+    id     = "delete_all_objects_after_30_days"
     status = "Enabled"
 
     filter {
       prefix = ""
-    }
-
-    transition {
-      days          = "90"
-      storage_class = "STANDARD_IA"
-    }
-
-    transition {
-      days          = "180"
-      storage_class = "GLACIER"
     }
 
     expiration {
-      days = "365"
-    }
-  }
-
-  rule {
-    id     = "default_non_current_version"
-    status = "Enabled"
-
-    filter {
-      prefix = ""
-    }
-
-    noncurrent_version_transition {
-      noncurrent_days = "90"
-      storage_class   = "STANDARD_IA"
-    }
-
-    noncurrent_version_transition {
-      noncurrent_days = "180"
-      storage_class   = "GLACIER"
+      days = "30"
     }
 
     noncurrent_version_expiration {
-      noncurrent_days = "365"
+      noncurrent_days = "30"
     }
   }
 }
