@@ -19,18 +19,14 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 }
 
 # Install PowerBI On-Premises Gateway and Desktop
-choco install -y powerbigateway --version=3000.298.8 --ignore-checksums
-choco install -y powerbi --ignore-checksums
-
-# Install vim
-choco install -y vim
+choco install -y powerbigateway --ignore-checksums
 
 # Install Powershell 7
 choco install -y powershell-core
 
 # Install Amazon Athena ODBC 2.x Driver
-`$athenaDriverUrl = "https://downloads.athena.us-east-1.amazonaws.com/drivers/ODBC/v2.0.6.0/Windows/AmazonAthenaODBC-2.0.6.0.msi"
-`$athenaDriverInstaller = "C:\scripts\SimbaAthenaODBC.msi"
+`$athenaDriverUrl = "${athena_driver_url}"
+`$athenaDriverInstaller = "C:\scripts\AmazonAthenaODBC.msi"
 Invoke-WebRequest -Uri `$athenaDriverUrl -OutFile `$athenaDriverInstaller
 
 # Silent installation of Amazon Athena ODBC driver
@@ -85,23 +81,6 @@ if (Test-Path `$pwshPath) {
             Write-Output "AWS CLI installation failed or not found in PATH."
             exit 1
         }
-
-        # Get the client (application) and tenant id's
-        `$clientId = aws ssm get-parameter --name ${client_id} --with-decryption --query Parameter.Value --output text
-        `$tenantId = aws ssm get-parameter --name ${tenant_id} --with-decryption --query Parameter.Value --output text
-
-        # Get and convert the client secret and recovery key to SecureStrings
-        `$clientSecretPlainText = aws ssm get-parameter --name ${client_secret} --with-decryption --query Parameter.Value --output text
-        `$clientSecret = `$clientSecretPlainText | ConvertTo-SecureString -AsPlainText -Force
-        `$recoveryKeyPlainText = aws ssm get-parameter --name ${recovery_key} --with-decryption --query Parameter.Value --output text
-        `$recoveryKey = `$recoveryKeyPlainText | ConvertTo-SecureString -AsPlainText -Force
-
-        # Login to the PowerBI Service using the Service Principal (proposed, untested) https://learn.microsoft.com/en-us/powershell/module/datagateway.profile/connect-datagatewayserviceaccount?view=datagateway-ps
-        # Connect-DataGatewayServiceAccount -ApplicationId `$clientId -ClientSecret `$clientSecret -Tenant `$tenantId
-        # Install the gateway
-        # Install-DataGateway -AcceptConditions
-        # Register the Gateway (proposed, untested) https://learn.microsoft.com/en-us/powershell/module/datagateway/add-datagatewaycluster?view=datagateway-ps
-        # Add-DataGatewayCluster -RecoveryKey `$recoveryKey -Name ${gateway_name} -RegionKey uksouth
     }
 }
 else {
