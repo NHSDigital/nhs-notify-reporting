@@ -16,3 +16,4 @@ bb20e9d078e09d242ade5deaa6dcb84f1755b347:infrastructure/terraform/components/rep
 056d713eefe2305444059e99d707bd902ed6f532:infrastructure/terraform/components/reporting/README.md:ipv4:16
 66380f86140cd9c23e5a3e61044488872e632bf7:infrastructure/terraform/components/reporting/variables.tf:ipv4:109
 66380f86140cd9c23e5a3e61044488872e632bf7:infrastructure/terraform/components/reporting/variables.tf:ipv4:109
+e44436c05bb859820c89b241df2e589ab760595b:infrastructure/terraform/components/reporting/README.md:ipv4:16
