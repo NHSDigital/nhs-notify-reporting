@@ -64,7 +64,7 @@ Here are some key features built into this repository's Terraform module:
 - Configuration
   - [`.tool-versions`](../../.tool-versions): Stores Terraform version to be used
 - Code quality gates
-  - [`stage-1-commit.yaml`](../../.github/workflows/stage-1-commit.yaml): CI workflow using shared-modules lint-terraform action
+  - [`stage-1-commit.yaml`](../../.github/workflows/stage-1-commit.yaml): CI workflow using shared-modules `lint-terraform` action
   - [`pre-commit.yaml`](../../scripts/config/pre-commit.yaml): Pre-commit hook configuration including `lint-terraform`
 - Usage example
   - Declarative infrastructure definition example [`terraform-state-aws-s3`](../../scripts/terraform/examples/terraform-state-aws-s3) to store Terraform state
