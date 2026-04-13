@@ -64,8 +64,8 @@ Here are some key features built into this repository's Terraform module:
 - Configuration
   - [`.tool-versions`](../../.tool-versions): Stores Terraform version to be used
 - Code quality gates
-  - [`lint-terraform/action.yaml`](../../.github/actions/lint-terraform/action.yaml): GitHub action
-  - [`check-terraform-format.sh`](../../scripts/githooks/check-terraform-format.sh): Git hook
+  - [`stage-1-commit.yaml`](../../.github/workflows/stage-1-commit.yaml): CI workflow using shared-modules lint-terraform action
+  - [`pre-commit.yaml`](../../scripts/config/pre-commit.yaml): Pre-commit hook configuration including `lint-terraform`
 - Usage example
   - Declarative infrastructure definition example [`terraform-state-aws-s3`](../../scripts/terraform/examples/terraform-state-aws-s3) to store Terraform state
   - A set of [make targets](https://github.com/nhs-england-tools/repository-template/blob/main/scripts/terraform/terraform.mk#L44) to run the example

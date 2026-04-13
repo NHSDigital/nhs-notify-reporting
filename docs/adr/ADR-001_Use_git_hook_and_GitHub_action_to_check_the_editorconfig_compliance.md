@@ -153,7 +153,7 @@ There is an emerging practice to use projects like [act](https://github.com/nekt
 
 ## Actions
 
-- [x] Ensure the naming convention of the other git hooks follows the pattern set by the `scripts/githooks/check-file-format.sh` script
+- [x] Ensure the naming convention of the other git hooks follows the existing repository convention
 - [ ] ~~Relocate shell scripts that are called by the GitHub workflow, currently placed in the `scripts` directory, to `.github/workflows/scripts`.~~ Update: Scripts provided along with this repository template are made to be agnostic from any provider's workflow implementation; this is by design. Therefore, the `scripts` directory is the right place for the shell scripts.
 
 ## Tags

@@ -32,6 +32,9 @@ on:
         required: true
         type: string
 
+env:
+  SHARED_MODULES_REF: bc7d12f1acd565f98b199ce8d8c25f4b5941d4ed
+
 jobs:
   test-unit:
     name: "Unit tests"
@@ -40,6 +43,8 @@ jobs:
     steps:
       - name: "Checkout code"
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - name: "Log shared modules ref"
+        run: echo "Using nhs-notify-shared-modules ref ${SHARED_MODULES_REF}"
       - name: "Run unit test suite"
         run: |
           make test-unit
@@ -87,7 +92,7 @@ jobs:
         with:
           fetch-depth: 0 # Full history is needed to improving relevancy of reporting
       - name: "Perform static analysis"
-        uses: ./.github/actions/perform-static-analysis
+        uses: NHSDigital/nhs-notify-shared-modules/.github/actions/perform-static-analysis@bc7d12f1acd565f98b199ce8d8c25f4b5941d4ed
         with:
           sonar_organisation_key: "${{ vars.SONAR_ORGANISATION_KEY }}"
           sonar_project_key: "${{ vars.SONAR_PROJECT_KEY }}"
