@@ -16,7 +16,7 @@ repos:
         exclude: '(^|/)package(-lock)?\.json$'
 
   - repo: https://github.com/NHSDigital/nhs-notify-shared-modules
-    rev: bc7d12f1acd565f98b199ce8d8c25f4b5941d4ed
+    rev: 3.0.9
     hooks:
       - id: sort-dictionary
       - id: scan-secrets
