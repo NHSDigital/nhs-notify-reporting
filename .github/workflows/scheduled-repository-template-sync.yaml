@@ -10,9 +10,6 @@ permissions:
   pull-requests: write
   checks: read
 
-env:
-  SHARED_MODULES_REF: 3.0.9
-
 jobs:
   update-external-repo:
     runs-on: ubuntu-latest
