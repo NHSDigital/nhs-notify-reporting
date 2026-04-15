@@ -31,7 +31,7 @@ In modern software development, leveraging third-party dependencies is a common 
 - [`syft.yaml`](../../scripts/config/syft.yaml): A configuration file for the SBOM generator
 - [`scan-vulnerabilities.sh`](../../scripts/reports/scan-vulnerabilities.sh): A shell script that performs CVE analysis
 - [`grype.yaml`](../../scripts/config/grype.yaml): A configuration file for the CVE scanner
-- [`scan-dependencies/action.yaml`](../../.github/actions/scan-dependencies/action.yaml): GitHub action to run the scripts as part of the CI/CD pipeline
+- [`stage-1-commit.yaml`](../../.github/workflows/stage-1-commit.yaml): CI workflow that runs dependency scanning via shared-modules action
 - [`.gitignore`](../../.gitignore): Excludes the `*sbom*report.json` and `*vulnerabilities*report.json` report files created during the process
 
 ## Configuration checklist

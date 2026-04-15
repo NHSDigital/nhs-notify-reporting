@@ -6,11 +6,10 @@ cd "$(git rev-parse --show-toplevel)"
 
 
 # This file is for you! Edit it to call your prose style checker.
-# It's preconfigured to use `vale`, the same as the github action,
-# except that here it only checks unstaged files first, and only if
-# those files are OK does it then go on to check staged files.  This
-# is to give you fast feedback on the changes you've most recently
-# made.
+# It runs the same `check-english-usage` hook from pre-commit
+# configuration to keep local checks aligned with CI behavior.
 
-check=working-tree-changes ./scripts/githooks/check-english-usage.sh && \
-  check=staged-changes ./scripts/githooks/check-english-usage.sh
+pre-commit run \
+  --config scripts/config/pre-commit.yaml \
+  check-english-usage \
+  --all-files
