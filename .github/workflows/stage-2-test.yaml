@@ -32,9 +32,6 @@ on:
         required: true
         type: string
 
-env:
-  SHARED_MODULES_REF: 3.0.9
-
 jobs:
   test-unit:
     name: "Unit tests"
