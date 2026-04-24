@@ -1,6 +1,6 @@
-[A-Z]+s
 add_column
 athena_named_query
+[A-Z]+s
 Bitwarden
 bot
 Cognito
