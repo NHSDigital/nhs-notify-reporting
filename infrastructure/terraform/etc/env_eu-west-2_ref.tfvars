@@ -34,4 +34,9 @@ email_filter_client_ids = [
 
 enable_s3_backup = false
 
-shared_infra_account_id  = "099709604300"
+shared_infra_account_id = "099709604300"
+
+event_staging_retention_config = {
+  current_days     = 7,
+  non_current_days = 14
+}

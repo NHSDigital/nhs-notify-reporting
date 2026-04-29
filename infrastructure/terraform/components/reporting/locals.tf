@@ -87,4 +87,7 @@ locals {
   sms_nudge_client_id = format("'%s'", var.sms_nudge_client_id)
 
   log_destination_arn = "arn:aws:logs:${var.region}:${var.shared_infra_account_id}:destination:nhs-main-obs-firehose-logs"
+
+  firehose_output_path_prefix = "kinesis-firehose-output"
+  firehose_output_path_events = "${local.firehose_output_path_prefix}/events"
 }
