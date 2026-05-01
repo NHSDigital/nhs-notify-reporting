@@ -28,6 +28,11 @@ private_subnet_cidrs = [
   "10.0.6.0/24"
 ]
 
-shared_infra_account_id  = "099709604300"
+shared_infra_account_id = "099709604300"
 
 destination_backup_vault_arn = "arn:aws:backup:eu-west-2:390844765011:backup-vault:nhs-notify-reporting-dev-backup-vault"
+
+event_staging_retention_config = {
+  current_days     = 30,
+  non_current_days = 14
+}

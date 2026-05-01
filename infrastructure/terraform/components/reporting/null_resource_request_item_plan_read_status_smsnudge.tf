@@ -15,6 +15,6 @@ resource "null_resource" "request_item_plan_read_status_smsnudge" {
 
   depends_on = [
     null_resource.request_item_plan_status_table,
-    null_resource.request_item_status_smsnudge_staging_view
+    null_resource.request_item_plan_status_smsnudge_view
   ]
 }

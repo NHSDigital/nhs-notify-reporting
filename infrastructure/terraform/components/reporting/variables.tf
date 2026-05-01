@@ -252,3 +252,15 @@ variable "parent_acct_environment" {
   description = "Name of the environment responsible for the acct resources used, affects things like DNS zone. Useful for named dev environments"
   default     = "main"
 }
+
+variable "event_staging_retention_config" {
+  description = "The number of days for data retention policy for events in the staging table"
+  type = object({
+    current_days     = number,
+    non_current_days = number,
+  })
+  default = {
+    current_days     = 534,
+    non_current_days = 14,
+  }
+}
