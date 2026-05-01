@@ -103,6 +103,12 @@ variable "enable_powerbi_gateway" {
   default     = true
 }
 
+variable "athena_driver_url" {
+  type        = string
+  description = "Amazon Athena ODBC MSI download URL for PowerBI gateway bootstrap"
+  default     = "https://downloads.athena.us-east-1.amazonaws.com/drivers/ODBC/v2.1.0.0/Windows/AmazonAthenaODBC-2.1.0.0.msi"
+}
+
 variable "powerbi_gateway_instance_count" {
   description = "Number of standalone Power BI On-Premises Gateway instances created directly from the launch template."
   type        = number
