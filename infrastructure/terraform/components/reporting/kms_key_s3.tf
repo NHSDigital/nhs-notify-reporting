@@ -71,4 +71,24 @@ data "aws_iam_policy_document" "s3" {
       ]
     }
   }
+
+  statement {
+    sid    = "AllowUsageFromSharedInfraAccount"
+    effect = "Allow"
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${var.shared_infra_account_id}:root"]
+    }
+
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:GenerateDataKey"
+    ]
+
+    resources = [
+      "*",
+    ]
+  }
 }
