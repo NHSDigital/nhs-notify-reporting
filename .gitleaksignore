@@ -21,3 +21,7 @@ d38af4e4f6c36ca9c3d843193b434386a9bad5ee:infrastructure/terraform/etc/env_eu-wes
 d38af4e4f6c36ca9c3d843193b434386a9bad5ee:infrastructure/terraform/etc/env_eu-west-2_prod.tfvars:generic-api-key:43
 e4f41f458ca66d94f1fcebdff9579e2ce81d1d5e:infrastructure/terraform/etc/env_eu-west-2_int.tfvars:generic-api-key:29
 e4f41f458ca66d94f1fcebdff9579e2ce81d1d5e:infrastructure/terraform/etc/env_eu-west-2_prod.tfvars:generic-api-key:43
+9469a5a10e20b5c3275ba055e65ba98e7d11e9d2:infrastructure/terraform/components/reporting/README.md:ipv4:16
+9469a5a10e20b5c3275ba055e65ba98e7d11e9d2:infrastructure/terraform/components/reporting/README.md:ipv4:16
+9469a5a10e20b5c3275ba055e65ba98e7d11e9d2:infrastructure/terraform/components/reporting/variables.tf:ipv4:109
+9469a5a10e20b5c3275ba055e65ba98e7d11e9d2:infrastructure/terraform/components/reporting/variables.tf:ipv4:109

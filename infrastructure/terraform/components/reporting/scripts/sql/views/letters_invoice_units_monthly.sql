@@ -1,3 +1,4 @@
+-- Comment to prompt redeployment of view
 CREATE OR REPLACE VIEW ${view_name} AS
 SELECT clientid, campaignid, supplier, YEAR(invoicetime) AS invoiceyear, MONTH(invoicetime) AS invoicemonth, COUNT(*) AS unitcount
 FROM (

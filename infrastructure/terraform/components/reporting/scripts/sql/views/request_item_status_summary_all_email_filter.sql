@@ -1,3 +1,4 @@
+-- Comment to prompt redeployment of view
 CREATE OR REPLACE VIEW ${view_name} AS
 WITH email_only_sending_groups AS (
   SELECT clientid, sendinggroupid FROM request_item_plan_completed_summary_all

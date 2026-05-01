@@ -21,4 +21,3 @@ FROM (
 )
 WHERE monthlytotalmessages >= 5
 GROUP BY 1, 2, 3, 4
-
