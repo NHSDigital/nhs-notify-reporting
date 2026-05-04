@@ -58,7 +58,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "results" {
   expected_bucket_owner = local.this_account
 
   rule {
-    id     = "delete_all_objects_after_30_days"
+    id     = "expire_objects"
     status = "Enabled"
 
     filter {
@@ -66,11 +66,11 @@ resource "aws_s3_bucket_lifecycle_configuration" "results" {
     }
 
     expiration {
-      days = "30"
+      days = 30
     }
 
     noncurrent_version_expiration {
-      noncurrent_days = "30"
+      noncurrent_days = 7
     }
   }
 }
